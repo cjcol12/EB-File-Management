@@ -10,7 +10,7 @@
 // Definition header file inclusion
 #include "definitions.h"
 
-// image strcut initialization
+// image struct initialization
 // TODO Remove from global
 image_struct_type image_struct;
 
@@ -28,7 +28,6 @@ int check_arg_count(int argc){
         printf("ERROR: Bad Arguments\n");
         return BAD_ARGUMENT_COUNT;
         }
-    
     else return 0;
 }
 
@@ -45,6 +44,7 @@ int check_magic_number(char *executable_name, FILE *inputFile){
     image_struct.magicNumber[0] = getc(inputFile);
     image_struct.magicNumber[1] = getc(inputFile);
 
+    // cast to short for endianness
     image_struct.magicNumberValue = (unsigned short *)image_struct.magicNumber;
     
     // checking against the casted value due to endienness.
@@ -74,7 +74,7 @@ int check_dimensions(char *executable_name, FILE *inputFile){
         // print appropriate error message and return
         printf("ERROR: Bad Dimensions (%s)\n", executable_name);
         return BAD_DIM;
-    } // check dimensions
+    } // check dimensions5
     else return 0;
 }
 
@@ -93,7 +93,7 @@ int check_malloc(FILE *inputFile){
     else return 0;
 }
 
-int read_data(char executable_name, FILE *inputFile){
+int read_data(char *executable_name, FILE *inputFile){
     // read in each grey value from the file
     for (int current = 0; current < image_struct.numBytes; current++)
         { // reading in
@@ -108,11 +108,44 @@ int read_data(char executable_name, FILE *inputFile){
             return BAD_DATA;
             } // check inputted data
         } // reading in
+    return 0;
 }
 
+int write_header(FILE *outputFile){
+    // write the header data in one block
+    image_struct.check = fprintf(outputFile, "eb\n%d %d\n", image_struct.height, image_struct.width);
+    // and use the return from fprintf to check that we wrote.
+    if (image_struct.check == 0) 
+        { // check write
+        fclose(outputFile);
+        free(image_struct.imageData);
+        printf("ERROR: Bad Output\n");
+        return BAD_OUTPUT;
+        } // check write
+    else return 0;
+}
+
+int write_image_data(FILE *outputFile){
+    // iterate though the array and print out pixel values
+    for (int current = 0; current < image_struct.numBytes; current++)
+        { // writing out
+        // if we are at the end of a row ((current+1)%width == 0) then write a newline, otherwise a space.
+        image_struct.check = fprintf(outputFile, "%u%c", image_struct.imageData[current], ((current + 1) % image_struct.width) ? ' ' : '\n');
+        if (image_struct.check == 0)
+            { // check write
+            fclose(outputFile);
+            free(image_struct.imageData);
+            printf("ERROR: Bad Output\n");
+            return BAD_OUTPUT;
+            } // check write
+        } // writing out
+    return 0;
+}
 int main(int argc, char **argv)
     { // main
 
+
+    // read file functions
     check_arg_count(argc);
 
     // open the input file in read mode
@@ -125,47 +158,17 @@ int main(int argc, char **argv)
     check_malloc(inputFile);
     read_data(argv[0], inputFile);
 
-
-
-
-
     // now we have finished using the inputFile we should close it
     fclose(inputFile);
 
     // open the output file in write mode
     FILE *outputFile = fopen(argv[2], "w");
     // validate that the file has been opened correctly
-    if (outputFile == NULL)
-        { // validate output file
-        free(image_struct.imageData);
-        printf("ERROR: Bad File Name\n");
-        return BAD_FILE;
-        } // validate output file
+    check_file_opened(argv[0], outputFile);
 
-    // write the header data in one block
-    image_struct.check = fprintf(outputFile, "eb\n%d %d\n", image_struct.height, image_struct.width);
-    // and use the return from fprintf to check that we wrote.
-    if (image_struct.check == 0) 
-        { // check write
-        fclose(outputFile);
-        free(image_struct.imageData);
-        printf("ERROR: Bad Output\n");
-        return BAD_OUTPUT;
-        } // check write
-
-    // iterate though the array and print out pixel values
-    for (int current = 0; current < image_struct.numBytes; current++)
-        { // writing out
-        // if we are at the end of a row ((current+1)%width == 0) then write a newline, otherwise a space.
-        image_struct.check = fprintf(inputFile, "%u%c", image_struct.imageData[current], ((current + 1) % image_struct.width) ? ' ' : '\n');
-        if (image_struct.check == 0)
-            { // check write
-            fclose(outputFile);
-            free(image_struct.imageData);
-            printf("ERROR: Bad Output\n");
-            return BAD_OUTPUT;
-            } // check write
-        } // writing out
+    // write output file header and data
+    write_header(outputFile);
+    write_image_data(outputFile);
 
     // free allocated memory before exit
     free(image_struct.imageData);
