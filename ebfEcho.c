@@ -34,9 +34,6 @@ int main(int argc, char **argv)
     // image strcut initialization
     image_struct_type image_struct;
 
-    // create a char array to hold magic number
-    // and cast to short
-
 
     // open the input file in read mode
     FILE *inputFile = fopen(argv[1], "r");
@@ -61,8 +58,14 @@ int main(int argc, char **argv)
     // scan for the dimensions
     // and capture fscanfs return to ensure we got 2 values.
     int check = fscanf(inputFile, "%d %d", &image_struct.height, &image_struct.width);
-    if (check != 2 || image_struct.height < MIN_DIMENSION || image_struct.width < MIN_DIMENSION || image_struct.height > MAX_DIMENSION || image_struct.width > MAX_DIMENSION)
-        { // check dimensions
+
+    if (check != 2 || 
+        image_struct.height < MIN_DIMENSION || 
+        image_struct.width < MIN_DIMENSION || 
+        image_struct.height > MAX_DIMENSION || 
+        image_struct.width > MAX_DIMENSION){
+        
+        // checks dimensions
         // close the file as soon as an error is found
         fclose(inputFile);
         // print appropriate error message and return
