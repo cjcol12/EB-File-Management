@@ -10,6 +10,9 @@
 // Definition header file inclusion
 #include "definitions.h"
 
+// image strcut initialization
+// TODO Remove from global
+image_struct_type image_struct;
 
 int check_arg_count(int argc){
 
@@ -27,12 +30,22 @@ int check_arg_count(int argc){
         }
 }
 
+int check_magic_number(char **argv){
+    image_struct.magicNumber[0] = getc(inputFile);
+    image_struct.magicNumber[1] = getc(inputFile);
+
+    // checking against the casted value due to endienness.
+    if (image_struct.magicNumberValue != MAGIC_NUMBER)
+        { // check magic number
+        printf("ERROR: Bad Magic Number\n");
+        return BAD_FILE;
+        } //check magic number
+}
 
 int main(int argc, char **argv)
     { // main
 
-    // image strcut initialization
-    image_struct_type image_struct;
+
 
 
     // open the input file in read mode
@@ -43,17 +56,6 @@ int main(int argc, char **argv)
         printf("ERROR: Bad File Name\n");
         return BAD_FILE;
         } // check file pointer
-
-    // get first 2 characters which should be magic number
-    image_struct.magicNumber[0] = getc(inputFile);
-    image_struct.magicNumber[1] = getc(inputFile);
-
-    // checking against the casted value due to endienness.
-    if (image_struct.magicNumberValue != MAGIC_NUMBER)
-        { // check magic number
-        printf("ERROR: Bad Magic Number\n");
-        return BAD_FILE;
-        } //check magic number
 
     // scan for the dimensions
     // and capture fscanfs return to ensure we got 2 values.
