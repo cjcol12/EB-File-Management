@@ -1,17 +1,14 @@
+// Standard I/O header file inclusion
 #include <stdio.h>
+
+// Standard library header file inclusion
 #include <stdlib.h>
 
-#define SUCCESS 0
-#define BAD_ARGUMENT_COUNT 1
-#define BAD_FILE 2
-#define BAD_MAGIC_NUMBER 3
-#define BAD_DIM 4
-#define BAD_MALLOC 5
-#define BAD_DATA 6
-#define BAD_OUTPUT 7
-#define MAGIC_NUMBER 0x6265
-#define MAX_DIMENSION 262144
-#define MIN_DIMENSION 1
+// Image struct header file inclusion
+#include "image_structs.h"
+
+// Definition header file inclusion
+#include "definitions.h"
 
 
 int check_arg_count(int argc){
@@ -29,20 +26,17 @@ int check_arg_count(int argc){
         return BAD_ARGUMENT_COUNT;
         }
 }
+
+
 int main(int argc, char **argv)
     { // main
 
-
+    // image strcut initialization
+    image_struct_type image_struct;
 
     // create a char array to hold magic number
     // and cast to short
-    unsigned char magicNumber[2];
-    unsigned short *magicNumberValue = (unsigned short *)magicNumber;
 
-    // create and initialise variables used within code
-    int width = 0, height = 0;
-    unsigned int *imageData;
-    long numBytes;
 
     // open the input file in read mode
     FILE *inputFile = fopen(argv[1], "r");
