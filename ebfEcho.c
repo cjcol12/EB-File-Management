@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #define SUCCESS 0
-#define BAD_ARGS 1
+#define BAD_ARGUMENT_COUNT 1
 #define BAD_FILE 2
 #define BAD_MAGIC_NUMBER 3
 #define BAD_DIM 4
@@ -13,15 +13,26 @@
 #define MAX_DIMENSION 262144
 #define MIN_DIMENSION 1
 
+
+int check_arg_count(int argc){
+
+    // Unix usage check
+    if (argc == 1){
+        printf("Usage: executablename file1 file2");
+        return 0;
+    }
+
+    // validate that user has entered 2 arguments
+    if (argc != 3)
+        {
+        printf("ERROR: Bad Arguments\n");
+        return BAD_ARGUMENT_COUNT;
+        }
+}
 int main(int argc, char **argv)
     { // main
 
-    // validate that user has enter 2 arguments (plus the executable name)
-    if (argc != 3)
-        { // check arg count
-        printf("ERROR: Bad Arguments\n");
-        return BAD_ARGS;
-        } // check arg count
+
 
     // create a char array to hold magic number
     // and cast to short
