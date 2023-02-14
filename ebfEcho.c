@@ -156,6 +156,8 @@ int write_image_data(FILE *outputFile){
 int main(int argc, char **argv)
     { // main
 
+    
+
     // Unix usage information
     if (unix_usage(argv[0], argc) == 0)
         return 0;
