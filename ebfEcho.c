@@ -146,7 +146,11 @@ int main(int argc, char **argv)
 
 
     // read file functions
-    check_arg_count(argc);
+    if (check_arg_count(argc) == USAGE_REQUEST)
+        return USAGE_REQUEST;
+    
+    if (check_arg_count(argc) == BAD_ARGUMENT_COUNT)
+        return BAD_ARGUMENT_COUNT;
 
     // open the input file in read mode
     FILE *inputFile = fopen(argv[1], "r");
