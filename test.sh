@@ -51,8 +51,15 @@ score=0
 # and these are compared to the given expected code and string
 # displaying a helpful message to the user
 # and updating both the number of tests run and the number of passes
+
+# colour coded output for easier readability
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
 run_test () 
     { # run_test()
+
     # capture returned message
     message=$($1 $2 $3) 
     # run again (pipe to null so it doesn't display to user) for the output code
@@ -64,20 +71,20 @@ run_test ()
     # check output value against expected
     if [ $out == $4 ]
     then
-        echo "PASSED: expected $4 got $out"
+        printf "${GREEN}PASSED: expected $4 got $out${NC}\n"
         # if we passed, increment the score
         (( score++ ))
     else
-        echo "FAILED: expected $4 got $out"
+        printf "${RED}FAILED: expected $4 got $out${NC}\n"
     fi
 
     # check output message against expected
     if [ "$var" == "$5" ] 
     then
-        echo "PASSED: expected $5 got $message"
+        printf "${GREEN}PASSED: expected $5 got $message${NC}\n"
         (( score++ ))
     else
-        echo "FAILED: expected $5 got $message"
+        printf "${RED}FAILED: expected $5 got $message${NC}\n"
     fi
 
     } # end run_test()
