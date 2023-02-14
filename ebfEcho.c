@@ -14,19 +14,23 @@
 // TODO Remove from global
 image_struct_type image_struct;
 
-int check_arg_count(int argc){
-
+int unix_usage(char *executable_name, int argc){
     // Unix usage check
     if (argc == 1){
-        printf("Usage: executablename file1 file2");
-        return 0;
+        printf("Usage: %s file1 file2", executable_name);
+        // printf("Usage: ebfEcho file1 file2"); // static test still failing
+        return USAGE_REQUEST;
     }
+    else return 10;
+}
+
+int check_arg_count(char *executable_name, int argc){
 
     // validate that user has entered 2 arguments
     if (argc != 3)
         {
-        printf("ERROR: Bad Arguments\n");
-        return BAD_ARGUMENT_COUNT;
+        printf("ERROR: Bad Arguments\n"); // runs twice in main
+        return BAD_ARGUMENT_COUNT; 
         }
     else return 0;
 }
@@ -35,6 +39,8 @@ int check_file_opened(char *executable_name, FILE *inputFile){
     if (!inputFile)
     { // check file pointer
     printf("ERROR: Bad File Name (%s)\n", executable_name);
+    // printf("ERROR: Bad File Name (1)\n");
+
     return BAD_FILE;
     }
     else return 0;
@@ -51,7 +57,7 @@ int check_magic_number(char *executable_name, FILE *inputFile){
     if (*(image_struct.magicNumberValue) != MAGIC_NUMBER){
         // check magic number
         printf("ERROR: Bad Magic Number (%s)\n", executable_name);
-        return BAD_FILE;
+        return BAD_MAGIC_NUMBER;
     }
     else return 0;
 
@@ -73,7 +79,7 @@ int check_dimensions(char *executable_name, FILE *inputFile){
         fclose(inputFile);
         // print appropriate error message and return
         printf("ERROR: Bad Dimensions (%s)\n", executable_name);
-        return BAD_DIM;
+        return BAD_DIMENSION;
     } // check dimensions5
     else return 0;
 }
@@ -107,7 +113,13 @@ int read_data(char *executable_name, FILE *inputFile){
             printf("ERROR: Bad Data\n");
             return BAD_DATA;
             } // check inputted data
-        } // reading in
+        if (*(image_struct.imageData) > MAX_GRAY){
+            free(image_struct.imageData);
+            fclose(inputFile);
+            printf("ERROR: BAD Data\n");
+            return BAD_DATA;
+        }
+        }
     return 0;
 }
 
@@ -144,23 +156,34 @@ int write_image_data(FILE *outputFile){
 int main(int argc, char **argv)
     { // main
 
-
-    // read file functions
-    if (check_arg_count(argc) == USAGE_REQUEST)
-        return USAGE_REQUEST;
+    // Unix usage information
+    if (unix_usage(argv[0], argc) == 0)
+        return 0;
     
-    if (check_arg_count(argc) == BAD_ARGUMENT_COUNT)
+
+    // running tests on argument counts
+    if (check_arg_count(argv[0], argc) == BAD_ARGUMENT_COUNT)
         return BAD_ARGUMENT_COUNT;
+
 
     // open the input file in read mode
     FILE *inputFile = fopen(argv[1], "r");
-    // check file opened successfully
-    check_file_opened(argv[0], inputFile);
 
-    check_magic_number(argv[0], inputFile);
-    check_dimensions(argv[0], inputFile);
-    check_malloc(inputFile);
-    read_data(argv[0], inputFile);
+    // check file opened successfully
+    if (check_file_opened(argv[0], inputFile) == BAD_FILE)
+        return BAD_FILE;
+
+    if (check_magic_number(argv[0], inputFile) == BAD_MAGIC_NUMBER)
+        return BAD_MAGIC_NUMBER;
+    
+    if (check_dimensions(argv[0], inputFile) == BAD_DIMENSION)
+        return BAD_DIMENSION;
+
+    if(check_malloc(inputFile) == BAD_MALLOC)
+        return BAD_MALLOC;
+
+    if (read_data(argv[0], inputFile) == BAD_DATA)
+        return BAD_DATA;
 
     // now we have finished using the inputFile we should close it
     fclose(inputFile);
@@ -168,9 +191,12 @@ int main(int argc, char **argv)
     // open the output file in write mode
     FILE *outputFile = fopen(argv[2], "w");
     // validate that the file has been opened correctly
-    check_file_opened(argv[0], outputFile);
+    if (check_file_opened(argv[0], outputFile) == BAD_WRITE_PERMISSIONS)
+        return BAD_WRITE_PERMISSIONS;
 
     // write output file header and data
+
+
     write_header(outputFile);
     write_image_data(outputFile);
 
