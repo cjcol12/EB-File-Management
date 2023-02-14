@@ -21,6 +21,11 @@ read test_run
 if [ "$test_run" == "y" ]
 then
     ./test.sh
+
+elif [ "$test_run" == "" ]
+then
+    ./test.sh
+
 else
     echo "all done!"
 fi
