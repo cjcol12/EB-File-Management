@@ -127,13 +127,14 @@ int read_data(char *executable_name, FILE *inputFile){
         
     // repeat fscanf to check if there is any data we haven't read in
     image_struct.check = fscanf(inputFile, "%u", &image_struct.imageData[current]);
+    // image_struct.check = fscanf(inputFile, "%u", &image_struct.imageData[current]); // uncomment if empty line expected at EOF
 
     // if there is more data, fscanf returns 1
     // if thats the case, we have too much data ( > numBytes)
     if (image_struct.check == 1){
         free(image_struct.imageData);
         fclose(inputFile);
-        printf("ERROR: BAD Data too much\n");
+        printf("ERROR: BAD Data\n");
         return BAD_DATA;
     }
 
