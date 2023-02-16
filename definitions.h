@@ -1,6 +1,7 @@
 // success definitions
 #define SUCCESS 0
 #define USAGE_REQUEST 0
+#define FUNCTION_SUCCESS 0
 
 
 // error definitions

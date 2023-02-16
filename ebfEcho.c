@@ -21,7 +21,7 @@ int unix_usage(char *executable_name, int argc){
         return USAGE_REQUEST;
     }
 
-    // return 0 on function success
+    // return 10 on function success
     else return 10;  // is this return value valid?
 }
 
@@ -31,7 +31,7 @@ int check_arg_count(char *executable_name, int argc){
         printf("ERROR: Bad Arguments\n"); 
         return BAD_ARGUMENT_COUNT; 
     }
-    else return 0;
+    else return FUNCTION_SUCCESS;
 }
 
 int check_file_opened(char *executable_name, FILE *inputFile){
@@ -41,7 +41,7 @@ int check_file_opened(char *executable_name, FILE *inputFile){
     }
 
     // return 0 on function success
-    else return 0;
+    else return FUNCTION_SUCCESS;
 }
 
 int check_magic_number(char *executable_name, FILE *inputFile){
@@ -59,7 +59,7 @@ int check_magic_number(char *executable_name, FILE *inputFile){
     }
 
     // return 0 on function success
-    else return 0;
+    else return FUNCTION_SUCCESS;
 }
 
 int check_dimensions(char *executable_name, FILE *inputFile){
@@ -81,7 +81,7 @@ int check_dimensions(char *executable_name, FILE *inputFile){
     }
 
     // return 0 on function success
-    else return 0;
+    else return FUNCTION_SUCCESS;
 }
 
 int check_malloc(FILE *inputFile){
@@ -97,7 +97,7 @@ int check_malloc(FILE *inputFile){
     }
 
     // return 0 on function success
-    else return 0;
+    else return FUNCTION_SUCCESS;
 }
 
 int read_data(char *executable_name, FILE *inputFile){
@@ -138,7 +138,7 @@ int read_data(char *executable_name, FILE *inputFile){
     }
 
     // return 0 on function success
-    return 0;
+    return FUNCTION_SUCCESS;
 }
     
  
@@ -154,7 +154,7 @@ int write_header(FILE *outputFile){
         printf("ERROR: Bad Output\n");
         return BAD_OUTPUT;
         } // check write
-    else return 0;
+    else return FUNCTION_SUCCESS;
 }
 
 int write_image_data(FILE *outputFile){
@@ -171,7 +171,7 @@ int write_image_data(FILE *outputFile){
             return BAD_OUTPUT;
             } // check write
         } // writing out
-    return 0;
+    return FUNCTION_SUCCESS;
 }
 int main(int argc, char **argv)
     { // main
