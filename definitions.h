@@ -19,3 +19,4 @@
 #define MAX_DIMENSION 262144
 #define MIN_DIMENSION 1
 #define MAX_GRAY 31
+#define MIN_GRAY 0
