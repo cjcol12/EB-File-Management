@@ -113,7 +113,8 @@ int read_data(char *executable_name, FILE *inputFile){
             printf("ERROR: Bad Data\n");
             return BAD_DATA;
             } // check inputted data
-        if (*(image_struct.imageData) > MAX_GRAY){
+        if ((image_struct.imageData[current]) > MAX_GRAY
+            ||(image_struct.imageData[current]) < MIN_GRAY){ // not needed as rolls around
             free(image_struct.imageData);
             fclose(inputFile);
             printf("ERROR: BAD Data\n");
