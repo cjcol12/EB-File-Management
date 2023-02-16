@@ -15,38 +15,37 @@
 image_struct_type image_struct;
 
 int unix_usage(char *executable_name, int argc){
-    // Unix usage check
+    // Unix usage check - runs with no arguments
     if (argc == 1){
         printf("Usage: %s file1 file2", executable_name);
-        // printf("Usage: ebfEcho file1 file2"); // static test still failing
         return USAGE_REQUEST;
     }
-    else return 10;
+
+    // return 0 on function success
+    else return 10;  // is this return value valid?
 }
 
 int check_arg_count(char *executable_name, int argc){
-
     // validate that user has entered 2 arguments
-    if (argc != 3)
-        {
-        printf("ERROR: Bad Arguments\n"); // runs twice in main
+    if (argc != 3){
+        printf("ERROR: Bad Arguments\n"); 
         return BAD_ARGUMENT_COUNT; 
-        }
+    }
     else return 0;
 }
 
 int check_file_opened(char *executable_name, FILE *inputFile){
-    if (!inputFile)
-    { // check file pointer
-    printf("ERROR: Bad File Name (%s)\n", executable_name);
-    // printf("ERROR: Bad File Name (1)\n");
-
-    return BAD_FILE;
+    if (!inputFile){ // check file pointer opened correctly
+        printf("ERROR: Bad File Name (%s)\n", executable_name);
+        return BAD_FILE;
     }
+
+    // return 0 on function success
     else return 0;
 }
 
 int check_magic_number(char *executable_name, FILE *inputFile){
+    // stores first two characters of file into character array
     image_struct.magicNumber[0] = getc(inputFile);
     image_struct.magicNumber[1] = getc(inputFile);
 
@@ -55,12 +54,12 @@ int check_magic_number(char *executable_name, FILE *inputFile){
     
     // checking against the casted value due to endienness.
     if (*(image_struct.magicNumberValue) != MAGIC_NUMBER){
-        // check magic number
         printf("ERROR: Bad Magic Number (%s)\n", executable_name);
         return BAD_MAGIC_NUMBER;
     }
-    else return 0;
 
+    // return 0 on function success
+    else return 0;
 }
 
 int check_dimensions(char *executable_name, FILE *inputFile){
@@ -68,19 +67,20 @@ int check_dimensions(char *executable_name, FILE *inputFile){
     // and capture fscanfs return to ensure we got 2 values.
     image_struct.check = fscanf(inputFile, "%d %d", &image_struct.height, &image_struct.width);
 
+    // checks we captured two return values
+    // checks dimensions are valid
     if (image_struct.check != 2 || 
         image_struct.height < MIN_DIMENSION || 
         image_struct.width < MIN_DIMENSION || 
         image_struct.height > MAX_DIMENSION || 
         image_struct.width > MAX_DIMENSION){
         
-        // checks dimensions
-        // close the file as soon as an error is found
         fclose(inputFile);
-        // print appropriate error message and return
         printf("ERROR: Bad Dimensions (%s)\n", executable_name);
         return BAD_DIMENSION;
-    } // check dimensions5
+    }
+
+    // return 0 on function success
     else return 0;
 }
 
@@ -91,30 +91,31 @@ int check_malloc(FILE *inputFile){
 
     // if malloc is unsuccessful, it will return a null pointer
     if (image_struct.imageData == NULL){
-        // check malloc
         fclose(inputFile);
         printf("ERROR: Image Malloc Failed\n");
         return BAD_MALLOC;
     }
+
+    // return 0 on function success
     else return 0;
 }
 
 int read_data(char *executable_name, FILE *inputFile){
     // read in each grey value from the file
-    int current = 0;
-    for (current = 0; current < image_struct.numBytes; current++)
-        { // reading in
+    int current; // declaration moved outside of for loop so it can be used after
+    for (current = 0; current < image_struct.numBytes; current++){
         image_struct.check = fscanf(inputFile, "%u", &image_struct.imageData[current]);
-        //printf("%u\n", image_struct.imageData[current]);
-        // validate that we have captured 1 pixel value
-        if (image_struct.check != 1)
-            { // check inputted data
+
+        // validate that we have captured exactly 1 pixel value
+        if (image_struct.check != 1){
             // ensure that allocated data is freed before exit.
             free(image_struct.imageData);
             fclose(inputFile);
             printf("ERROR: Bad Data\n");
             return BAD_DATA;
-            } // check inputted data
+        }
+
+        // check data is within bounds (0 - 31)
         if (image_struct.imageData[current] > MAX_GRAY
           ||image_struct.imageData[current] < MIN_GRAY){ // not needed as rolls around
             free(image_struct.imageData);
@@ -122,10 +123,13 @@ int read_data(char *executable_name, FILE *inputFile){
             printf("ERROR: BAD Data\n");
             return BAD_DATA;
         }
-        }
+    }
         
-    
+    // repeat fscanf to check if there is any data we haven't read in
     image_struct.check = fscanf(inputFile, "%u", &image_struct.imageData[current]);
+
+    // if there is more data, fscanf returns 1
+    // if thats the case, we have too much data ( > numBytes)
     if (image_struct.check == 1){
         free(image_struct.imageData);
         fclose(inputFile);
@@ -133,6 +137,7 @@ int read_data(char *executable_name, FILE *inputFile){
         return BAD_DATA;
     }
 
+    // return 0 on function success
     return 0;
 }
     
