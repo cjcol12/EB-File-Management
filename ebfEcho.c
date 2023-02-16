@@ -101,9 +101,11 @@ int check_malloc(FILE *inputFile){
 
 int read_data(char *executable_name, FILE *inputFile){
     // read in each grey value from the file
-    for (int current = 0; current < image_struct.numBytes; current++)
+    int current = 0;
+    for (current = 0; current < image_struct.numBytes; current++)
         { // reading in
         image_struct.check = fscanf(inputFile, "%u", &image_struct.imageData[current]);
+        //printf("%u\n", image_struct.imageData[current]);
         // validate that we have captured 1 pixel value
         if (image_struct.check != 1)
             { // check inputted data
@@ -113,16 +115,28 @@ int read_data(char *executable_name, FILE *inputFile){
             printf("ERROR: Bad Data\n");
             return BAD_DATA;
             } // check inputted data
-        if ((image_struct.imageData[current]) > MAX_GRAY
-            ||(image_struct.imageData[current]) < MIN_GRAY){ // not needed as rolls around
+        if (image_struct.imageData[current] > MAX_GRAY
+          ||image_struct.imageData[current] < MIN_GRAY){ // not needed as rolls around
             free(image_struct.imageData);
             fclose(inputFile);
             printf("ERROR: BAD Data\n");
             return BAD_DATA;
         }
         }
+        
+    
+    image_struct.check = fscanf(inputFile, "%u", &image_struct.imageData[current]);
+    if (image_struct.check == 1){
+        free(image_struct.imageData);
+        fclose(inputFile);
+        printf("ERROR: BAD Data too much\n");
+        return BAD_DATA;
+    }
+
     return 0;
 }
+    
+ 
 
 int write_header(FILE *outputFile){
     // write the header data in one block
