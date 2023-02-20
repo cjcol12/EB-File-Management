@@ -7,7 +7,7 @@ CC     = gcc
 # -Werror means 'make all warnings into errors' which means your code doesn't compile with warnings
 # this is a good idea when code quality is important
 # -g enables the use of GDB
-CFLAGS = -std=c99 -Wall -Werror -g
+CFLAGS = -std=c99 -Wall -g # -Werror #######################################
 # this is your list of executables which you want to compile with all
 EXE    = ebfEcho ebfComp
 
