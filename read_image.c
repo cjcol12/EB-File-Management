@@ -4,11 +4,10 @@
 // Standard library header file inclusion
 #include <stdlib.h>
 
-// Image struct header file inclusion
-#include "image_structs.h"
-
 // Definition header file inclusion
 #include "definitions.h"
+
+#include "image_structs.h"
 
 int check_arg_count(char *executable_name, int argc){
     // validate that user has entered 2 arguments
