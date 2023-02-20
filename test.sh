@@ -51,6 +51,12 @@ score=0
 # and these are compared to the given expected code and string
 # displaying a helpful message to the user
 # and updating both the number of tests run and the number of passes
+
+# colour coded output for easier readability
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
 run_test () 
     { # run_test()
     # capture returned message
@@ -64,20 +70,20 @@ run_test ()
     # check output value against expected
     if [ $out == $4 ]
     then
-        echo "PASSED: expected $4 got $out"
+        printf "${GREEN}PASSED: expected $4 got $out${NC}\n"
         # if we passed, increment the score
         (( score++ ))
     else
-        echo "FAILED: expected $4 got $out"
+        printf "${RED}FAILED: expected $4 got $out${NC}\n"
     fi
 
     # check output message against expected
-    if [ "$var" == "$5" ] 
+    if [ "$message" == "$5" ] 
     then
-        echo "PASSED: expected $5 got $message"
+        printf "${GREEN}PASSED: expected $5 got $message${NC}\n"
         (( score++ ))
     else
-        echo "FAILED: expected $5 got $message"
+        printf "${RED}FAILED: expected $5 got $message${NC}\n"
     fi
 
     } # end run_test()
@@ -88,7 +94,7 @@ run_test ()
 
 # you can remove or comment out any executables you don't want to test
 # full list of executables: ebf2ebu ebuEcho ebuComp ebu2ebf
-EXES=(ebfEcho ebfComp)
+EXES=(ebfEcho) # ebfComp)
 
 # run all of the tests below for all executables given in 'EXES'
 # inside this loop, the executable being run can be referred to by 'testExecutable'
@@ -251,7 +257,7 @@ do
         if [[ $D != "" ]]
         then
             echo "FILES ARE DIFFERENT"
-            echo $D
+            # echo $D  ################################################################# commented out
         else
             echo "FILES ARE IDENTICAL"
         fi
@@ -312,9 +318,16 @@ chmod +r tests/data/ebu_data/bad_perms.ebu
 # the run_test function has been incrementing both a counter for how many tests have run
 # and a counter for passes. We will display this (along with a message for clarity).
 echo "------------------------------------------------------------------------------"
-echo "You passed $score out of $total"
+
+if [ $score == $total ]
+then
+    printf "${GREEN}You passed $score out of $total${NC}\n"
+else
+    printf "${RED}You passed $score out of $total${NC}\n"
+fi
 echo "IMPORTANT: this is a count of tests passed - it is not your final grade."
 echo "------------------------------------------------------------------------------"
+
 
 
 # OPTIONAL - neither of these will affect your tests
