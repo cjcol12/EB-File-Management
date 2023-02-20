@@ -10,8 +10,7 @@
 // Read image module inclusion
 #include "read_image.c"
 
- // Write image module inclusion
-#include "write_image.c"
+#include "compare_image.c"
 
 int unix_usage(int argc){
     // Unix usage check - runs with no arguments
@@ -89,46 +88,21 @@ int main(int argc, char **argv)
     fclose(inputFile);
 
 
+    if (comp_magic_number(&image_struct, &image_struct_compare) == FUNCTION_SUCCESS_DIFFERENT)
+        return SUCCESS;
+    if (comp_dimensions(&image_struct, &image_struct_compare) == FUNCTION_SUCCESS_DIFFERENT)
+        return SUCCESS;
+    if (comp_image_data(&image_struct, &image_struct_compare) == FUNCTION_SUCCESS_DIFFERENT)
+        return SUCCESS;
+        
+
     
 
-
-
-    // compare the data from the two files:
-    
-    //start with magic number values
-    if (*magicNumberValue1 != *magicNumberValue2)
-        { // free and exit
-        free(imageData1);
-        free(imageData2);
-        printf("DIFFERENT\n");
-        return SUCCESS;
-        } // free and exit
-
-    // check dimensions
-    if ((height1 != height2) || (width1 != width2))
-        { // free and exit
-        free(imageData1);
-        free(imageData2);
-        printf("DIFFERENT\n");
-        return SUCCESS;
-        } // free and exit
-
-    // and check the pixel values
-    for (int n=0; n<numBytes1; n++)
-        {
-        if(imageData1[n]!=imageData2[n])
-            { // free and exit
-            free(imageData1);
-            free(imageData2);
-            printf("DIFFERENT\n");
-            return SUCCESS;
-            } // free and exit
-        }
 
 
     // free allocated memory before exit
-    free(imageData1);
-    free(imageData2);
+    free(image_struct.imageData);
+    free(image_struct_compare.imageData);
 
     // if we have not exited on different data, must be identical
     printf("IDENTICAL\n");
