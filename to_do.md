@@ -10,6 +10,8 @@ add structure syntax to variables
 move definitions to new file
 create clearer error messages
 find BAD_DATA bugs
+seperate into modules
+
 
 
 TODO
