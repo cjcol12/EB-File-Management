@@ -10,7 +10,7 @@
 // Read image module inclusion
 #include "read_image.c"
 
- // Write image module inclusion
+// Write image module inclusion
 #include "write_image.c"
 
 int unix_usage(int argc){
@@ -24,10 +24,8 @@ int unix_usage(int argc){
     else return 10;  // is this return value valid?
 }
 
-
-
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
+    // image struct variable initialization
     image_struct_type image_struct;
 
     // Unix usage information
@@ -41,14 +39,12 @@ int main(int argc, char **argv)
     // open the input file in read mode
     FILE *inputFile = fopen(argv[1], "r");
 
-    // check file opened successfully
     if (check_file_opened(argv[1], inputFile) == BAD_FILE)
         return BAD_FILE;
 
     if (check_magic_number(&image_struct, argv[1], inputFile) == BAD_MAGIC_NUMBER)
         return BAD_MAGIC_NUMBER;
     
-    // printf("\n\nmagic number is %hn\n\n", image_struct.magicNumberValue);
     if (check_dimensions(&image_struct,  argv[1], inputFile) == BAD_DIMENSION)
         return BAD_DIMENSION;
 
@@ -58,19 +54,23 @@ int main(int argc, char **argv)
     if (read_data(&image_struct, argv[1], inputFile) == BAD_DATA)
         return BAD_DATA;
 
-    // now we have finished using the inputFile we should close it
+    // finised with input file - close it
     fclose(inputFile);
 
     // open the output file in write mode
     FILE *outputFile = fopen(argv[2], "w");
+
     // validate that the file has been opened correctly
     if (check_file_opened(argv[0], outputFile) == BAD_WRITE_PERMISSIONS)
         return BAD_WRITE_PERMISSIONS;
 
     // write output file header and data
 
-    write_header(&image_struct, outputFile);
-    write_image_data(&image_struct, outputFile);
+    if (write_header(&image_struct, outputFile) == BAD_OUTPUT)
+        return BAD_OUTPUT;
+
+    if (write_image_data(&image_struct, outputFile) == BAD_OUTPUT)
+        return BAD_OUTPUT;
 
     // free allocated memory before exit
     free(image_struct.imageData);
@@ -80,4 +80,4 @@ int main(int argc, char **argv)
     // print final success message and return
     printf("ECHOED\n");
     return SUCCESS;
-    } // main()
+}
