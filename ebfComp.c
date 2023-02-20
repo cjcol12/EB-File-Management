@@ -1,175 +1,101 @@
+// Standard I/O header file inclusion
 #include <stdio.h>
+
+// Standard library header file inclusion
 #include <stdlib.h>
 
-#define SUCCESS 0
-#define BAD_ARGS 1
-#define BAD_FILE 2
-#define BAD_MAGIC_NUMBER 3
-#define BAD_DIM 4
-#define BAD_MALLOC 5
-#define BAD_DATA 6
-#define BAD_OUTPUT 7
-#define MAGIC_NUMBER 0x6265
-#define MAX_DIMENSION 262144
-#define MIN_DIMENSION 1
+// Definition header file inclusion
+#include "definitions.h"
 
+// Read image module inclusion
+#include "read_image.c"
+
+ // Write image module inclusion
+#include "write_image.c"
+
+int unix_usage(int argc){
+    // Unix usage check - runs with no arguments
+    if (argc == 1){
+        printf("Usage: ebfComp file1 file2");
+        return USAGE_REQUEST;
+    }
+
+    // return 10 on function success
+    else return 10;  // is this return value valid?
+}
 int main(int argc, char **argv)
     { // main
 
-    // validate that user has enter 2 arguments (plus the executable name)
-    if (argc != 3)
-        { // check arg count
-        printf("ERROR: Bad Arguments\n");
-        return BAD_ARGS;
-        } // check arg count
+    image_struct_type image_struct;
 
-    // create a char array to hold magic number
-    // and cast to short
-    unsigned char magicNumber1[2];
-    unsigned short *magicNumberValue1 = (unsigned short *)magicNumber1;
+    // Unix usage information
+    if (unix_usage(argc) == 0)
+        return 0;
 
-    // create and initialise variables used within code
-    int width1 = 0, height1 = 0;
-    unsigned int *imageData1;
-    long numBytes1;
+    // running tests on argument counts
+    if (check_arg_count(argv[0], argc) == BAD_ARGUMENT_COUNT)
+        return BAD_ARGUMENT_COUNT;
 
     // open the input file in read mode
-    FILE *inputFile1 = fopen(argv[1], "r");
+    FILE *inputFile = fopen(argv[1], "r");
+
     // check file opened successfully
-    if (!inputFile1)
-        { // check file pointer
-        printf("ERROR: Bad File Name\n");
+    if (check_file_opened(argv[1], inputFile) == BAD_FILE)
         return BAD_FILE;
-        } // check file pointer
 
-    // get first 2 characters which should be magic number
-    magicNumber1[0] = getc(inputFile1);
-    magicNumber1[1] = getc(inputFile1);
+    if (check_magic_number(&image_struct, argv[1], inputFile) == BAD_MAGIC_NUMBER)
+        return BAD_MAGIC_NUMBER;
+    
+    // printf("\n\nmagic number is %hn\n\n", image_struct.magicNumberValue);
+    if (check_dimensions(&image_struct,  argv[1], inputFile) == BAD_DIMENSION)
+        return BAD_DIMENSION;
 
-    // checking against the casted value due to endienness.
-    if (*magicNumberValue1 != MAGIC_NUMBER)
-        { // check magic number
-        printf("ERROR: Bad Magic Number\n");
-        return BAD_FILE;
-        } //check magic number
-
-    // scan for the dimensions
-    // and capture fscanfs return to ensure we got 2 values.
-    int check = fscanf(inputFile1, "%d %d", &height1, &width1);
-    if (check != 2 || height1 < MIN_DIMENSION || width1 < MIN_DIMENSION || height1 > MAX_DIMENSION || width1 > MAX_DIMENSION)
-        { // check dimensions
-        // close the file as soon as an error is found
-        fclose(inputFile1);
-        // print appropriate error message and return
-        printf("ERROR: Bad Dimensions\n");
-        return BAD_DIM;
-        } // check dimensions
-
-    // caclulate total size and allocate memory for array
-    numBytes1 = height1 * width1;
-    imageData1 = (unsigned int *)malloc(numBytes1 * sizeof(unsigned int));
-
-    // if malloc is unsuccessful, it will return a null pointer
-    if (imageData1 == NULL)
-        { // check malloc
-        fclose(inputFile1);
-        printf("ERROR: Malloc Failed\n");
+    if(check_malloc(&image_struct, inputFile) == BAD_MALLOC)
         return BAD_MALLOC;
-        } // check malloc
 
-    // read in each grey value from the file
-    for (int current = 0; current < numBytes1; current++)
-        { // reading in
-        check = fscanf(inputFile1, "%u", &imageData1[current]);
-        // validate that we have captured 1 pixel value
-        if (check != 1)
-            { // check inputted data
-            // ensure that allocated data is freed before exit.
-            free(imageData1);
-            fclose(inputFile1);
-            printf("ERROR: Bad Data\n");
-            return BAD_DATA;
-            } // check inputted data
-        } // reading in
+    if (read_data(&image_struct, argv[1], inputFile) == BAD_DATA)
+        return BAD_DATA;
 
-    // now we have finished using the inputFile1 we should close it
-    fclose(inputFile1);
+    // now we have finished using the inputFile we should close it
+    fclose(inputFile);
 
-    // create a char array to hold magic number
-    // and cast to short
-    unsigned char magicNumber2[2];
-    unsigned short *magicNumberValue2 = (unsigned short *)magicNumber2;
 
-    // create and initialise variables used within code
-    int width2 = 0, height2 = 0;
-    unsigned int *imageData2;
-    long numBytes2;
+
+
+
+    image_struct_type image_struct_compare;
 
     // open the input file in read mode
-    FILE *inputFile2 = fopen(argv[2], "r");
+    FILE *comparison_File = fopen(argv[2], "r");
+
     // check file opened successfully
-    if (!inputFile2)
-        { // check file pointer
-        printf("ERROR: Bad File Name\n");
+    if (check_file_opened(argv[2], comparison_File) == BAD_FILE)
         return BAD_FILE;
-        } // check file pointer
 
-    // get first 2 characters which should be magic number
-    magicNumber2[0] = getc(inputFile2);
-    magicNumber2[1] = getc(inputFile2);
+    if (check_magic_number(&image_struct_compare, argv[2], comparison_File) == BAD_MAGIC_NUMBER)
+        return BAD_MAGIC_NUMBER;
+    
+    // printf("\n\nmagic number is %hn\n\n", image_struct.magicNumberValue);
+    if (check_dimensions(&image_struct_compare,  argv[2], comparison_File) == BAD_DIMENSION)
+        return BAD_DIMENSION;
 
-    // checking against the casted value due to endienness.
-    if (*magicNumberValue2 != MAGIC_NUMBER)
-        { // check magic number
-        printf("ERROR: Bad Magic Number\n");
-        return BAD_FILE;
-        } //check magic number
-
-    // scan for the dimensions
-    // and capture fscanfs return to ensure we got 2 values.
-    check = fscanf(inputFile2, "%d %d", &height2, &width2);
-    if (check != 2 || height2 < MIN_DIMENSION || width2 < MIN_DIMENSION || height2 > MAX_DIMENSION || width2 > MAX_DIMENSION)
-        { // check dimensions
-        // close the file as soon as an error is found
-        fclose(inputFile2);
-        // print appropriate error message and return
-        printf("ERROR: Bad Dimensions\n");
-        return BAD_DIM;
-        } // check dimensions
-
-    // caclulate total size and allocate memory for array
-    numBytes2 = height2 * width2;
-    imageData2 = (unsigned int *)malloc(numBytes2 * sizeof(unsigned int));
-
-    // if malloc is unsuccessful, it will return a null pointer
-    if (imageData2 == NULL)
-        { // check malloc
-        fclose(inputFile2);
-        printf("ERROR: Malloc Failed\n");
+    if(check_malloc(&image_struct_compare, comparison_File) == BAD_MALLOC)
         return BAD_MALLOC;
-        } // check malloc
 
-    // read in each grey value from the file
-    for (int current = 0; current < numBytes2; current++)
-        { // reading in
-        check = fscanf(inputFile2, "%u", &imageData2[current]);
-        // validate that we have captured 1 pixel value
-        if (check != 1)
-            { // check inputted data
-            // ensure that allocated data is freed before exit.
-            free(imageData2);
-            fclose(inputFile2);
-            printf("ERROR: Bad Data\n");
-            return BAD_DATA;
-            } // check inputted data
-        } // reading in
+    if (read_data(&image_struct_compare, argv[2], comparison_File) == BAD_DATA)
+        return BAD_DATA;
 
-    // now we have finished using the inputFile2 we should close it
-    fclose(inputFile2);
+    // now we have finished using the inputFile we should close it
+    fclose(inputFile);
+
+
+    
+
+
 
     // compare the data from the two files:
     
-    // start with magic number values
+    //start with magic number values
     if (*magicNumberValue1 != *magicNumberValue2)
         { // free and exit
         free(imageData1);
