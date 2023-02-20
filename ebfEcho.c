@@ -24,8 +24,11 @@ int unix_usage(int argc){
     else return 10;  // is this return value valid?
 }
 
+
+
 int main(int argc, char **argv)
 {
+    image_struct_type image_struct;
 
     // Unix usage information
     if (unix_usage(argc) == 0)
@@ -42,16 +45,17 @@ int main(int argc, char **argv)
     if (check_file_opened(argv[1], inputFile) == BAD_FILE)
         return BAD_FILE;
 
-    if (check_magic_number(argv[1], inputFile) == BAD_MAGIC_NUMBER)
+    if (check_magic_number(&image_struct, argv[1], inputFile) == BAD_MAGIC_NUMBER)
         return BAD_MAGIC_NUMBER;
     
-    if (check_dimensions(argv[1], inputFile) == BAD_DIMENSION)
+    // printf("\n\nmagic number is %hn\n\n", image_struct.magicNumberValue);
+    if (check_dimensions(&image_struct,  argv[1], inputFile) == BAD_DIMENSION)
         return BAD_DIMENSION;
 
-    if(check_malloc(inputFile) == BAD_MALLOC)
+    if(check_malloc(&image_struct, inputFile) == BAD_MALLOC)
         return BAD_MALLOC;
 
-    if (read_data(argv[1], inputFile) == BAD_DATA)
+    if (read_data(&image_struct, argv[1], inputFile) == BAD_DATA)
         return BAD_DATA;
 
     // now we have finished using the inputFile we should close it
@@ -65,8 +69,8 @@ int main(int argc, char **argv)
 
     // write output file header and data
 
-    write_header(outputFile);
-    write_image_data(outputFile);
+    write_header(&image_struct, outputFile);
+    write_image_data(&image_struct, outputFile);
 
     // free allocated memory before exit
     free(image_struct.imageData);
