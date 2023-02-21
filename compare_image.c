@@ -7,8 +7,6 @@
 // Definition header file inclusion
 #include "definitions.h"
 
-// #include "image_structs.h"
-
 int comp_magic_number(image_struct_type *image_struct, image_struct_type *image_struct_compare){
     if (*(image_struct->magicNumberValue) != *(image_struct_compare->magicNumberValue)){ // free and exit
         free(image_struct->imageData);
@@ -31,7 +29,7 @@ int comp_dimensions(image_struct_type *image_struct, image_struct_type *image_st
 }
 
 int comp_image_data(image_struct_type *image_struct, image_struct_type *image_struct_compare){
-        // and check the pixel values
+    // and check the pixel values
     for (int n=0; n<image_struct->numBytes; n++)
         {
         if(image_struct->imageData[n]!=image_struct_compare->imageData[n])
