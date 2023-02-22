@@ -9,7 +9,7 @@ CC     = gcc
 # -g enables the use of GDB
 CFLAGS = -std=c99 -Wall -g # -Werror #######################################
 # this is your list of executables which you want to compile with all
-EXE    = ebfEcho ebfComp read_image write_image
+EXE    = ebfEcho ebfComp # read_image write_image
 
 # we put 'all' as the first command as this will be run if you just enter 'make'
 all: ${EXE}
@@ -32,6 +32,12 @@ clean:
 # at the moment, this is very simple as we are only using one .c file
 # but as you refactor and add more .c and .h files
 # these recipes will become more complex.
+
+read_image.o: read_image.c
+	$(CC) $(CCFLAGS) -c read_image.c
+
+write_image.o: write_image.c
+	$(CC) $(CCFLAGS) -c write_image.c
 
 ebfEcho: ebfEcho.o
 	$(CC) $(CCFLAGS) $^ -o $@
