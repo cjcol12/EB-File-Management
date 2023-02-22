@@ -7,6 +7,8 @@
 // Definition header file inclusion
 #include "definitions.h"
 
+#include "image_structs.h"
+
 int write_header(image_struct_type *image_struct, FILE *outputFile){
     // write the header data in one block
     image_struct->check = fprintf(outputFile, "eb\n%d %d\n", image_struct->height, image_struct->width);
@@ -26,7 +28,7 @@ int write_image_data(image_struct_type *image_struct, FILE *outputFile){
     for (int current = 0; current < image_struct->numBytes; current++)
         { // writing out
         // if we are at the end of a row ((current+1)%width == 0) then write a newline, otherwise a space.
-        image_struct->check = fprintf(outputFile, "%u%c", image_struct->imageData[current], ((current + 1) % image_struct->width) ? 's' : '\n');
+        image_struct->check = fprintf(outputFile, "%u%c", image_struct->imageData[current], ((current + 1) % image_struct->width) ? ' ' : '\n');
         if (image_struct->check == 0)
             { // check write
             fclose(outputFile);

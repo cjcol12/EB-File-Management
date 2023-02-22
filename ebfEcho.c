@@ -13,6 +13,8 @@
 // Write image module inclusion
 #include "write_image.c"
 
+#include "image_structs.h"
+
 int unix_usage(int argc){
     // Unix usage check - runs with no arguments
     if (argc == 1){

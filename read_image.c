@@ -9,6 +9,8 @@
 
 #include "image_structs.h"
 
+#include "read_image.h"
+
 int check_arg_count(char *executable_name, int argc){
     // validate that user has entered 2 arguments
     if (argc != 3){
@@ -28,7 +30,7 @@ int check_file_opened(char *executable_name, FILE *inputFile){
     else return FUNCTION_SUCCESS;
 }
 
-int check_magic_number(image_struct_type *image_struct, char *executable_name, FILE *inputFile){
+int check_magic_number(image_struct_type* image_struct, char *executable_name, FILE *inputFile){
     // stores first two characters of file into character array
     image_struct->magicNumber[0] = getc(inputFile);
     image_struct->magicNumber[1] = getc(inputFile);
@@ -85,43 +87,56 @@ int check_malloc(image_struct_type *image_struct, FILE *inputFile){
 }
 
 int read_data(image_struct_type *image_struct, char *executable_name, FILE *inputFile){
-    // read in each grey value from the file
-    int current; // declaration moved outside of for loop so it can be used after
-    for (current = 0; current < image_struct->numBytes; current++){
-        image_struct->check = fscanf(inputFile, "%u", &image_struct->imageData[current]);
-
-        // validate that we have captured exactly 1 pixel value
-        if (image_struct->check != 1){
-            // ensure that allocated data is freed before exit->
-            free(image_struct->imageData);
-            fclose(inputFile);
-            printf("ERROR: Bad Data (%s)\n", executable_name);
-            return BAD_DATA;
-        }
-
-        // check data is within bounds (0 - 31)
-        if (image_struct->imageData[current] > MAX_GRAY
-          ||image_struct->imageData[current] < MIN_GRAY){ // not needed as rolls around
-            free(image_struct->imageData);
-            fclose(inputFile);
-            printf("ERROR: Bad Data (%s)\n", executable_name);
-            return BAD_DATA;
+    
+    for (int i = 0; i < image_struct->width; i++) {
+        for (int j = 0; j < image_struct->height; j++){
+            fscanf(inputFile, "%d", image_struct->imageData);
+            printf("%d\n", *image_struct->imageData);
         }
     }
-        
-    // repeat fscanf to check if there is any data we haven't read in
-    image_struct->check = fscanf(inputFile, "%u", &image_struct->imageData[current]);
-    // image_struct.check = fscanf(inputFile, "%u", &image_struct.imageData[current]); // uncomment if empty line expected at EOF
 
-    // if there is more data, fscanf returns 1
-    // if thats the case, we have too much data ( > numBytes)
-    if (image_struct->check == 1){
-        free(image_struct->imageData);
-        fclose(inputFile);
-        printf("ERROR: Bad Data (%s)\n", executable_name);
-        return BAD_DATA;
-    }
+
+
+
+    // // read in each grey value from the file
+    // int current; // declaration moved outside of for loop so it can be used after
+    // for (current = 0; current < image_struct->numBytes; current++){
+    //     image_struct->check = fscanf(inputFile, "%u", &image_struct->imageData[current]);
+
+    //     // validate that we have captured exactly 1 pixel value
+    //     if (image_struct->check != 1){
+    //         // ensure that allocated data is freed before exit->
+    //         free(image_struct->imageData);
+    //         fclose(inputFile);
+    //         printf("ERROR: Bad Data (%s)\n", executable_name);
+    //         return BAD_DATA;
+    //     }
+
+    //     // check data is within bounds (0 - 31)
+    //     if (image_struct->imageData[current] > MAX_GRAY
+    //       ||image_struct->imageData[current] < MIN_GRAY){ // not needed as rolls around
+    //         free(image_struct->imageData);
+    //         fclose(inputFile);
+    //         printf("ERROR: Bad Data (%s)\n", executable_name);
+    //         return BAD_DATA;
+    //     }    for (int i = 0; i < image_struct->width; i++){
+    //     printf("hello\n");
+
+    //     for(int j = 0; j < image_struct->height; j++){
+    //         printf("world\n");
+    //     }
+
+    // }
+    // // if there is more data, fscanf returns 1
+    // // if thats the case, we have too much data ( > numBytes)
+    // if (image_struct->check == 1){
+    //     free(image_struct->imageData);
+    //     fclose(inputFile);
+    //     printf("ERROR: Bad Data (%s)\n", executable_name);
+    //     return BAD_DATA;
+    // }
 
     // return 0 on function success
     return FUNCTION_SUCCESS;
 }
+
