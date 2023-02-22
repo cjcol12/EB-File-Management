@@ -12,8 +12,7 @@
 int write_header(image_struct_type *image_struct, FILE *outputFile){
     // write the header data in one block
     // change to write with magicNumberValue
-    image_struct->check = fprintf(outputFile, "%c%c\n%d %d\n",
-    image_struct->magicNumber[0], image_struct->magicNumber[1], image_struct->height, image_struct->width);
+    image_struct->check = fprintf(outputFile, "%s\n%d %d\n", image_struct->magicNumber, image_struct->height, image_struct->width);
     // and use the return from fprintf to check that we wrote.
     if (image_struct->check == 0) 
         { // check write
