@@ -57,12 +57,16 @@ int main(int argc, char **argv){
     // finised with input file - close it
     fclose(inputFile);
 
-    // open the output file in write mode
+
     FILE *outputFile = fopen(argv[2], "w");
+    // open the output file in write mode
+    if (check_bad_output(&image_struct, outputFile, argv[2]) == BAD_WRITE_PERMISSIONS)
+        return BAD_WRITE_PERMISSIONS;
+
 
     // validate that the file has been opened correctly
-    if (check_file_opened(argv[0], outputFile) == BAD_WRITE_PERMISSIONS)
-        return BAD_WRITE_PERMISSIONS;
+    // if (check_file_opened(argv[2], outputFile) == BAD_WRITE_PERMISSIONS)
+    //     return BAD_WRITE_PERMISSIONS;
 
     // write output file header and data
 
