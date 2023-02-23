@@ -18,12 +18,12 @@ refactor ebfComp
 complete tests for ebfEcho and Comp
     - find full path
     - find executable name - .c
+change header so it reads in magic number and output what it reads - not just eb
+pass final two tests on output file
 
 
 TODO
 
-change header so it reads in magic number and output what it reads - not just eb
-pass final two tests on output file
 change output formatting in ebfEcho
 comment compare_images.c
 come up with my own further tests for ebfEcho and Comp
