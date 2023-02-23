@@ -25,3 +25,9 @@ complete tests for ebfEcho and Comp
     - find full path
     - find executable name - .c
 
+complete function for closing file and freeing mem
+    - test if it works as expected
+
+sort malloc bug
+check file closes when expected
+check imageData free'd properly when expected
