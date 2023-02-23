@@ -13,7 +13,7 @@ typedef struct{
     int check;
 
     // image data 
-    unsigned int *imageData;
+    unsigned int **imageData;
     long numBytes;
 
 } image_struct_type;
