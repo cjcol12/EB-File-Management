@@ -11,17 +11,22 @@ move definitions to new file
 create clearer error messages
 find BAD_DATA bugs
 seperate into modules
-
-
-
-TODO
 seperate read and write functionaliy
-change header so it reads in magic number and output what it reads - not just eb
 refactor ebfComp
     - understand passing structures to functions
     - understand how to use multiple instances of structure
-
 complete tests for ebfEcho and Comp
     - find full path
     - find executable name - .c
+
+
+TODO
+
+change header so it reads in magic number and output what it reads - not just eb
+pass final two tests on output file
+change output formatting in ebfEcho
+comment compare_images.c
+come up with my own further tests for ebfEcho and Comp
+move onto other tasks
+
 
