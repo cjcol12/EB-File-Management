@@ -13,24 +13,26 @@
 // Write image module inclusion
 #include "write_image.c"
 
-int unix_usage(int argc){
-    // Unix usage check - runs with no arguments
-    if (argc == 1){
-        printf("Usage: ebfEcho file1 file2");
-        return USAGE_REQUEST;
-    }
+// int unix_usage(int argc){
+//     // Unix usage check - runs with no arguments
+//     if (argc == 1){
+//         printf("Usage: ebfEcho file1 file2");
+//         return USAGE_REQUEST;
+//     }
 
-    // return 10 on function success
-    else return 10;  // is this return value valid?
-}
+//     // return 10 on function success
+//     else return 10;  // is this return value valid?
+// }
 
 int main(int argc, char **argv){
     // image struct variable initialization
     image_struct_type image_struct;
 
     // Unix usage information
-    if (unix_usage(argc) == 0)
-        return 0;
+    if (argc == 1){
+        printf("Usage: ebfEcho file1 file2");
+        return USAGE_REQUEST;
+    }
 
     // running tests on argument counts
     if (check_arg_count(argv[0], argc) == BAD_ARGUMENT_COUNT)
@@ -69,17 +71,20 @@ int main(int argc, char **argv){
     //     return BAD_WRITE_PERMISSIONS;
 
     // write output file header and data
-
     if (write_header(&image_struct, outputFile) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
     if (write_image_data(&image_struct, outputFile) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
+
     // free allocated memory before exit
+    for(int i = 0; i < image_struct.height; i++){
+        free(image_struct.imageData[i]);
+    }
     free(image_struct.imageData);
-    // close the output file before exit
     fclose(outputFile);
+
 
     // print final success message and return
     printf("ECHOED\n");
