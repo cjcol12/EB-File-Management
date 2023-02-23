@@ -33,18 +33,26 @@ int write_header(image_struct_type *image_struct, FILE *outputFile){
 }
 
 int write_image_data(image_struct_type *image_struct, FILE *outputFile){
-    // iterate though the array and print out pixel values
-    for (int current = 0; current < image_struct->numBytes; current++)
-        { // writing out
-        // if we are at the end of a row ((current+1)%width == 0) then write a newline, otherwise a space.
-        image_struct->check = fprintf(outputFile, "%u%c", image_struct->imageData[current], ((current + 1) % image_struct->width) ? ' ' : '\n');
-        if (image_struct->check == 0)
-            { // check write
-            fclose(outputFile);
-            free(image_struct->imageData);
-            printf("ERROR: Bad Output\n");
-            return BAD_OUTPUT;
-            } // check write
-        } // writing out
+    for(int i = 0; i < image_struct->height; i++){
+        for(int j = 0; j < image_struct->width; j++){
+            // iterating through 2d array and writing
+            // if fprintf fails, return 0 for error checking
+            image_struct->check = fprintf(outputFile, "%u ", image_struct->imageData[i][j]);
+
+            if (image_struct->check == 0){
+                fclose(outputFile);
+
+                // iterate through imageData to free 2nd dimension arrays
+                for(int i = 0; i < image_struct->height; i++){
+                    free(image_struct->imageData[i]);
+                }
+                free(image_struct->imageData);
+
+                printf("ERROR: Bad Output\n");
+                return BAD_OUTPUT;
+            }
+        }
+        fprintf(outputFile, "\n");
+    }
     return FUNCTION_SUCCESS;
 }
