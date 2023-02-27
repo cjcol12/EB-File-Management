@@ -10,7 +10,7 @@ CC     = gcc
 CFLAGS = -std=c99 -Wall -g # -Werror #######################################
 # this is your list of executables which you want to compile with all
 EXE    = ebfEcho ebfComp ebf2ebu
-O 	   = read_image.o write_image.o
+O 	   = read_image.o write_image.o write_binary.o
 # we put 'all' as the first command as this will be run if you just enter 'make'
 all: ${EXE} ${O}
 
@@ -38,6 +38,9 @@ read_image.o: read_image.c
 
 write_image.o: write_image.c
 	$(CC) $(CCFLAGS) -c write_image.c
+
+write_binary.o: write_binary.c
+	$(CC) $(CCFLAGS) -c write_binary.c
 
 ebfEcho: ebfEcho.o
 	$(CC) $(CCFLAGS) $^ -o $@
