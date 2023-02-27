@@ -1,3 +1,10 @@
+/*  Function: Module used in ebfComp to compare images.
+    
+    No main function
+
+    Author: CJ Coleman
+*/
+
 // Standard I/O header file inclusion
 #include <stdio.h>
 

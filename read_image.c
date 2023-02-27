@@ -1,3 +1,11 @@
+/*  Function: Module used in ebfEcho and ebfComp to read in image_data.
+    
+    No main function
+
+    Author: CJ Coleman
+*/
+
+
 // Standard I/O header file inclusion
 #include <stdio.h>
 
@@ -28,13 +36,15 @@ int check_file_opened(char *input_file_name, FILE *input_file){
     else return FUNCTION_SUCCESS;
 }
 
-int check_magic_number(image_struct_type *image_struct, char *input_file_name, FILE *input_file){
+int check_magic_number
+(image_struct_type *image_struct, char *input_file_name, FILE *input_file){
     // stores first two characters of file into character array
     image_struct->magic_number[0] = getc(input_file);
     image_struct->magic_number[1] = getc(input_file);
 
     // cast to short for endianness
-    image_struct->magic_number_value = (unsigned short *)image_struct->magic_number;
+    image_struct->magic_number_value = 
+    (unsigned short *)image_struct->magic_number;
     
     // checking against the casted value due to endienness.
     if (*(image_struct->magic_number_value) != MAGIC_NUMBER){
@@ -46,10 +56,12 @@ int check_magic_number(image_struct_type *image_struct, char *input_file_name, F
     else return FUNCTION_SUCCESS;
 }
 
-int check_dimensions(image_struct_type *image_struct, char *executable_name, FILE *input_file){
+int check_dimensions
+(image_struct_type *image_struct, char *executable_name, FILE *input_file){
     // scan for the dimensions
     // and capture fscanfs return to ensure we got 2 values.
-    image_struct->check = fscanf(input_file, "%d %d", &image_struct->height, &image_struct->width);
+    image_struct->check = 
+    fscanf(input_file, "%d %d", &image_struct->height, &image_struct->width);
 
     // checks we captured two return values
     // checks dimensions are valid
@@ -70,7 +82,8 @@ int check_dimensions(image_struct_type *image_struct, char *executable_name, FIL
 
 int check_malloc(image_struct_type *image_struct, FILE *input_file){
     // malloc for 2d array
-    image_struct->imageData = (unsigned int **) malloc(image_struct->height * sizeof(unsigned int *));
+    image_struct->imageData = 
+    (unsigned int **) malloc(image_struct->height * sizeof(unsigned int *));
 
     if (image_struct->imageData == NULL){
         // free(image_struct->imageData);
@@ -81,7 +94,8 @@ int check_malloc(image_struct_type *image_struct, FILE *input_file){
 
 
     for(int i = 0; i < image_struct->height; i++){
-        image_struct->imageData[i] = (unsigned int *) malloc(image_struct->width * sizeof(unsigned int));
+        image_struct->imageData[i] = 
+        (unsigned int *) malloc(image_struct->width * sizeof(unsigned int));
 
         if (image_struct->imageData[i] == NULL){
             fclose(input_file);
@@ -101,7 +115,8 @@ int check_malloc(image_struct_type *image_struct, FILE *input_file){
     return FUNCTION_SUCCESS;
 }
 
-int read_data(image_struct_type *image_struct, char *executable_name, FILE *input_file){
+int read_data
+(image_struct_type *image_struct, char *executable_name, FILE *input_file){
 
     for(int i = 0; i < image_struct->height; i++){
         for(int j = 0; j < image_struct->width; j++){
@@ -123,7 +138,7 @@ int read_data(image_struct_type *image_struct, char *executable_name, FILE *inpu
             }
             // check data is within bounds (0 - 31)
             if (image_struct->imageData[i][j] > MAX_GRAY
-            ||image_struct->imageData[i][j] < MIN_GRAY){ // not needed as rolls around
+            ||image_struct->imageData[i][j] < MIN_GRAY){
                 
                 // iterate through imageData to free 2nd dimension arrays
                 for(int i = 0; i < image_struct->height; i++){
@@ -139,7 +154,8 @@ int read_data(image_struct_type *image_struct, char *executable_name, FILE *inpu
 
     // repeat fscanf to check if there is any data we haven't read in
     image_struct->check = fscanf(input_file, "%u", *image_struct->imageData);
-    // image_struct.check = fscanf(input_file, "%u", &image_struct.imageData[current]); // uncomment if empty line expected at EOF
+    // image_struct.check = 
+    //fscanf(input_file, "%u", &image_struct.imageData[current]); 
 
     // if there is more data, fscanf returns 1
     // if thats the case, we have too much data ( > numBytes)
@@ -162,7 +178,8 @@ int read_data(image_struct_type *image_struct, char *executable_name, FILE *inpu
 }
 
 // non functional
-int close_file_free_mem(image_struct_type *image_struct, char *executable_name, FILE *input_file){
+int close_file_free_mem
+(image_struct_type *image_struct, char *executable_name, FILE *input_file){
     // iterate through imageData to free 2nd dimension arrays
     for(int i = 0; i < image_struct->height; i++){
         free(image_struct->imageData[i]);

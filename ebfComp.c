@@ -1,6 +1,7 @@
-/*  Function: Read in a .ebf file and echo (copy) its contents to another file
+/*  Function: Read in two .ebf files and compare their contents to see if theyre
+    idetical.
     
-    Arguments: Expects 3 arguments: ./ebfEcho inputFile, outputFile
+    Arguments: Expects 3 arguments: ./ebfEcho inputFile, comparison_file
     
     Returns: 0 on success, different values depending on error - found in 
     definitions.h
@@ -86,37 +87,56 @@ int main(int argc, char **argv){
     // Open input file 2 in read mode
     FILE *comparison_File = fopen(argv[2], "r");
 
+
+    // check to see if file opened successfully
+    // Parameters: argv[1] - for error statements, input_file - the file to test
+    // Returns 0 on success or 2 on failure
     if (check_file_opened(argv[2], comparison_File) == BAD_FILE)
         return BAD_FILE;
 
-    if (check_magic_number(&image_struct_compare, argv[2], comparison_File) == BAD_MAGIC_NUMBER)
+    // checks if the magic number is what we expect
+    // Parameters: image_struct, argv[1] - for error statements, input_file - 
+    // the file to test
+    // Returns: 0 on success, 3 on failure
+    if (check_magic_number(&image_struct_compare, argv[2], comparison_File) == 
+    BAD_MAGIC_NUMBER)
         return BAD_MAGIC_NUMBER;
     
-    if (check_dimensions(&image_struct_compare,  argv[2], comparison_File) == BAD_DIMENSION)
+    // checks dimensions are within specified range(MIN_DIMENSION-MAX_DIMENSION)
+    // Parameters: image_struct, argv[1] - for error statements, input_file - 
+    // the file to test
+    // Returns 0 on success, 4 on failure
+    if (check_dimensions(&image_struct_compare,  argv[2], comparison_File) == 
+    BAD_DIMENSION)
         return BAD_DIMENSION;
 
+    // checks memory has been allocated properly for 2d array
+    // Parameters: image_struct, input_file - the file to test
+    // Returns 0 on success, 5 on failure
     if(check_malloc(&image_struct_compare, comparison_File) == BAD_MALLOC)
         return BAD_MALLOC;
 
+
+    // reads data into 2d array and checks data is valid
+    // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
+    // Parameters image_struct, argv[1] - for error statements, input_file - 
+    // the file to test 
+    // Returns 0 on success, 6 on failure
     if (read_data(&image_struct_compare, argv[2], comparison_File) == BAD_DATA)
         return BAD_DATA;
 
-    // Finised with input file - close it
-    // fclose(input_file);
-
 
     // File comparison functions
-    if (comp_magic_number(&image_struct, &image_struct_compare) == FUNCTION_SUCCESS_DIFFERENT)
+    if (comp_magic_number(&image_struct, &image_struct_compare) == 
+    FUNCTION_SUCCESS_DIFFERENT)
         return SUCCESS;
-    if (comp_dimensions(&image_struct, &image_struct_compare) == FUNCTION_SUCCESS_DIFFERENT)
+    if (comp_dimensions(&image_struct, &image_struct_compare) == 
+    FUNCTION_SUCCESS_DIFFERENT)
         return SUCCESS;
-    if (comp_image_data(&image_struct, &image_struct_compare) == FUNCTION_SUCCESS_DIFFERENT)
+    if (comp_image_data(&image_struct, &image_struct_compare) == 
+    FUNCTION_SUCCESS_DIFFERENT)
         return SUCCESS;
         
-
-    // Free allocated memory before exit
-    // free(image_struct.imageData);
-    // free(image_struct_compare.imageData);
 
     // If we have not exited on different data, must be identical
     printf("IDENTICAL\n");
