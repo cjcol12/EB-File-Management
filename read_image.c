@@ -15,7 +15,11 @@
 // Definition header file inclusion
 #include "definitions.h"
 
+// Image structure header file inclusion
 #include "image_structs.h"
+
+// Function prototype header file inclusion
+#include "read_image.h"
 
 int check_arg_count(int argc){
     // validate that user has entered 2 arguments
@@ -36,8 +40,8 @@ int check_file_opened(char *input_file_name, FILE *input_file){
     else return FUNCTION_SUCCESS;
 }
 
-int check_magic_number
-(image_struct_type *image_struct, char *input_file_name, FILE *input_file){
+int check_magic_number(
+    image_struct_type *image_struct, char *input_file_name, FILE *input_file){
     // stores first two characters of file into character array
     image_struct->magic_number[0] = getc(input_file);
     image_struct->magic_number[1] = getc(input_file);
@@ -56,8 +60,8 @@ int check_magic_number
     else return FUNCTION_SUCCESS;
 }
 
-int check_dimensions
-(image_struct_type *image_struct, char *executable_name, FILE *input_file){
+int check_dimensions(
+    image_struct_type *image_struct, char *input_file_name, FILE *input_file){
     // scan for the dimensions
     // and capture fscanfs return to ensure we got 2 values.
     image_struct->check = 
@@ -72,7 +76,7 @@ int check_dimensions
         image_struct->width > MAX_DIMENSION){
         
         fclose(input_file);
-        printf("ERROR: Bad Dimensions (%s)\n", executable_name);
+        printf("ERROR: Bad Dimensions (%s)\n", input_file_name);
         return BAD_DIMENSION;
     }
 
@@ -115,8 +119,8 @@ int check_malloc(image_struct_type *image_struct, FILE *input_file){
     return FUNCTION_SUCCESS;
 }
 
-int read_data
-(image_struct_type *image_struct, char *executable_name, FILE *input_file){
+int read_data(
+    image_struct_type *image_struct, char *input_file_name, FILE *input_file){
 
     for(int i = 0; i < image_struct->height; i++){
         for(int j = 0; j < image_struct->width; j++){
@@ -133,7 +137,7 @@ int read_data
                 free(image_struct->imageData);
 
                 fclose(input_file);
-                printf("ERROR: Bad Data (%s)\n", executable_name);
+                printf("ERROR: Bad Data (%s)\n", input_file_name);
                 return BAD_DATA;
             }
             // check data is within bounds (0 - 31)
@@ -146,7 +150,7 @@ int read_data
                 }
                 free(image_struct->imageData);
 
-                printf("ERROR: Bad Data (%s)\n", executable_name);
+                printf("ERROR: Bad Data (%s)\n", input_file_name);
                 return BAD_DATA;
             }
         }
@@ -168,7 +172,7 @@ int read_data
         free(image_struct->imageData);
 
         fclose(input_file);
-        printf("ERROR: Bad Data (%s)\n", executable_name);
+        printf("ERROR: Bad Data (%s)\n", input_file_name);
         return BAD_DATA;
     }
 
@@ -178,8 +182,8 @@ int read_data
 }
 
 // non functional
-int close_file_free_mem
-(image_struct_type *image_struct, char *executable_name, FILE *input_file){
+int close_file_free_mem(
+    image_struct_type *image_struct, char *executable_name, FILE *input_file){
     // iterate through imageData to free 2nd dimension arrays
     for(int i = 0; i < image_struct->height; i++){
         free(image_struct->imageData[i]);

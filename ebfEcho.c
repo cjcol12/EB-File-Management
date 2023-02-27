@@ -54,7 +54,7 @@ int main(int argc, char **argv){
     // Parameters: image_struct, argv[1] - for error statements, input_file - 
     // the file to test
     // Returns: 0 on success, 3 on failure
-    if (check_magic_number(&image_struct, argv[1], input_file)== 
+    if (check_magic_number(&image_struct, argv[1], input_file) == 
         BAD_MAGIC_NUMBER) 
         return BAD_MAGIC_NUMBER;
     

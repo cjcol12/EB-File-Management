@@ -15,19 +15,22 @@
 // Definition header file inclusion
 #include "definitions.h"
 
+// Image structure header file inclusion
 #include "image_structs.h"
 
-int check_bad_output
-(image_struct_type *image_struct, FILE *output_file, char *executable_name){
+// Function prototype header file inclusion
+#include "read_image.h"
+
+int check_bad_output(
+    image_struct_type *image_struct, FILE *output_file, char *input_file_name){
     if (output_file == NULL){
-        printf("ERROR: Bad Output(%s)", executable_name);
+        printf("ERROR: Bad Output(%s)", input_file_name);
         return BAD_WRITE_PERMISSIONS;
     }
     else return FUNCTION_SUCCESS;
 }
 
-int write_header
-(image_struct_type *image_struct, FILE *output_file){
+int write_header(image_struct_type *image_struct, FILE *output_file){
     // write the header data in one block
     // change to write with magicNumberValue
     image_struct->check = fprintf(output_file, "%s\n%d %d\n", 

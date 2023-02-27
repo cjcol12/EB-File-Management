@@ -14,8 +14,14 @@
 // Definition header file inclusion
 #include "definitions.h"
 
-int comp_magic_number
-(image_struct_type *image_struct, image_struct_type *image_struct_compare){
+// Image structure header file inclusion
+#include "image_structs.h"
+
+// Function prototype header file inclusion
+#include "compare_image.h"
+
+int comp_magic_number(
+    image_struct_type *image_struct, image_struct_type *image_struct_compare){
     if (*(image_struct->magic_number_value) != 
     *(image_struct_compare->magic_number_value)){
 
@@ -26,8 +32,8 @@ int comp_magic_number
     else return FUNCTION_SUCCESS;
 }
 
-int comp_dimensions
-(image_struct_type *image_struct, image_struct_type *image_struct_compare){
+int comp_dimensions(
+    image_struct_type *image_struct, image_struct_type *image_struct_compare){
     if ((image_struct->height != image_struct_compare->height) || 
         (image_struct->width != image_struct_compare->width)){
 
@@ -39,8 +45,8 @@ int comp_dimensions
     else return FUNCTION_SUCCESS;
 }
 
-int comp_image_data
-(image_struct_type *image_struct, image_struct_type *image_struct_compare){
+int comp_image_data(
+    image_struct_type *image_struct, image_struct_type *image_struct_compare){
     // and check the pixel values
     for(int i = 0; i < image_struct->height; i++){
         for(int j = 0; j < image_struct->width; j++){
