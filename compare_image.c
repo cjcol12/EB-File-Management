@@ -8,8 +8,7 @@
 #include "definitions.h"
 
 int comp_magic_number(image_struct_type *image_struct, image_struct_type *image_struct_compare){
-    if (*(image_struct->magicNumberValue) != *(image_struct_compare->magicNumberValue)){ // free and exit
-        free(image_struct->imageData);
+    if (*(image_struct->magic_number_value) != *(image_struct_compare->magic_number_value)){ // free and exit
         free(image_struct->imageData);
         printf("DIFFERENT\n");
         return FUNCTION_SUCCESS_DIFFERENT;
@@ -30,16 +29,17 @@ int comp_dimensions(image_struct_type *image_struct, image_struct_type *image_st
 
 int comp_image_data(image_struct_type *image_struct, image_struct_type *image_struct_compare){
     // and check the pixel values
-    for (int n=0; n<image_struct->numBytes; n++)
-        {
-        if(image_struct->imageData[n]!=image_struct_compare->imageData[n])
-            { // free and exit
+    for(int i = 0; i < image_struct->height; i++){
+        for(int j = 0; j < image_struct->width; j++){
+
+        if(image_struct->imageData[i][j] != 
+        image_struct_compare->imageData[i][j]){
             free(image_struct->imageData);
             free(image_struct_compare->imageData);
             printf("DIFFERENT\n");
             return FUNCTION_SUCCESS_DIFFERENT;
-            } // free and exit
+            }
         }
+    }
     return FUNCTION_SUCCESS;
-
 }
