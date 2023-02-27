@@ -24,6 +24,8 @@
 // Read image module inclusion
 #include "write_image.c"
 
+#include "write_binary.c"
+
 int main(int argc, char **argv){
     // image struct variable initialization
     image_struct_type image_struct;
@@ -98,6 +100,7 @@ int main(int argc, char **argv){
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
+    write_binary_data(&image_struct, output_file);
 
     printf("CONVERTED\n");
     return SUCCESS;
