@@ -1,3 +1,14 @@
+/*  Function: Read in a .ebf file and echo (copy) its contents to another file
+    
+    Arguments: Expects 3 arguments: ./ebfEcho inputFile, outputFile
+    
+    Returns: 0 on success, different values depending on error - found in 
+    definitions.h
+
+    Author: CJ Coleman
+*/
+
+
 // Standard I/O header file inclusion
 #include <stdio.h>
 
@@ -10,51 +21,63 @@
 // Read image module inclusion
 #include "read_image.c"
 
-// Compare image file inclusion
+// Write image module inclusion
 #include "compare_image.c"
 
-int unix_usage(int argc){
-    // Unix usage check - runs with no arguments
+int main(int argc, char **argv){
+    // image struct variable initialization
+    image_struct_type image_struct;
+
+    // Unix usage information
+    // Returns 0 if program is run with no arguments
     if (argc == 1){
         printf("Usage: ebfComp file1 file2");
         return USAGE_REQUEST;
     }
 
-    // Return 10 on function success
-    else return 10;  // Is this return value valid?
-}
-int main(int argc, char **argv){
-    // Image struct variable initialization
-    image_struct_type image_struct;
-
-    // Unix usage information
-    if (unix_usage(argc) == 0)
-        return 0;
-
-    // Running tests on argument counts
-    if (check_arg_count(argv[0], argc) == BAD_ARGUMENT_COUNT)
+    // validates number of arguments
+    // Parameters: argc - to test
+    // Returns 0 on success or 1 on failure
+    if (check_arg_count(argc) == BAD_ARGUMENT_COUNT)
         return BAD_ARGUMENT_COUNT;
 
-    // Open the input file in read mode
-    FILE *inputFile = fopen(argv[1], "r");
+    // open the input file in read mode
+    FILE *input_file = fopen(argv[1], "r");
 
-    if (check_file_opened(argv[1], inputFile) == BAD_FILE)
+    // check to see if file opened successfully
+    // Parameters: argv[1] - for error statements, input_file - the file to test
+    // Returns 0 on success or 2 on failure
+    if (check_file_opened(argv[1], input_file) == BAD_FILE)
         return BAD_FILE;
 
-    if (check_magic_number(&image_struct, argv[1], inputFile) == BAD_MAGIC_NUMBER)
+    // checks if the magic number is what we expect
+    // Parameters: image_struct, argv[1] - for error statements, input_file - 
+    // the file to test
+    // Returns: 0 on success, 3 on failure
+    if (check_magic_number(&image_struct, argv[1], input_file)== 
+        BAD_MAGIC_NUMBER) 
         return BAD_MAGIC_NUMBER;
     
-    if (check_dimensions(&image_struct,  argv[1], inputFile) == BAD_DIMENSION)
+    // checks dimensions are within specified range(MIN_DIMENSION-MAX_DIMENSION)
+    // Parameters: image_struct, argv[1] - for error statements, input_file - 
+    // the file to test
+    // Returns 0 on success, 4 on failure
+    if (check_dimensions(&image_struct,  argv[1], input_file) == BAD_DIMENSION)
         return BAD_DIMENSION;
 
-    if(check_malloc(&image_struct, inputFile) == BAD_MALLOC)
+    // checks memory has been allocated properly for 2d array
+    // Parameters: image_struct, input_file - the file to test
+    // Returns 0 on success, 5 on failure
+    if(check_malloc(&image_struct, input_file) == BAD_MALLOC)
         return BAD_MALLOC;
 
-    if (read_data(&image_struct, argv[1], inputFile) == BAD_DATA)
+    // reads data into 2d array and checks data is valid
+    // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
+    // Parameters image_struct, argv[1] - for error statements, input_file - 
+    // the file to test 
+    // Returns 0 on success, 6 on failure
+    if (read_data(&image_struct, argv[1], input_file) == BAD_DATA)
         return BAD_DATA;
-
-    // Finised with input file - close it
-    fclose(inputFile);
 
 
     // Image struct variable initialization (comparison)
@@ -79,7 +102,7 @@ int main(int argc, char **argv){
         return BAD_DATA;
 
     // Finised with input file - close it
-    fclose(inputFile);
+    // fclose(input_file);
 
 
     // File comparison functions
@@ -92,8 +115,8 @@ int main(int argc, char **argv){
         
 
     // Free allocated memory before exit
-    free(image_struct.imageData);
-    free(image_struct_compare.imageData);
+    // free(image_struct.imageData);
+    // free(image_struct_compare.imageData);
 
     // If we have not exited on different data, must be identical
     printf("IDENTICAL\n");

@@ -4,8 +4,8 @@
 
 typedef struct{
     // create a char array to hold magic number
-    unsigned char magicNumber[2];
-    unsigned short *magicNumberValue;
+    unsigned char magic_number[2];
+    unsigned short *magic_number_value;
 
     // create and initialise variables used within code
     int width; 
