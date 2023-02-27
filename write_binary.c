@@ -33,7 +33,7 @@ int write_binary_data(image_struct_type *image_struct, FILE *output_file){
 
             fwrite(&binary_value, sizeof(unsigned char), 1, output_file);
 
-        }
+        } 
     }
     return 0;
 }
