@@ -90,7 +90,6 @@ int write_binary_data(image_struct_type *image_struct, FILE *output_file){
             unsigned char binary_value = (unsigned char)(value & 0x1F); 
             // do we need a unit seperator to limit size to 1F - & 0x1F
 
-            printf("value is %u\n", image_struct->imageData[i][j]);
             fwrite(&binary_value, sizeof(unsigned char), 1, output_file);
 
         } 
