@@ -17,7 +17,8 @@
 
 
 // constant definitions
-#define MAGIC_NUMBER 0x6265
+#define MAGIC_NUMBER_EB 0x6265
+#define MAGIC_NUMBER_EU 0x7565
 #define MAX_DIMENSION 262144
 #define MIN_DIMENSION 1
 #define MAX_GRAY 31
