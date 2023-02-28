@@ -43,7 +43,7 @@ int main(int argc, char **argv){
         return BAD_ARGUMENT_COUNT;
 
     // open the input file in read mode
-    FILE *input_file = fopen(argv[1], "rb");
+    FILE *input_file = fopen(argv[1], "r");
 
     // check to see if file opened successfully
     // Parameters: argv[1] - for error statements, input_file - the file to test
