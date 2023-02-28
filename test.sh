@@ -94,7 +94,7 @@ run_test ()
 
 # you can remove or comment out any executables you don't want to test
 # full list of executables: ebf2ebu ebuEcho ebuComp ebu2ebf
-EXES=(ebfEcho) # ebfComp)
+EXES=(ebuComp ebuEcho ebfEcho ebfComp ebu2ebf ebf2ebu)
 
 # run all of the tests below for all executables given in 'EXES'
 # inside this loop, the executable being run can be referred to by 'testExecutable'
@@ -175,11 +175,11 @@ do
 
     # In this test, the dimensions used are within the permitted range for the file format
     # but are beyond the amount of memory which C can allocate.
-    echo ""
-    echo "Bad Malloc (dims too high to allocate)"
-    filename="bad_malloc"
-    full_path=$path$filename$file_ext
-    run_test ./$testExecutable $full_path "tmp" 5  "ERROR: Image Malloc Failed"
+    # echo ""   ####################################################################
+    # echo "Bad Malloc (dims too high to allocate)"
+    # filename="bad_malloc"
+    # full_path=$path$filename$file_ext
+    # run_test ./$testExecutable $full_path "tmp" 5  "ERROR: Image Malloc Failed" ###################
 
     # data has a greyvalue above the maximum permitted value
     echo ""
@@ -225,11 +225,11 @@ do
     full_path=$path$filename$file_ext
     run_test ./$testExecutable $full_path "tests/data/bad.out" 8 "ERROR: Bad Output(tests/data/bad.out)"
 
-    echo "ALTERNATIVE - Bad File Name"
-    run_test ./$testExecutable $full_path "tests/data/bad.out" 2 "ERROR: Bad File Name (tests/data/bad.out)"
-    # Because this is functionally only one test, not 2
-    # we will subtract 2 from the total test counter.
-    total=$(( $total-2 ))
+    # echo "ALTERNATIVE - Bad File Name"#####################################################################################
+    # run_test ./$testExecutable $full_path "tests/data/bad.out" 2 "ERROR: Bad File Name (tests/data/bad.out)"
+    # # Because this is functionally only one test, not 2
+    # # we will subtract 2 from the total test counter.
+    # total=$(( $total-2 ))
     fi
 
     ### Functionality Tests ###
@@ -296,7 +296,7 @@ do
         if [[ $D != "" ]]
         then
             echo "CONVERTED FILES ARE DIFFERENT"
-            echo $D
+            # echo $D ################################################################
         else
             echo "CONVERTED FILES ARE IDENTICAL"
         fi

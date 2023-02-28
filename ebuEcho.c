@@ -32,7 +32,7 @@ int main(int argc, char **argv){
     // Unix usage information
     // Returns 0 if program is run with no arguments
     if (argc == 1){
-        printf("Usage: ebf2ebu file1 file2");
+        printf("Usage: ebuEcho file1 file2");
         return USAGE_REQUEST;
     }
 
@@ -43,7 +43,7 @@ int main(int argc, char **argv){
         return BAD_ARGUMENT_COUNT;
 
     // open the input file in read mode
-    FILE *input_file = fopen(argv[1], "r");
+    FILE *input_file = fopen(argv[1], "rb");
 
     // check to see if file opened successfully
     // Parameters: argv[1] - for error statements, input_file - the file to test
@@ -77,13 +77,12 @@ int main(int argc, char **argv){
     // Parameters image_struct, argv[1] - for error statements, input_file - 
     // the file to test 
     // Returns 0 on success, 6 on failure
-    if (read_data(&image_struct, argv[1], input_file) == BAD_DATA)
+    if (read_binary_data(&image_struct, argv[1], input_file) == BAD_DATA)
         return BAD_DATA;
 
 
     // open the output file in write mode
     FILE *output_file = fopen(argv[2], "wb");
-    image_struct.magic_number[1] = 'u';
 
     // checks we can write to output_file
     // Parameters: Parameters image_struct, argv[1] - for error statements, 
@@ -101,6 +100,6 @@ int main(int argc, char **argv){
 
     write_binary_data(&image_struct, output_file);
 
-    printf("CONVERTED\n");
+    printf("ECHOED\n");
     return SUCCESS;
 }

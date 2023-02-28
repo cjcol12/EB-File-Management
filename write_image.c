@@ -81,13 +81,14 @@ int write_image_data(image_struct_type *image_struct, FILE *output_file){
     return FUNCTION_SUCCESS;
 }
 
+// add error checking
 int write_binary_data(image_struct_type *image_struct, FILE *output_file){
     for(int i = 0; i < image_struct->height; i++){
         for(int j = 0; j < image_struct->width; j++){
 
             unsigned int value = image_struct->imageData[i][j];
-            unsigned char binary_value = (unsigned char)(value ); 
-            // do we need a unit seperator to limit size to 1F & 0x1F
+            unsigned char binary_value = (unsigned char)(value & 0x1F); 
+            // do we need a unit seperator to limit size to 1F - & 0x1F
 
             fwrite(&binary_value, sizeof(unsigned char), 1, output_file);
 
