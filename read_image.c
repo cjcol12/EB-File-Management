@@ -51,7 +51,8 @@ int check_magic_number(
     (unsigned short *)image_struct->magic_number;
     
     // checking against the casted value due to endienness.
-    if (*(image_struct->magic_number_value) != MAGIC_NUMBER){
+    if (*(image_struct->magic_number_value) != MAGIC_NUMBER_EB &&
+        *(image_struct->magic_number_value) != MAGIC_NUMBER_EU){
         printf("ERROR: Bad Magic Number (%s)\n", input_file_name);
         return BAD_MAGIC_NUMBER;
     }
@@ -89,8 +90,9 @@ int check_malloc(image_struct_type *image_struct, FILE *input_file){
     image_struct->imageData = 
     (unsigned int **) malloc(image_struct->height * sizeof(unsigned int *));
 
+
     if (image_struct->imageData == NULL){
-        // free(image_struct->imageData);
+        free(image_struct->imageData);
         printf("ERROR: Image Malloc Failed\n");
         fclose(input_file);
         return BAD_MALLOC;
@@ -180,6 +182,45 @@ int read_data(
     fclose(input_file);
     return FUNCTION_SUCCESS;
 }
+
+// add error checking
+int read_binary_data(
+    image_struct_type *image_struct, char *input_file_name, FILE *input_file){
+
+    for(int i = 0; i < image_struct->height; i++){
+        for(int j = 0; j < image_struct->width; j++){
+            unsigned char binary_value;
+            unsigned int value;
+
+            image_struct->check = fread(&binary_value, sizeof(unsigned char), 1, input_file);
+
+            if(image_struct->check != 1){
+                printf("ERROR: Bad Data (%s)\n", input_file_name);
+                return BAD_DATA;
+            }
+            value = (unsigned int) binary_value;
+            image_struct->imageData[i][j] = value;
+
+            if (image_struct->imageData[i][j] > MAX_GRAY
+            ||image_struct->imageData[i][j] < MIN_GRAY){
+                
+                // iterate through imageData to free 2nd dimension arrays
+                for(int i = 0; i < image_struct->height; i++){
+                    free(image_struct->imageData[i]);
+                }
+                free(image_struct->imageData);
+
+                printf("ERROR: Bad Data (%s)\n", input_file_name);
+                return BAD_DATA;
+            }
+        }
+    }
+
+    return 0;
+}
+
+
+
 
 // non functional
 int close_file_free_mem(
