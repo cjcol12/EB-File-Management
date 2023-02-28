@@ -21,8 +21,10 @@
 // Read image module inclusion
 #include "read_image.c"
 
-// Write image module inclusion
+// Read image module inclusion
 #include "write_image.c"
+
+#include "write_binary.c"
 
 int main(int argc, char **argv){
     // image struct variable initialization
@@ -81,7 +83,8 @@ int main(int argc, char **argv){
 
 
     // open the output file in write mode
-    FILE *output_file = fopen(argv[2], "w");
+    FILE *output_file = fopen(argv[2], "wb");
+    image_struct.magic_number[1] = 'u';
 
     // checks we can write to output_file
     // Parameters: Parameters image_struct, argv[1] - for error statements, 
@@ -97,14 +100,8 @@ int main(int argc, char **argv){
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
-    // Writes main image data to output file
-    // Parameters: image_struct, output_file - the file to write to
-    // Return: returns 0 on success returns 7 on failure
-    if (write_image_data(&image_struct, output_file) == BAD_OUTPUT)
-        return BAD_OUTPUT;
+    write_binary_data(&image_struct, output_file);
 
-
-    // Print final success message and return 0 on success
-    printf("ECHOED\n");
+    printf("CONVERTED\n");
     return SUCCESS;
 }

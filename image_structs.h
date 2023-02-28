@@ -4,8 +4,8 @@
 
 typedef struct{
     // create a char array to hold magic number
-    unsigned char magicNumber[2];
-    unsigned short *magicNumberValue;
+    unsigned char magic_number[2];
+    unsigned short *magic_number_value;
 
     // create and initialise variables used within code
     int width; 
@@ -13,7 +13,7 @@ typedef struct{
     int check;
 
     // image data 
-    unsigned int *imageData;
+    unsigned int **imageData;
     long numBytes;
 
 } image_struct_type;
