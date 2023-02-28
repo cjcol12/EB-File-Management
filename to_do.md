@@ -43,9 +43,15 @@ sort malloc bug
 check file closes when expected
 check imageData free'd properly when expected
 find memory leaks using valgrind and gdb
-clean up variable names to look like foo_bar
+clean up variable names to look like foo_bar - mainly in struct
 find \n in output when converting file
 add error checking to new functions
+refactor error checking into different functions
+test all functionality 
+extend test script
+think about next task
+add all prototypes to headers (or create headers)
+
 
 
 
@@ -54,3 +60,4 @@ unix usage - per file or different module, how to lose ./
 return value on unix usage success - 10?
 unix usage in main?
 do we need to submit any version of original task or just 2d array
+lines limited to 80 characters
