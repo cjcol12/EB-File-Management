@@ -40,7 +40,7 @@ int write_header(image_struct_type *image_struct, FILE *output_file){
     if (image_struct->check == 0) 
         { // check write
         fclose(output_file);
-        free(image_struct->imageData);
+        // free(image_struct->imageData);
         printf("ERROR: Bad Output\n");
         return BAD_OUTPUT;
         } // check write
@@ -59,10 +59,10 @@ int write_image_data(image_struct_type *image_struct, FILE *output_file){
                 fclose(output_file);
 
                 // iterate through imageData to free 2nd dimension arrays
-                for(int i = 0; i < image_struct->height; i++){
-                    free(image_struct->imageData[i]);
-                }
-                free(image_struct->imageData);
+                // for(int i = 0; i < image_struct->height; i++){
+                //     free(image_struct->imageData[i]);
+                // }
+                // free(image_struct->imageData);
 
                 printf("ERROR: Bad Output\n");
                 return BAD_OUTPUT;
@@ -72,11 +72,11 @@ int write_image_data(image_struct_type *image_struct, FILE *output_file){
     }
 
     // free allocated memory before exit
-    for(int i = 0; i < image_struct->height; i++){
-        free(image_struct->imageData[i]);
-    }
-    free(image_struct->imageData);
-    fclose(output_file);
+    // for(int i = 0; i < image_struct->height; i++){
+    //     free(image_struct->imageData[i]);
+    // }
+    // free(image_struct->imageData);
+    // fclose(output_file);
 
     return FUNCTION_SUCCESS;
 }
