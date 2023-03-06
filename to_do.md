@@ -34,6 +34,10 @@ understand why hexdumping slice0a and out are different - but correct according
 to hamishs notes
 
 
+understand why hexdumping slice0a and out are different - but correct according
+to hamishs notes
+
+
 
 TODO
 complete function for closing file and freeing mem
