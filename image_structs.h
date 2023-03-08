@@ -14,6 +14,7 @@ typedef struct{
 
     // image data 
     unsigned int **imageData;
+    unsigned int *data_block;
     long numBytes;
 
 } image_struct_type;
