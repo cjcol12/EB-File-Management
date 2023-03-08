@@ -1,3 +1,6 @@
+#ifndef definition_header
+#define definition_header
+
 // success definitions
 #define SUCCESS 0
 #define USAGE_REQUEST 0
@@ -23,3 +26,5 @@
 #define MIN_DIMENSION 1
 #define MAX_GRAY 31
 #define MIN_GRAY 0
+
+#endif

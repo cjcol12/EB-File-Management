@@ -1,4 +1,3 @@
-
 #ifndef image_struct_h
 #define image_struct_h
 
