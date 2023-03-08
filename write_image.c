@@ -21,7 +21,8 @@
 // Function prototype header file inclusion
 #include "write_image.h"
 
-// #include "read_image.c"
+// Generic function file inclusion
+// #include "generic.c"
 
 int check_bad_output(
     image_struct_type *image_struct, FILE *output_file, char *input_file_name){
@@ -40,12 +41,11 @@ int write_header(image_struct_type *image_struct, FILE *output_file){
 
     // and use the return from fprintf to check that we wrote.
     if (image_struct->check == 0) 
-        { // check write
-        fclose(output_file);
-        // free(image_struct->imageData);
+        {
+        destructor(image_struct, output_file);
         printf("ERROR: Bad Output\n");
         return BAD_OUTPUT;
-        } // check write
+        }
     else return FUNCTION_SUCCESS;
 }
 
@@ -58,7 +58,7 @@ int write_image_data(image_struct_type *image_struct, FILE *output_file){
             fprintf(output_file, "%u ", image_struct->imageData[i][j]);
 
             if (image_struct->check == 0){
-                fclose(output_file);
+                destructor(image_struct, output_file);
                 printf("ERROR: Bad Output\n");
                 return BAD_OUTPUT;
             }
@@ -68,18 +68,3 @@ int write_image_data(image_struct_type *image_struct, FILE *output_file){
     return FUNCTION_SUCCESS;
 }
 
-// add error checking
-int write_binary_data(image_struct_type *image_struct, FILE *output_file){
-    for(int i = 0; i < image_struct->height; i++){
-        for(int j = 0; j < image_struct->width; j++){
-
-            unsigned int value = image_struct->imageData[i][j];
-            unsigned char binary_value = (unsigned char)(value & 0x1F); 
-            // do we need a unit seperator to limit size to 1F - & 0x1F
-
-            fwrite(&binary_value, sizeof(unsigned char), 1, output_file);
-
-        } 
-    }
-    return 0;
-}

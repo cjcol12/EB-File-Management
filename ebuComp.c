@@ -25,6 +25,9 @@
 // Write image module inclusion
 #include "compare_image.c"
 
+// Binary function inclusion
+#include "binary_management.c"
+
 int main(int argc, char **argv){
     // image struct variable initialization
     image_struct_type image_struct;

@@ -21,52 +21,8 @@
 // Function prototype header file inclusion
 #include "read_image.h"
 
-// void construct_image(image_struct_type *image_struct){
-//     image_struct->magic_number[0] = NULL;
-//     image_struct->magic_number_value = NULL;
-
-//     // create and initialise variables used within code
-//     image_struct->width = NULL;
-//     image_struct->height = NULL;
-//     image_struct->check = NULL;
-
-//     // image data 
-//     image_struct->imageData = NULL;
-//     image_struct->numBytes = NULL;
-// }
-
-
-// void destruct_image(image_struct_type *image_struct){
-//     if ((image_struct->magic_number[0]) != NULL)
-//         image_struct->magic_number[0] = NULL;
-    
-//     if (image_struct->magic_number[1] != NULL)
-//         image_struct->magic_number[1] = NULL;
-
-//     if (image_struct->magic_number_value != NULL)
-//         image_struct->magic_number_value = NULL;
-
-//     if (image_struct->width != NULL)
-//         image_struct->width = NULL;
-
-//     if (image_struct->height != NULL)
-//         image_struct->height = NULL;
-
-//     if (image_struct->check != NULL)
-//         image_struct->check = NULL;
-
-//     if (image_struct->imageData != NULL)
-//         image_struct->imageData = NULL;
-    
-//     if (image_struct->numBytes != NULL)
-//         image_struct->numBytes = NULL;
-
-//     if (input_file != NULL)
-//         input_file = NULL;
-    
-//     if (output_file != NULL)
-//         output_file = NULL;
-// }
+// Generic function file inclusion
+#include "generic.c"
 
 int check_arg_count(int argc){
     // validate that user has entered 2 arguments
@@ -102,9 +58,11 @@ int check_magic_number(
     (unsigned short *)image_struct->magic_number;
     
     // checking magic number against the casted value due to endienness.
+    // change to check file type (.ebf /.ebu)?
     if (*(image_struct->magic_number_value) != MAGIC_NUMBER_EB &&
         *(image_struct->magic_number_value) != MAGIC_NUMBER_EU){
         printf("ERROR: Bad Magic Number (%s)\n", input_file_name);
+        fclose(input_file);
         return BAD_MAGIC_NUMBER;
     }
 
@@ -136,7 +94,6 @@ int check_dimensions(
     // return 0 on function success
     else return FUNCTION_SUCCESS;
 }
-
 int check_malloc(image_struct_type *image_struct, FILE *input_file){
     // setting numBytes
     image_struct->numBytes = image_struct->width * image_struct->height;
@@ -147,24 +104,25 @@ int check_malloc(image_struct_type *image_struct, FILE *input_file){
 
     // testing return value of malloc
     if (image_struct->imageData == NULL){
-        fclose(input_file);
-        printf("ERROR: Image Malloc Failed\n");        
+        printf("ERROR: Image Malloc Failed\n");
+        destructor(image_struct, input_file);
         return BAD_MALLOC;
     }
     
     // allocating memory for all data at once
-    unsigned int *data_block = 
+    image_struct->data_block = 
     (unsigned int *) malloc(image_struct->numBytes * sizeof(unsigned int));
 
-    if (data_block == NULL){
-        fclose(input_file);
-        printf("ERROR: Image Malloc Failed\n");        
+    // testing return value of malloc
+    if (image_struct->data_block == NULL){
+        printf("ERROR: Image Malloc Failed\n");    
+        destructor(image_struct, input_file);    
         return BAD_MALLOC;
     }
 
-    // loop set up pointers to each row - saves multiple costly cpu malloc calls
+    // loop set up pointers to each row - saves multiple costly malloc calls
     for (int row = 0; row < image_struct->height; row++){
-        image_struct->imageData[row] = data_block + row * image_struct->width; 
+        image_struct->imageData[row] = image_struct->data_block + row * image_struct->width; 
     }
 
     // return 0 on function success
@@ -183,8 +141,8 @@ int read_data(
 
             // testing one value captured
             if (image_struct->check != 1){
-                fclose(input_file);
                 printf("ERROR: Bad Data (%s)\n", input_file_name);
+                destructor(image_struct, input_file);
                 return BAD_DATA;
             }
 
@@ -195,6 +153,7 @@ int read_data(
             if (image_struct->imageData[i][j] > MAX_GRAY
             ||image_struct->imageData[i][j] < MIN_GRAY){
                 printf("ERROR: Bad Data (%s)\n", input_file_name);
+                destructor(image_struct, input_file);
                 return BAD_DATA;
             }
         }
@@ -206,8 +165,8 @@ int read_data(
     // if there is more data, fscanf returns 1
     // if thats the case, we have too much data ( > numBytes)
     if (image_struct->check == 1){
-        fclose(input_file);
         printf("ERROR: Bad Data (%s)\n", input_file_name);
+        destructor(image_struct, input_file);
         return BAD_DATA;
     }
 
@@ -216,35 +175,37 @@ int read_data(
     return FUNCTION_SUCCESS;
 }
 
-// add error checking
-int read_binary_data(
-    image_struct_type *image_struct, char *input_file_name, FILE *input_file){
+// // add error checking
+// int read_binary_data(
+//     image_struct_type *image_struct, char *input_file_name, FILE *input_file){
 
-    unsigned char test;
-    fread(&test, sizeof(unsigned char), 1, input_file); // not sure why needed
+//     unsigned char test;
+//     fread(&test, sizeof(unsigned char), 1, input_file); // not sure why needed
     
-    for(int i = 0; i < image_struct->height; i++){
-        for(int j = 0; j < image_struct->width; j++){
-            unsigned char binary_value;
-            unsigned int value;
+//     for(int i = 0; i < image_struct->height; i++){
+//         for(int j = 0; j < image_struct->width; j++){
+//             unsigned char binary_value;
+//             unsigned int value;
 
-            image_struct->check = fread(&binary_value, sizeof(unsigned char), 1, input_file);
+//             image_struct->check = fread(&binary_value, sizeof(unsigned char), 1, input_file);
 
-            if(image_struct->check != 1){
-                printf("ERROR: Bad Data (%s)\n", input_file_name);
-                return BAD_DATA;
-            }
-            value = (unsigned int) binary_value;
+//             if(image_struct->check != 1){
+//                 printf("ERROR: Bad Data (%s)\n", input_file_name);
+//                 destructor(image_struct, input_file);
+//                 return BAD_DATA;
+//             }
+//             value = (unsigned int) binary_value;
 
-            image_struct->imageData[i][j] = value;
+//             image_struct->imageData[i][j] = value;
 
-            if (image_struct->imageData[i][j] > MAX_GRAY
-            ||image_struct->imageData[i][j] < MIN_GRAY){
-                printf("ERROR: Bad Data (%s)\n", input_file_name);
-                return BAD_DATA;
-            }
-        }
-    }
+//             if (image_struct->imageData[i][j] > MAX_GRAY
+//             ||image_struct->imageData[i][j] < MIN_GRAY){
+//                 printf("ERROR: Bad Data (%s)\n", input_file_name);
+//                 destructor(image_struct, input_file);
+//                 return BAD_DATA;
+//             }
+//         }
+//     }
 
-    return 0;
-}
+//     return 0;
+// }

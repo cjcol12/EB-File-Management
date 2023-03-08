@@ -24,6 +24,9 @@
 // Read image module inclusion
 #include "write_image.c"
 
+// Binary function inclusion
+#include "binary_management.c"
+
 
 int main(int argc, char **argv){
     // image struct variable initialization
