@@ -1,0 +1,9 @@
+/sample_images
+/tests
+/test area
+image_generator.c
+file.bin
+file.txt
+*.o
+*.exe
+2

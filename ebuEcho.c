@@ -1,6 +1,6 @@
-/*  Function: Read in a .ebf file and echo (copy) its contents to another file
+/*  Function: Read in a .ebu file and echo (copy) its contents to another file
     
-    Arguments: Expects 3 arguments: ./ebfEcho input_file, output_file
+    Arguments: Expects 3 arguments: ./ebuEcho input_file, output_file
     
     Returns: 0 on success, different values depending on error - found in 
     definitions.h
@@ -23,6 +23,9 @@
 
 // Read image module inclusion
 #include "write_image.c"
+
+// Binary function inclusion
+#include "binary_management.c"
 
 
 int main(int argc, char **argv){
@@ -98,7 +101,11 @@ int main(int argc, char **argv){
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
-    write_binary_data(&image_struct, output_file);
+    // Writes the data to the output file
+    // Parameters: image_struct, output_file - the file to be written to
+    // Return: returns 0 on success returns 8 on failure
+    if (write_binary_data(&image_struct, output_file) == BAD_OUTPUT)
+        return BAD_OUTPUT;
 
     printf("ECHOED\n");
     return SUCCESS;

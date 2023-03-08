@@ -1,4 +1,3 @@
-
 #ifndef image_struct_h
 #define image_struct_h
 
@@ -14,6 +13,7 @@ typedef struct{
 
     // image data 
     unsigned int **imageData;
+    unsigned int *data_block;
     long numBytes;
 
 } image_struct_type;
