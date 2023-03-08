@@ -35,6 +35,10 @@ add all prototypes to headers (or create headers)
 
 
 
+understand why hexdumping slice0a and out are different - but correct according
+to hamishs notes
+
+
 
 TODO
 come up with my own further tests for ebfEcho and Comp
