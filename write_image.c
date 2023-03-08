@@ -19,7 +19,9 @@
 #include "image_structs.h"
 
 // Function prototype header file inclusion
-#include "read_image.h"
+#include "write_image.h"
+
+// #include "read_image.c"
 
 int check_bad_output(
     image_struct_type *image_struct, FILE *output_file, char *input_file_name){
@@ -57,27 +59,12 @@ int write_image_data(image_struct_type *image_struct, FILE *output_file){
 
             if (image_struct->check == 0){
                 fclose(output_file);
-
-                // iterate through imageData to free 2nd dimension arrays
-                // for(int i = 0; i < image_struct->height; i++){
-                //     free(image_struct->imageData[i]);
-                // }
-                // free(image_struct->imageData);
-
                 printf("ERROR: Bad Output\n");
                 return BAD_OUTPUT;
             }
         }
         fprintf(output_file, "\n");
     }
-
-    // free allocated memory before exit
-    // for(int i = 0; i < image_struct->height; i++){
-    //     free(image_struct->imageData[i]);
-    // }
-    // free(image_struct->imageData);
-    // fclose(output_file);
-
     return FUNCTION_SUCCESS;
 }
 
