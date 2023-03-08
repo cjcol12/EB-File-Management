@@ -99,7 +99,7 @@ int main(int argc, char **argv){
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
-    write_image_data(&image_struct, output_file);
+    write_image_data(&image_struct, output_file); // error checking
 
     printf("CONVERTED\n");
     return SUCCESS;
