@@ -80,25 +80,24 @@ int main(int argc, char **argv){
     if (read_data(&image_struct, argv[1], input_file) == BAD_DATA)
         return BAD_DATA;
 
-
     // Image struct variable initialization (comparison)
     image_struct_type image_struct_compare;
 
     // Open input file 2 in read mode
-    FILE *comparison_File = fopen(argv[2], "r");
+    FILE *comparison_file = fopen(argv[2], "r");
 
 
     // check to see if file opened successfully
     // Parameters: argv[1] - for error statements, input_file - the file to test
     // Returns 0 on success or 2 on failure
-    if (check_file_opened(argv[2], comparison_File) == BAD_FILE)
+    if (check_file_opened(argv[2], comparison_file) == BAD_FILE)
         return BAD_FILE;
 
     // checks if the magic number is what we expect
     // Parameters: image_struct, argv[1] - for error statements, input_file - 
     // the file to test
     // Returns: 0 on success, 3 on failure
-    if (check_magic_number(&image_struct_compare, argv[2], comparison_File) == 
+    if (check_magic_number(&image_struct_compare, argv[2], comparison_file) == 
     BAD_MAGIC_NUMBER)
         return BAD_MAGIC_NUMBER;
     
@@ -106,14 +105,14 @@ int main(int argc, char **argv){
     // Parameters: image_struct, argv[1] - for error statements, input_file - 
     // the file to test
     // Returns 0 on success, 4 on failure
-    if (check_dimensions(&image_struct_compare,  argv[2], comparison_File) == 
+    if (check_dimensions(&image_struct_compare,  argv[2], comparison_file) == 
     BAD_DIMENSION)
         return BAD_DIMENSION;
 
     // checks memory has been allocated properly for 2d array
     // Parameters: image_struct, input_file - the file to test
     // Returns 0 on success, 5 on failure
-    if(check_malloc(&image_struct_compare, comparison_File) == BAD_MALLOC)
+    if(check_malloc(&image_struct_compare, comparison_file) == BAD_MALLOC)
         return BAD_MALLOC;
 
 
@@ -122,20 +121,33 @@ int main(int argc, char **argv){
     // Parameters image_struct, argv[1] - for error statements, input_file - 
     // the file to test 
     // Returns 0 on success, 6 on failure
-    if (read_data(&image_struct_compare, argv[2], comparison_File) == BAD_DATA)
+    if (read_data(&image_struct_compare, argv[2], comparison_file) == BAD_DATA)
         return BAD_DATA;
 
-
     // File comparison functions
+
+
+
+    // checks if the magic numbers are identical
+    // Parameters: image_struct, image_struct_compare
+    // Returns: 0 on success, 100 when different
     if (comp_magic_number(&image_struct, &image_struct_compare) == 
     FUNCTION_SUCCESS_DIFFERENT)
-        return SUCCESS;
+        return SUCCESS_DIFFERENT;
+
+    // checks if the dimensions are identical
+    // Parameters: image_struct, image_struct_compare
+    // Returns: 0 on success, 100 when different
     if (comp_dimensions(&image_struct, &image_struct_compare) == 
     FUNCTION_SUCCESS_DIFFERENT)
-        return SUCCESS;
+        return SUCCESS_DIFFERENT;
+
+    // checks if the data is identical
+    // Parameters: image_struct, image_struct_compare
+    // Returns: 0 on success, 100 when different
     if (comp_image_data(&image_struct, &image_struct_compare) == 
     FUNCTION_SUCCESS_DIFFERENT)
-        return SUCCESS;
+        return SUCCESS_DIFFERENT;
         
 
     // If we have not exited on different data, must be identical

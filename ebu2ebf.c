@@ -1,6 +1,6 @@
-/*  Function: Read in a .ebf file and echo (copy) its contents to another file
+/*  Function: Read in a .ebu file and converts it to and .ebf file
     
-    Arguments: Expects 3 arguments: ./ebfEcho input_file, output_file
+    Arguments: Expects 3 arguments: ./ebu2ebc input_file, output_file
     
     Returns: 0 on success, different values depending on error - found in 
     definitions.h
@@ -86,6 +86,8 @@ int main(int argc, char **argv){
 
     // open the output file in write mode
     FILE *output_file = fopen(argv[2], "w");
+
+    // convert magic number to eb
     image_struct.magic_number[1] = 'b';
 
     // checks we can write to output_file
@@ -102,7 +104,17 @@ int main(int argc, char **argv){
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
-    write_image_data(&image_struct, output_file); // error checking
+
+    // Writes main image data to output file
+    // Parameters: image_struct, output_file - the file to write to
+    // Return: returns 0 on success returns 7 on failure
+    if (write_image_data(&image_struct, output_file) == BAD_OUTPUT){
+        return BAD_OUTPUT;
+    }
+    // frees malloc'd memory and closes the output file
+    // Parameters: image_struct, output_file - the file to close
+    // Return: void function
+    destructor(&image_struct, output_file);
 
     printf("CONVERTED\n");
     return SUCCESS;

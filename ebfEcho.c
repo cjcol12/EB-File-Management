@@ -72,7 +72,6 @@ int main(int argc, char **argv){
     // Parameters: image_struct, input_file - the file to test
     // Returns 0 on success, 5 on failure
     if(check_malloc(&image_struct, input_file) == BAD_MALLOC){
-        // destructor(&image_struct, input_file);
         return BAD_MALLOC;
     }
 
@@ -82,7 +81,6 @@ int main(int argc, char **argv){
     // the file to test 
     // Returns 0 on success, 6 on failure
     if (read_data(&image_struct, argv[1], input_file) == BAD_DATA){
-        // destructor(&image_struct, input_file);
         return BAD_DATA;
     }
 
@@ -96,7 +94,6 @@ int main(int argc, char **argv){
     // Return: returns 0 on success returns 8 on failure
     if (check_bad_output(&image_struct, output_file, argv[2]) == 
     BAD_WRITE_PERMISSIONS){
-        // destructor(&image_struct, output_file);
         return BAD_WRITE_PERMISSIONS;
     }
 
@@ -104,7 +101,6 @@ int main(int argc, char **argv){
     // Parameters: image_struct, output_file - the file to write to 
     // Return: returns 0 on success returns 8 on failure
     if (write_header(&image_struct, output_file) == BAD_OUTPUT){
-        // destructor(&image_struct, output_file);
         return BAD_OUTPUT;
     }
 
@@ -112,10 +108,13 @@ int main(int argc, char **argv){
     // Parameters: image_struct, output_file - the file to write to
     // Return: returns 0 on success returns 7 on failure
     if (write_image_data(&image_struct, output_file) == BAD_OUTPUT){
-        // destructor(&image_struct, output_file);
         return BAD_OUTPUT;
     }
 
+
+    // frees malloc'd memory and closes the output file
+    // Parameters: image_struct, output_file - the file to close
+    // Return: void function
     destructor(&image_struct, output_file);
 
     // Print final success message and return 0 on success

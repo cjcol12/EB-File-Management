@@ -1,7 +1,7 @@
-/*  Function: Read in two .ebf files and compare their contents to see if theyre
+/*  Function: Read in two .ebu files and compare their contents to see if theyre
     idetical.
     
-    Arguments: Expects 3 arguments: ./ebfEcho inputFile, comparison_file
+    Arguments: Expects 3 arguments: ./ebuComp inputFile, comparison_file
     
     Returns: 0 on success, different values depending on error - found in 
     definitions.h
@@ -130,16 +130,32 @@ int main(int argc, char **argv){
 
 
     // File comparison functions
+    // checks if the magic numbers are identical
+    // Parameters: image_struct, image_struct_compare
+    // Returns: 0 on success, 100 when different
     if (comp_magic_number(&image_struct, &image_struct_compare) == 
     FUNCTION_SUCCESS_DIFFERENT)
-        return SUCCESS;
+        return SUCCESS_DIFFERENT;
+
+    // checks if the dimensions are identical
+    // Parameters: image_struct, image_struct_compare
+    // Returns: 0 on success, 100 when different
     if (comp_dimensions(&image_struct, &image_struct_compare) == 
     FUNCTION_SUCCESS_DIFFERENT)
-        return SUCCESS;
+        return SUCCESS_DIFFERENT;
+
+    // checks if the data is identical
+    // Parameters: image_struct, image_struct_compare
+    // Returns: 0 on success, 100 when different
     if (comp_image_data(&image_struct, &image_struct_compare) == 
     FUNCTION_SUCCESS_DIFFERENT)
-        return SUCCESS;
-        
+        return SUCCESS_DIFFERENT;
+
+    // frees malloc'd memory and closes the output file
+    // Parameters: image_struct, output_file - the file to close
+    // Return: void function
+    destructor(&image_struct, input_file);
+    destructor_no_file(&image_struct_compare);
 
     // If we have not exited on different data, must be identical
     printf("IDENTICAL\n");
