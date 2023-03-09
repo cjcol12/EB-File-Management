@@ -105,7 +105,7 @@ int main(int argc, char **argv){
         return BAD_OUTPUT;
 
 
-    // ebu2ebc
+    compress_data(&image_struct, output_file);
 
 
 
