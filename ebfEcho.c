@@ -75,12 +75,9 @@ int main(int argc, char **argv){
         return BAD_MALLOC;
     }
 
-    // reads data into 2d array and checks data is valid
-    // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
-    // Parameters image_struct, argv[1] - for error statements, input_file - 
-    // the file to test 
-    // Returns 0 on success, 6 on failure
-    if (read_data(&image_struct, argv[1], input_file) == BAD_DATA){
+
+
+    if(read_data(&image_struct, argv[1], input_file) == BAD_DATA){
         return BAD_DATA;
     }
 
@@ -104,12 +101,9 @@ int main(int argc, char **argv){
         return BAD_OUTPUT;
     }
 
-    // Writes main image data to output file
-    // Parameters: image_struct, output_file - the file to write to
-    // Return: returns 0 on success returns 7 on failure
-    if (write_image_data(&image_struct, output_file) == BAD_OUTPUT){
-        return BAD_OUTPUT;
-    }
+
+
+    // write_ebc()
 
 
     // frees malloc'd memory and closes the output file

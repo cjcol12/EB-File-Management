@@ -84,3 +84,23 @@ int write_binary_data(image_struct_type *image_struct, FILE *output_file){
     }
     return FUNCTION_SUCCESS;
 }
+
+int compress_data(image_struct_type *image_struct, FILE *output_file){
+
+    int count = 0;
+    unsigned char buffer;
+    unsigned char right_buffer;
+    for (int i = 0; i < image_struct->height; i++){
+        for (int j = 0; j < image_struct->width; j++){
+
+            switch(count){
+
+                case(0):
+                    buffer = image_struct->imageData[i][j] << 3;
+                    right_buffer = image_struct->imageData[i + 1][j + 1] >> 3;
+                    printf("imageData %d\n", right_buffer);
+            }
+        }
+    }
+    return FUNCTION_SUCCESS;
+}
