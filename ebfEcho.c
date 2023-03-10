@@ -60,6 +60,7 @@ int main(int argc, char **argv){
         return BAD_MAGIC_NUMBER;
     }
     
+    
     // checks dimensions are within specified range(MIN_DIMENSION-MAX_DIMENSION)
     // Parameters: image_struct, argv[1] - for error statements, input_file - 
     // the file to test
@@ -103,7 +104,6 @@ int main(int argc, char **argv){
 
 
 
-    // write_ebc()
 
 
     // frees malloc'd memory and closes the output file

@@ -57,6 +57,14 @@ int check_magic_number(
     image_struct->magic_number_value = 
     (unsigned short *)image_struct->magic_number;
     
+    if (check_mn_valid(image_struct, input_file, input_file_name) == BAD_MAGIC_NUMBER)
+        return BAD_MAGIC_NUMBER;
+
+    // return 0 on function success
+    return FUNCTION_SUCCESS;
+}
+
+int check_mn_valid(image_struct_type *image_struct, FILE *input_file, char *input_file_name){
     // checking magic number against the casted value due to endienness.
     // change to check file type (.ebf /.ebu)?
     if (*(image_struct->magic_number_value) != MAGIC_NUMBER_EB &&
@@ -65,8 +73,6 @@ int check_magic_number(
         fclose(input_file);
         return BAD_MAGIC_NUMBER;
     }
-
-    // return 0 on function success
     else return FUNCTION_SUCCESS;
 }
 
@@ -78,6 +84,14 @@ int check_dimensions(
     image_struct->check = 
     fscanf(input_file, "%d %d", &image_struct->height, &image_struct->width);
 
+    if (check_dimensions_valid(image_struct, input_file, input_file_name) == BAD_DIMENSION)
+        return BAD_DIMENSION;
+
+    // return 0 on function success
+    return FUNCTION_SUCCESS;
+}
+
+int check_dimensions_valid(image_struct_type *image_struct, FILE *input_file, char *input_file_name){
     // checks we captured two return values
     // checks dimensions are valid
     if (image_struct->check != 2 || 
@@ -90,10 +104,11 @@ int check_dimensions(
         printf("ERROR: Bad Dimensions (%s)\n", input_file_name);
         return BAD_DIMENSION;
     }
-
-    // return 0 on function success
-    else return FUNCTION_SUCCESS;
+    return FUNCTION_SUCCESS;
 }
+
+
+
 int check_malloc(image_struct_type *image_struct, FILE *input_file){
     // setting numBytes
     image_struct->numBytes = image_struct->width * image_struct->height;
