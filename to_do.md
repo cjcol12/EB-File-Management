@@ -31,12 +31,13 @@ check imageData free'd properly when expected
 find memory leaks using valgrind and gdb
 refactor error checking into different functions
 add all prototypes to headers (or create headers)
-
-
-
-
+think about next task
 understand why hexdumping slice0a and out are different - but correct according
 to hamishs notes
+
+
+
+
 
 
 
@@ -50,7 +51,7 @@ find \n in output when converting file
 add error checking to new functions
 test all functionality 
 extend test script
-think about next task
+clean up comments + add more
 
 
 
@@ -58,3 +59,5 @@ think about next task
 QUESTIONS
 lines limited to 80 characters?
 hand in instructions - readme.md?
+converted/ echoed files not identical - problem or whitespace
+newline at EOF in output

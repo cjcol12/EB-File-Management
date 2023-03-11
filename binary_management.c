@@ -21,6 +21,10 @@
 // Generic function file inclusion
 #include "binary_management.h"
 
+
+// Error checking module inclusion
+#include "error_checking.h"
+
 // add error checking
 int read_binary_data(
     image_struct_type *image_struct, char *input_file_name, FILE *input_file){
@@ -39,23 +43,16 @@ int read_binary_data(
             image_struct->check = fread(&binary_value, sizeof(unsigned char), 1, input_file);
 
             // check fread has read exactly one item
-            if(image_struct->check != 1){
-                printf("ERROR: Bad Data (%s)\n", input_file_name);
-                destructor(image_struct, input_file);
+            if (check_data_captured(image_struct, input_file, input_file_name) == BAD_DATA)
                 return BAD_DATA;
-            }
 
             // cast to int and store back in 2d array
             value = (unsigned int) binary_value;
             image_struct->imageData[i][j] = value;
 
             // check imageData is within bounds
-            if (image_struct->imageData[i][j] > MAX_GRAY
-            ||image_struct->imageData[i][j] < MIN_GRAY){
-                printf("ERROR: Bad Data (%s)\n", input_file_name);
-                destructor(image_struct, input_file);
+            if (check_data_values(value, input_file, input_file_name, image_struct) == BAD_DATA)
                 return BAD_DATA;
-            }
         }
     }
     return FUNCTION_SUCCESS;
@@ -73,13 +70,11 @@ int write_binary_data(image_struct_type *image_struct, FILE *output_file){
 
             // write binary values
             image_struct->check = fwrite(&binary_value, sizeof(unsigned char), 1, output_file);
-                        
+            
             // check fwrite has written exactly one item
-            if (image_struct->check != 1){
-                destructor(image_struct, output_file);
-                printf("ERROR: Bad Output\n");
+            if (check_binary_written(image_struct, output_file) == BAD_OUTPUT)
                 return BAD_OUTPUT;
-            }
+
         } 
     }
     return FUNCTION_SUCCESS;

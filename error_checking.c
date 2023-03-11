@@ -13,6 +13,7 @@
 // Error checking header file inclusion
 #include "error_checking.h"
 
+// read_image.c module
 int check_arg_count(int argc){
     // validate that user has entered 2 arguments
     if (argc != 3){
@@ -105,6 +106,38 @@ int check_data_captured(image_struct_type *image_struct, FILE *input_file, char 
         printf("ERROR: Bad Data (%s)\n", input_file_name);
         destructor(image_struct, input_file);
         return BAD_DATA;
+    }
+    else return FUNCTION_SUCCESS;
+}
+
+
+// write_image.c module
+
+int check_bad_output(
+    image_struct_type *image_struct, FILE *output_file, char *input_file_name){
+    // checks output file has been opened correctly 
+    if (output_file == NULL){
+        printf("ERROR: Bad Output(%s)", input_file_name);
+        return BAD_WRITE_PERMISSIONS;
+    }
+    else return FUNCTION_SUCCESS;
+}
+
+int check_data_written(image_struct_type *image_struct, FILE *output_file){
+    if (image_struct->check == 0){
+        printf("ERROR: Bad Output\n");
+        destructor(image_struct, output_file);
+        return BAD_OUTPUT;
+    }
+    else return FUNCTION_SUCCESS;
+}
+
+// binary_management.c module
+int check_binary_written(image_struct_type *image_struct, FILE *output_file){
+    if (image_struct->check != 1){
+        destructor(image_struct, output_file);
+        printf("ERROR: Bad Output\n");
+        return BAD_OUTPUT;
     }
     else return FUNCTION_SUCCESS;
 }
