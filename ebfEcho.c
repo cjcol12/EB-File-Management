@@ -24,6 +24,10 @@
 // Write image module inclusion
 #include "write_image.c"
 
+// Error checking module inclusion
+#include "error_checking.h"
+
+// Main routine
 int main(int argc, char **argv){
     // image struct variable initialization
     image_struct_type image_struct;
