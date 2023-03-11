@@ -108,7 +108,8 @@ int main(int argc, char **argv){
 
 
 
-
+    if (write_image_data(&image_struct, output_file) == BAD_OUTPUT)
+        return BAD_OUTPUT;
 
     // frees malloc'd memory and closes the output file
     // Parameters: image_struct, output_file - the file to close
