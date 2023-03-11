@@ -24,10 +24,6 @@
 // Write image module inclusion
 #include "write_image.c"
 
-// Error checking module inclusion
-#include "error_checking.h"
-
-// Main routine
 int main(int argc, char **argv){
     // image struct variable initialization
     image_struct_type image_struct;
@@ -35,7 +31,7 @@ int main(int argc, char **argv){
     // Unix usage information
     // Returns 0 if program is run with no arguments
     if (argc == 1){
-        printf("Usage: ebfEcho file1 file2");
+        printf("Usage: ebcEcho file1 file2");
         return USAGE_REQUEST;
     }
 
@@ -64,7 +60,6 @@ int main(int argc, char **argv){
         return BAD_MAGIC_NUMBER;
     }
     
-    
     // checks dimensions are within specified range(MIN_DIMENSION-MAX_DIMENSION)
     // Parameters: image_struct, argv[1] - for error statements, input_file - 
     // the file to test
@@ -80,9 +75,12 @@ int main(int argc, char **argv){
         return BAD_MALLOC;
     }
 
-
-
-    if(read_data(&image_struct, argv[1], input_file) == BAD_DATA){
+    // reads data into 2d array and checks data is valid
+    // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
+    // Parameters image_struct, argv[1] - for error statements, input_file - 
+    // the file to test 
+    // Returns 0 on success, 6 on failure
+    if (read_data(&image_struct, argv[1], input_file) == BAD_DATA){
         return BAD_DATA;
     }
 
@@ -106,8 +104,12 @@ int main(int argc, char **argv){
         return BAD_OUTPUT;
     }
 
-
-
+    // Writes main image data to output file
+    // Parameters: image_struct, output_file - the file to write to
+    // Return: returns 0 on success returns 7 on failure
+    if (write_image_data(&image_struct, output_file) == BAD_OUTPUT){
+        return BAD_OUTPUT;
+    }
 
 
     // frees malloc'd memory and closes the output file
