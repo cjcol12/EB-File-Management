@@ -24,8 +24,27 @@
 // Generic function file inclusion
 #include "generic.c"
 
-// Error checking module inclusion
-#include "error_checking.c"
+int check_arg_count(int argc){
+    // validate that user has entered 2 arguments
+    if (argc != 3){
+        printf("ERROR: Bad Arguments\n"); 
+        return BAD_ARGUMENT_COUNT; 
+    }
+    
+    // return 0 on function success
+    else return FUNCTION_SUCCESS;
+}
+
+int check_file_opened(char *input_file_name, FILE *input_file){
+    // check file opened correctly
+    if (!input_file){ 
+        printf("ERROR: Bad File Name (%s)\n", input_file_name);
+        return BAD_FILE;
+    }
+
+    // return 0 on function success
+    else return FUNCTION_SUCCESS;
+}
 
 int check_magic_number(
     image_struct_type *image_struct, char *input_file_name, FILE *input_file){
@@ -38,11 +57,17 @@ int check_magic_number(
     image_struct->magic_number_value = 
     (unsigned short *)image_struct->magic_number;
     
-    if (check_mn_valid(image_struct, input_file, input_file_name) == BAD_MAGIC_NUMBER)
+    // checking magic number against the casted value due to endienness.
+    // change to check file type (.ebf /.ebu)?
+    if (*(image_struct->magic_number_value) != MAGIC_NUMBER_EB &&
+        *(image_struct->magic_number_value) != MAGIC_NUMBER_EU){
+        printf("ERROR: Bad Magic Number (%s)\n", input_file_name);
+        fclose(input_file);
         return BAD_MAGIC_NUMBER;
+    }
 
     // return 0 on function success
-    return FUNCTION_SUCCESS;
+    else return FUNCTION_SUCCESS;
 }
 
 int check_dimensions(
@@ -53,14 +78,22 @@ int check_dimensions(
     image_struct->check = 
     fscanf(input_file, "%d %d", &image_struct->height, &image_struct->width);
 
-    if (check_dimensions_valid(image_struct, input_file, input_file_name) == BAD_DIMENSION)
+    // checks we captured two return values
+    // checks dimensions are valid
+    if (image_struct->check != 2 || 
+        image_struct->height < MIN_DIMENSION || 
+        image_struct->width < MIN_DIMENSION || 
+        image_struct->height > MAX_DIMENSION || 
+        image_struct->width > MAX_DIMENSION){
+        
+        fclose(input_file);
+        printf("ERROR: Bad Dimensions (%s)\n", input_file_name);
         return BAD_DIMENSION;
+    }
 
     // return 0 on function success
-    return FUNCTION_SUCCESS;
+    else return FUNCTION_SUCCESS;
 }
-
-
 int check_malloc(image_struct_type *image_struct, FILE *input_file){
     // setting numBytes
     image_struct->numBytes = image_struct->width * image_struct->height;
@@ -70,16 +103,22 @@ int check_malloc(image_struct_type *image_struct, FILE *input_file){
     (unsigned int **) malloc(image_struct->height * sizeof(unsigned int *));
 
     // testing return value of malloc
-    if (check_image_data_malloc(image_struct, input_file) == BAD_MALLOC)
+    if (image_struct->imageData == NULL){
+        printf("ERROR: Image Malloc Failed\n");
+        destructor(image_struct, input_file);
         return BAD_MALLOC;
-
+    }
+    
     // allocating memory for all data at once
     image_struct->data_block = 
     (unsigned int *) malloc(image_struct->numBytes * sizeof(unsigned int));
 
     // testing return value of malloc
-    if (check_data_block_malloc(image_struct, input_file) == BAD_MALLOC)
+    if (image_struct->data_block == NULL){
+        printf("ERROR: Image Malloc Failed\n");    
+        destructor(image_struct, input_file);    
         return BAD_MALLOC;
+    }
 
     // loop set up pointers to each row - saves multiple costly malloc calls
     for (int row = 0; row < image_struct->height; row++){
@@ -89,7 +128,6 @@ int check_malloc(image_struct_type *image_struct, FILE *input_file){
     // return 0 on function success
     return FUNCTION_SUCCESS;
 }
-
 
 int read_data(
     image_struct_type *image_struct, char *input_file_name, FILE *input_file){
@@ -101,16 +139,23 @@ int read_data(
             // reading in data
             image_struct->check = fscanf(input_file, "%u", &data);
 
-            // check data is captured correctly
-            if (check_data_captured(image_struct, input_file, input_file_name) == BAD_DATA)
+            // testing one value captured
+            if (image_struct->check != 1){
+                printf("ERROR: Bad Data (%s)\n", input_file_name);
+                destructor(image_struct, input_file);
                 return BAD_DATA;
+            }
+
+            // setting imageData to data
+            image_struct->imageData[i][j] = data;
 
             // check data is within bounds (0 - 31)
-            if (check_data_values(data, input_file, input_file_name, image_struct) == BAD_DATA)
+            if (image_struct->imageData[i][j] > MAX_GRAY
+            ||image_struct->imageData[i][j] < MIN_GRAY){
+                printf("ERROR: Bad Data (%s)\n", input_file_name);
+                destructor(image_struct, input_file);
                 return BAD_DATA;
-
-            // set correct data to imageData
-            image_struct->imageData[i][j] = data;
+            }
         }
     }
  
@@ -119,11 +164,13 @@ int read_data(
 
     // if there is more data, fscanf returns 1
     // if thats the case, we have too much data ( > numBytes)
-    if (check_extra_data(image_struct, input_file, input_file_name) == BAD_DATA)
+    if (image_struct->check == 1){
+        printf("ERROR: Bad Data (%s)\n", input_file_name);
+        destructor(image_struct, input_file);
         return BAD_DATA;
-    
-    // Finished with input file
+    }
+
+    // Finished with input file - close it
     fclose(input_file);
     return FUNCTION_SUCCESS;
 }
-
