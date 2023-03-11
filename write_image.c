@@ -22,7 +22,7 @@
 #include "write_image.h"
 
 // Generic function file inclusion
-#include "generic.h"
+// #include "generic.c"
 
 int check_bad_output(
     image_struct_type *image_struct, FILE *output_file, char *input_file_name){
@@ -37,9 +37,8 @@ int check_bad_output(
 int write_header(image_struct_type *image_struct, FILE *output_file){
     // write the header data in one block
     // change to write with magicNumberValue
-    // printf("MN %hn\n", image_struct->magic_number_value);
-    image_struct->check = fprintf(output_file, "%c%c\n%d %d\n", 
-    image_struct->magic_number[0], image_struct->magic_number[1], image_struct->height, image_struct->width);
+    image_struct->check = fprintf(output_file, "%s\n%d %d\n", 
+    image_struct->magic_number, image_struct->height, image_struct->width);
 
     // and use the return from fprintf to check that we wrote.
     if (image_struct->check == 0) 

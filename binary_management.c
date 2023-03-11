@@ -16,7 +16,7 @@
 #include "definitions.h"
 
 // Generic function file inclusion
-#include "generic.h"
+// #include "generic.c"
 
 // Generic function file inclusion
 #include "binary_management.h"
@@ -84,42 +84,3 @@ int write_binary_data(image_struct_type *image_struct, FILE *output_file){
     }
     return FUNCTION_SUCCESS;
 }
-
-//int compress_data(image_struct_type *image_struct, FILE *output_file){
-
-
-    // int count = 0;
-    // unsigned char buffer;
-    // unsigned char right_buffer;
-    // for (int i = 0; i < image_struct->height; i++){
-    //     for (int j = 0; j < image_struct->width; j++){
-
-    //         if (i < image_struct->height - 1){
-    //             right_buffer = image_struct->imageData[i + 1][j];
-    //         }
-    //         if (j < image_struct->width - 1){
-    //             printf("image %d\n", image_struct->imageData[i][j]);
-    //             right_buffer = image_struct->imageData[i][j + 1];
-    //         }
-
-    //         switch(count){
-
-    //             case(0):
-    //                 buffer = image_struct->imageData[i][j] << 3;
-    //                 right_buffer = right_buffer >> 3;
-    //                 image_struct->imageData[i][j] = buffer + right_buffer;
-    //                 printf("imageData %d\n", image_struct->imageData[i][j]);
-    //                 break;
-    //             case(1):
-    //                 buffer = image_struct->imageData[i][j] << 3;
-    //                 right_buffer = right_buffer >> 3;
-    //                 image_struct->imageData[i][j] = buffer + right_buffer;
-    //                 printf("imageData %d\n", right_buffer);
-    //                 break;
-    //         }
-            
-    //         count++;
-    //     }
-    // }
-    // return FUNCTION_SUCCESS;
-//}

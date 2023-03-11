@@ -7,6 +7,3 @@ file.txt
 *.o
 *.exe
 2
-.vscode
-*.out
-
