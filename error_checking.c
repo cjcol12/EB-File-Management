@@ -13,6 +13,9 @@
 // Error checking header file inclusion
 #include "error_checking.h"
 
+// Generic function file inclusion
+#include "generic.h"
+
 // read_image.c module
 int check_arg_count(int argc){
     // validate that user has entered 2 arguments
@@ -124,6 +127,7 @@ int check_bad_output(
 }
 
 int check_data_written(image_struct_type *image_struct, FILE *output_file){
+        // printf("image check is %d\n", image_struct->check);
     if (image_struct->check == 0){
         printf("ERROR: Bad Output\n");
         destructor(image_struct, output_file);
