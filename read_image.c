@@ -38,6 +38,7 @@ int check_magic_number(
     image_struct->magic_number_value = 
     (unsigned short *)image_struct->magic_number;
     
+    // checks magic number is valid (eb, eu or ec)
     if (check_mn_valid(image_struct, input_file, input_file_name) == BAD_MAGIC_NUMBER)
         return BAD_MAGIC_NUMBER;
 
@@ -53,6 +54,7 @@ int check_dimensions(
     image_struct->check = 
     fscanf(input_file, "%d %d", &image_struct->height, &image_struct->width);
 
+    // checks dimensions are within specified range
     if (check_dimensions_valid(image_struct, input_file, input_file_name) == BAD_DIMENSION)
         return BAD_DIMENSION;
 
@@ -69,7 +71,7 @@ int check_malloc(image_struct_type *image_struct, FILE *input_file){
     image_struct->imageData = 
     (unsigned int **) malloc(image_struct->height * sizeof(unsigned int *));
 
-    // testing return value of malloc
+    // testing return value of malloc to see if allocated succesfully
     if (check_image_data_malloc(image_struct, input_file) == BAD_MALLOC)
         return BAD_MALLOC;
 
