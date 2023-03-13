@@ -10,7 +10,7 @@ CC     = gcc
 CFLAGS = -std=c99 -Wall -g # -Werror #######################################
 # this is your list of executables which you want to compile with all
 EXE    = ebfEcho ebfComp ebf2ebu ebu2ebf ebuEcho ebuComp ebu2ebc
-O 	   = read_image.o write_image.o generic.o binary_management.o
+O 	   = read_image.o write_image.o generic.o binary_management.o error_checking.o
 # we put 'all' as the first command as this will be run if you just enter 'make'
 all: ${EXE} ${O}
 
@@ -64,4 +64,7 @@ ebuComp: ebuComp.o
 	$(CC) $(CCFLAGS) $^ -o $@
 
 ebu2ebc: ebu2ebc.o
+	$(CC) $(CCFLAGS) $^ -o $@
+
+error_checking: error_checking.o
 	$(CC) $(CCFLAGS) $^ -o $@
