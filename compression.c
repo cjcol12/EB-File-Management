@@ -86,7 +86,6 @@ void compress(){
         k = 0;
         compressed_byte_counter = 0;
         for(int j = 0; j < COL; j++){
-            // printf("i is %d j is %d\n", i, j);
 
             unsigned int this_element = array2d[i][j];
             unsigned int next_element = (j < COL - 1) ? array2d[i][j+1] : 0;
@@ -95,15 +94,13 @@ void compress(){
             unsigned int element_4_away = (j < COL - 4) ? array2d[i][j+4] : 0;
 
 
-            // printf("next element is %d\nelement 2 away is %d\n\n", next_element, element_2_away);
-
             switch(count){
                 case 0:
                     this_element <<= 27;
                     this_element >>= 24;
 
                     next_element <<= 27;
-                    next_element >>= 24;
+                    next_element >>= 29;
 
                     this_element |= next_element;
                     compressed_array[i][k] = this_element;
@@ -164,11 +161,8 @@ void compress(){
 
             if (count == 5){
                 count = 0;
-                // printf("j is before %d\n", j);
                 compressed_byte_counter ++;
                 j = compressed_byte_counter * 7;
-                // printf("j is after %d\n", j);
-                // count = 0;
             }
         }
 
