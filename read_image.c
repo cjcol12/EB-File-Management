@@ -128,4 +128,3 @@ int read_data(
     fclose(input_file);
     return FUNCTION_SUCCESS;
 }
-

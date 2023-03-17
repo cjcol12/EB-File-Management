@@ -29,5 +29,6 @@
 #define MIN_DIMENSION 1
 #define MAX_GRAY 31
 #define MIN_GRAY 0
+#define MAX_GRAY_COMPRESSED 255
 
 #endif

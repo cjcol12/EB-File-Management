@@ -43,7 +43,8 @@ int check_mn_valid(image_struct_type *image_struct, FILE *input_file, char *inpu
     // checking magic number against the casted value due to endienness.
     // change to check file type (.ebf /.ebu)?
     if (*(image_struct->magic_number_value) != MAGIC_NUMBER_EB &&
-        *(image_struct->magic_number_value) != MAGIC_NUMBER_EU){
+        *(image_struct->magic_number_value) != MAGIC_NUMBER_EU &&
+        *(image_struct->magic_number_value) != MAGIC_NUMBER_EC){
         printf("ERROR: Bad Magic Number (%s)\n", input_file_name);
         fclose(input_file);
         return BAD_MAGIC_NUMBER;

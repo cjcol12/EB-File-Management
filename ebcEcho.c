@@ -24,6 +24,8 @@
 // Write image module inclusion
 #include "write_image.c"
 
+#include "binary_management.c"
+
 int main(int argc, char **argv){
     // image struct variable initialization
     image_struct_type image_struct;
@@ -80,7 +82,7 @@ int main(int argc, char **argv){
     // Parameters image_struct, argv[1] - for error statements, input_file - 
     // the file to test 
     // Returns 0 on success, 6 on failure
-    if (read_data(&image_struct, argv[1], input_file) == BAD_DATA){
+    if (read_compressed_data(&image_struct_compressed, argv[1], input_file) == BAD_DATA){
         return BAD_DATA;
     }
 

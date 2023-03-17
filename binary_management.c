@@ -176,18 +176,42 @@ int compress_data(image_struct_type *image_struct, image_struct_type *image_stru
     return FUNCTION_SUCCESS;
 }
 
-void display_array_comp(image_struct_type *image_struct_compressed){
-    for(int i = 0; i < image_struct_compressed->height; i++) {
-        for(int j = 0; j < image_struct_compressed->width; j++){
-            printf("%d ", image_struct_compressed->imageData[i][j]);
-        }
-        printf("\n");
-    }
-}
-
 void round_up(image_struct_type *image_struct, image_struct_type *image_struct_compressed){
     image_struct_compressed->width = (int)(image_struct->width / 1.6);
     if (image_struct->width > image_struct_compressed->width * 1.6){
         image_struct_compressed->width += 1;
     }
+}
+
+int read_compressed_data(image_struct_type *image_struct, char *input_file_name, FILE *input_file){
+
+    unsigned char test;
+    fread(&test, sizeof(unsigned char), 1, input_file); // not sure why needed
+    // fread starts on the wrong line - manually incremenet it 
+    
+    // iterate through 2d array
+    for(int i = 0; i < image_struct->height; i++){
+        for(int j = 0; j < image_struct->width; j++){
+            unsigned char binary_value;
+            unsigned int value;
+
+            // read in binary values
+            image_struct->check = fread(&binary_value, sizeof(unsigned char), 1, input_file);
+
+            // check fread has read exactly one item
+            printf("image check %d\n", image_struct->check);
+            if (check_data_captured(image_struct, input_file, input_file_name) == BAD_DATA)
+                return BAD_DATA;
+
+            // cast to int and store back in 2d array
+            value = (unsigned int) binary_value;
+            image_struct->imageData[i][j] = value;
+
+            // change to 255
+            // // check imageData is within bounds
+            // if (check_data_values(value, input_file, input_file_name, image_struct) == BAD_DATA)
+            //     return BAD_DATA;
+        }
+    }
+    return FUNCTION_SUCCESS;
 }

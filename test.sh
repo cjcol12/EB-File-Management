@@ -111,7 +111,7 @@ run_test ()
 
 # you can remove or comment out any executables you don't want to test
 # full list of executables: ebf2ebu ebuEcho ebuComp ebu2ebf
-EXES=(ebfEcho ebuComp ebuEcho ebfComp ebu2ebf ebf2ebu)
+EXES=(ebcEcho) #ebu2ebc ebfEcho ebuComp ebuEcho ebfComp ebu2ebf ebf2ebu)
 
 # run all of the tests below for all executables given in 'EXES'
 # inside this loop, the executable being run can be referred to by 'testExecutable'
@@ -274,7 +274,7 @@ do
         if [[ $D != "" ]]
         then
             printf "${MAGENTA}FILES ARE DIFFERENT${NC}"
-            # echo $D  ################################################################# commented out
+            echo $D  ################################################################# commented out
         else
             printf "${CYAN}FILES ARE IDENTICAL${NC}"
         fi
@@ -313,7 +313,7 @@ do
         if [[ $D != "" ]]
         then
             printf "${MAGENTA}CONVERTED FILES ARE DIFFERENT${NC}"
-            # echo $D ################################################################
+            echo $D ################################################################
         else
             printf "${CYAN}CONVERTED FILES ARE IDENTICAL${NC}"
         fi
