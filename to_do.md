@@ -61,3 +61,4 @@ lines limited to 80 characters?
 hand in instructions - readme.md?
 converted/ echoed files not identical - problem or whitespace
 newline at EOF in output
+file format different in sample images and test (whitespace)
