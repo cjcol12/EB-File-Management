@@ -1,4 +1,4 @@
-/sample_images
+/sample_images/*
 /tests
 /test area
 image_generator.c
