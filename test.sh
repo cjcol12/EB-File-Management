@@ -94,7 +94,7 @@ run_test ()
 
 # you can remove or comment out any executables you don't want to test
 # full list of executables: ebf2ebu ebuEcho ebuComp ebu2ebf
-EXES=(ebfEcho) #ebuComp ebuEcho ebfEcho ebfComp ebu2ebf ebf2ebu)
+EXES=(ebfEcho ebuComp ebuEcho ebfComp ebu2ebf ebf2ebu)
 
 # run all of the tests below for all executables given in 'EXES'
 # inside this loop, the executable being run can be referred to by 'testExecutable'
@@ -339,5 +339,3 @@ echo "--------------------------------------------------------------------------
 rm tmp null
 # and run make clean to remove object files
 make clean
-
-powershell

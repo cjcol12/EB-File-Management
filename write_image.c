@@ -24,30 +24,18 @@
 // Generic function file inclusion
 #include "generic.h"
 
-int check_bad_output(
-    image_struct_type *image_struct, FILE *output_file, char *input_file_name){
-    // checks output file has been opened correctly 
-    if (output_file == NULL){
-        printf("ERROR: Bad Output(%s)", input_file_name);
-        return BAD_WRITE_PERMISSIONS;
-    }
-    else return FUNCTION_SUCCESS;
-}
+// Error checking module inclusion
+#include "error_checking.h"
 
 int write_header(image_struct_type *image_struct, FILE *output_file){
     // write the header data in one block
-    // change to write with magicNumberValue
-    // printf("MN %hn\n", image_struct->magic_number_value);
     image_struct->check = fprintf(output_file, "%c%c\n%d %d\n", 
     image_struct->magic_number[0], image_struct->magic_number[1], image_struct->height, image_struct->width);
 
-    // and use the return from fprintf to check that we wrote.
-    if (image_struct->check == 0) 
-        {
-        destructor(image_struct, output_file);
-        printf("ERROR: Bad Output\n");
+    // check data is written correctly 
+    if (check_data_written(image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
-        }
+
     else return FUNCTION_SUCCESS;
 }
 
@@ -55,20 +43,50 @@ int write_image_data(image_struct_type *image_struct, FILE *output_file){
     // iterating through 2d array and writing
     for(int i = 0; i < image_struct->height; i++){
         for(int j = 0; j < image_struct->width; j++){
+            // // if fprintf fails, return 0 for error checking
+            // if (image_struct->imageData[i][j] < 10 && j == 0){
+            //     image_struct->check = 
+            //     fprintf(output_file, " %u ", image_struct->imageData[i][j]);
+            // }
 
-            // if fprintf fails, return 0 for error checking
-            image_struct->check = 
-            fprintf(output_file, "%u ", image_struct->imageData[i][j]);
+            // else if (image_struct->imageData[i][j] < 10){
+            //     image_struct->check = 
+            //     fprintf(output_file, " %u ", image_struct->imageData[i][j]);
+            // }
 
-            // and use the return from fprintf to check that we wrote.
-            if (image_struct->check == 0){
-                destructor(image_struct, output_file);
-                printf("ERROR: Bad Output\n");
-                return BAD_OUTPUT;
+            // else if (image_struct->width == j + 1){
+            //     // printf("hello\n");
+            //     image_struct->check = 
+            //     fprintf(output_file, "%u", image_struct->imageData[i][j]);
+            // }
+
+            // else if (image_struct->height == i && image_struct->width == j){
+            //     image_struct->check = 
+            //     fprintf(output_file, "%u", image_struct->imageData[i][j]);
+            // }
+
+            // else{
+            //     fprintf(output_file, "%u ", image_struct->imageData[i][j]);
+            // }
+
+            if (image_struct->width == j + 1){
+                image_struct->check = fprintf(output_file, "%u", image_struct->imageData[i][j]);
             }
+            else{       
+                image_struct->check = fprintf(output_file, "%u ", image_struct->imageData[i][j]);
+            }
+            // checks fprintf has run succesfully
+            if (check_data_written(image_struct, output_file) == BAD_OUTPUT)
+                return BAD_OUTPUT;
         }
-        fprintf(output_file, "\n");
+
+        if (i + 2 <= image_struct->height){
+            image_struct->check = fprintf(output_file, "\n");
+        }
+
+        // checks fprintf has run succesfully
+        if (check_data_written(image_struct, output_file) == BAD_OUTPUT)
+            return BAD_OUTPUT;
     }
     return FUNCTION_SUCCESS;
 }
-
