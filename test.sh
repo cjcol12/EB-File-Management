@@ -13,6 +13,15 @@
 # ./tests.sh > name_of_file.txt
 # you can edit which executables to run on line 90.
 
+
+# checking for the -echo option.
+ECHO=0
+if [[ $1 = '-echo' ]]
+then
+    ECHO=1
+fi
+
+
 # we clean up object files and then recompile as standard
 # this is because when you may be working across multiple devices
 # your object files are not necessarily tranferable, and therefore
@@ -55,10 +64,18 @@ score=0
 # colour coded output for easier readability
 GREEN='\033[0;32m'
 RED='\033[0;31m'
+CYAN='\u001b[36m'
+MAGENTA='\u001b[35m'
 NC='\033[0m' # No Color
 
 run_test () 
     { # run_test()
+
+
+    if [ $ECHO -eq 1 ]
+    then
+        echo $1 $2 $3
+    fi
     # capture returned message
     message=$($1 $2 $3) 
     # run again (pipe to null so it doesn't display to user) for the output code
@@ -175,11 +192,11 @@ do
 
     # In this test, the dimensions used are within the permitted range for the file format
     # but are beyond the amount of memory which C can allocate.
-    # echo ""   ####################################################################
-    # echo "Bad Malloc (dims too high to allocate)"
-    # filename="bad_malloc"
-    # full_path=$path$filename$file_ext
-    # run_test ./$testExecutable $full_path "tmp" 5  "ERROR: Image Malloc Failed" ###################
+    echo ""   ####################################################################
+    echo "Bad Malloc (dims too high to allocate)"
+    filename="bad_malloc"
+    full_path=$path$filename$file_ext
+    run_test ./$testExecutable $full_path "tmp" 5  "ERROR: Image Malloc Failed" ###################
 
     # data has a greyvalue above the maximum permitted value
     echo ""
@@ -256,10 +273,10 @@ do
         D=$(diff $full_path tmp)
         if [[ $D != "" ]]
         then
-            echo "FILES ARE DIFFERENT"
+            printf "${MAGENTA}FILES ARE DIFFERENT${NC}"
             # echo $D  ################################################################# commented out
         else
-            echo "FILES ARE IDENTICAL"
+            printf "${CYAN}FILES ARE IDENTICAL${NC}"
         fi
     # If it is a Comp executable...
     elif [[ ${testExecutable:3:4} == "Comp" ]]
@@ -295,10 +312,10 @@ do
         D=$(diff $comp_path tmp) 
         if [[ $D != "" ]]
         then
-            echo "CONVERTED FILES ARE DIFFERENT"
+            printf "${MAGENTA}CONVERTED FILES ARE DIFFERENT${NC}"
             # echo $D ################################################################
         else
-            echo "CONVERTED FILES ARE IDENTICAL"
+            printf "${CYAN}CONVERTED FILES ARE IDENTICAL${NC}"
         fi
     fi
     
