@@ -7,13 +7,14 @@ typedef struct{
     unsigned short *magic_number_value;
 
     // create and initialise variables used within code
-    int width; 
+    int width;
     int height;
     int check;
 
     // image data 
     unsigned int **imageData;
     unsigned int *data_block;
+
     long numBytes;
 
 } image_struct_type;

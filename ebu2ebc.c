@@ -1,6 +1,6 @@
 /*  Function: Read in a .ebu file and converts it to and .ebc file
     
-    Arguments: Expects 3 arguments: ./ebu2ebc input_file, output_file
+    Arguments: Expects 3 arguments: ./ebu2ebc input_file.ebu, output_file.ebc
     
     Returns: 0 on success, different values depending on error - found in 
     definitions.h
@@ -40,8 +40,6 @@ int main(int argc, char **argv){
     }
 
     // validates number of arguments
-    // Parameters: argc - to test
-    // Returns 0 on success or 1 on failure
     if (check_arg_count(argc) == BAD_ARGUMENT_COUNT)
         return BAD_ARGUMENT_COUNT;
 
@@ -49,37 +47,31 @@ int main(int argc, char **argv){
     FILE *input_file = fopen(argv[1], "r");
 
     // check to see if file opened successfully
-    // Parameters: argv[1] - for error statements, input_file - the file to test
-    // Returns 0 on success or 2 on failure
     if (check_file_opened(argv[1], input_file) == BAD_FILE)
         return BAD_FILE;
 
     // checks if the magic number is what we expect
-    // Parameters: image_struct, argv[1] - for error statements, input_file - 
-    // the file to test
-    // Returns: 0 on success, 3 on failure
     if (check_magic_number(&image_struct, argv[1], input_file) == 
         BAD_MAGIC_NUMBER) 
         return BAD_MAGIC_NUMBER;
     
     // checks dimensions are within specified range(MIN_DIMENSION-MAX_DIMENSION)
-    // Parameters: image_struct, argv[1] - for error statements, input_file - 
-    // the file to test
-    // Returns 0 on success, 4 on failure
     if (check_dimensions(&image_struct,  argv[1], input_file) == BAD_DIMENSION)
         return BAD_DIMENSION;
 
     // checks memory has been allocated properly for 2d array
-    // Parameters: image_struct, input_file - the file to test
-    // Returns 0 on success, 5 on failure
     if(check_malloc(&image_struct, input_file) == BAD_MALLOC)
         return BAD_MALLOC;
 
+
+    // create instance of compressed structure
+    // initialise now to avoid copying uncompressed imageData in
+    image_struct_type image_struct_compressed;
+    image_struct_compressed = image_struct;
+
+
     // reads data into 2d array and checks data is valid
     // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
-    // Parameters image_struct, argv[1] - for error statements, input_file - 
-    // the file to test 
-    // Returns 0 on success, 6 on failure
     if (read_binary_data(&image_struct, argv[1], input_file) == BAD_DATA)
         return BAD_DATA;
 
@@ -88,33 +80,33 @@ int main(int argc, char **argv){
     FILE *output_file = fopen(argv[2], "w");
 
     // convert magic number to eb
-    image_struct.magic_number[1] = 'b';
+    image_struct.magic_number[1] = 'c';
 
     // checks we can write to output_file
-    // Parameters: Parameters image_struct, argv[1] - for error statements, 
-    // output_file - the file to test 
-    // Return: returns 0 on success returns 8 on failure
     if (check_bad_output(&image_struct, output_file, argv[2]) == 
     BAD_WRITE_PERMISSIONS)
         return BAD_WRITE_PERMISSIONS;
 
     // Writes the header of the output file
-    // Parameters: image_struct, output_file - the file to write to 
-    // Return: returns 0 on success returns 8 on failure
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
 
-    // compress_data(&image_struct, output_file);
+
+    // Divides data by compression ratio (1.6) and rounds up to ensure enough 
+    // bytes are allocated
+    round_up(&image_struct, &image_struct_compressed);
+
+        // checks memory has been allocated properly for 2d array
+    if(check_malloc(&image_struct_compressed, input_file) == BAD_MALLOC)
+        return BAD_MALLOC;
+
+    compress_data(&image_struct, &image_struct_compressed);
+    
+
+    write_binary_data(&image_struct_compressed, output_file);
 
 
-
-    // Writes main image data to output file
-    // Parameters: image_struct, output_file - the file to write to
-    // Return: returns 0 on success returns 7 on failure
-    if (write_image_data(&image_struct, output_file) == BAD_OUTPUT){
-        return BAD_OUTPUT;
-    }
     // frees malloc'd memory and closes the output file
     // Parameters: image_struct, output_file - the file to close
     // Return: void function
