@@ -13,6 +13,8 @@ int check_extra_data(image_struct_type *image_struct, FILE *input_file, char *in
 
 int check_data_values(int data, FILE *input_file, char *input_file_name, image_struct_type *image_struct);
 
+int check_data_values_compressed(int data, FILE *input_file, char *input_file_name, image_struct_type *image_struct);
+
 int check_data_captured(image_struct_type *image_struct, FILE *input_file, char *input_file_name);
 
 int check_image_data_malloc(image_struct_type *image_struct, FILE *input_file);

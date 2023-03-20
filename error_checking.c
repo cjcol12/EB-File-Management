@@ -105,6 +105,16 @@ int check_data_values(int data, FILE *input_file, char *input_file_name, image_s
     else return FUNCTION_SUCCESS;
 }
 
+int check_data_values_compressed(int data, FILE *input_file, char *input_file_name, image_struct_type *image_struct){
+    if (data > MAX_GRAY_COMPRESSED || data < MIN_GRAY){
+        printf("ERROR: Bad Data (%s)\n", input_file_name);
+        destructor(image_struct, input_file);
+        return BAD_DATA;
+        }
+
+    else return FUNCTION_SUCCESS;
+}
+
 int check_data_captured(image_struct_type *image_struct, FILE *input_file, char *input_file_name){
     if (image_struct->check != 1){
         printf("ERROR: Bad Data (%s)\n", input_file_name);

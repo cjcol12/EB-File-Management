@@ -103,9 +103,7 @@ int main(int argc, char **argv){
 
     compress_data(&image_struct, &image_struct_compressed);
     
-
     write_binary_data(&image_struct_compressed, output_file);
-
 
     // frees malloc'd memory and closes the output file
     // Parameters: image_struct, output_file - the file to close

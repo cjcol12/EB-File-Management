@@ -49,26 +49,6 @@ int write_image_data(image_struct_type *image_struct, FILE *output_file){
             //     fprintf(output_file, " %u ", image_struct->imageData[i][j]);
             // }
 
-            // else if (image_struct->imageData[i][j] < 10){
-            //     image_struct->check = 
-            //     fprintf(output_file, " %u ", image_struct->imageData[i][j]);
-            // }
-
-            // else if (image_struct->width == j + 1){
-            //     // printf("hello\n");
-            //     image_struct->check = 
-            //     fprintf(output_file, "%u", image_struct->imageData[i][j]);
-            // }
-
-            // else if (image_struct->height == i && image_struct->width == j){
-            //     image_struct->check = 
-            //     fprintf(output_file, "%u", image_struct->imageData[i][j]);
-            // }
-
-            // else{
-            //     fprintf(output_file, "%u ", image_struct->imageData[i][j]);
-            // }
-
             if (image_struct->width == j + 1){
                 image_struct->check = fprintf(output_file, "%u", image_struct->imageData[i][j]);
             }

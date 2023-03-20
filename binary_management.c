@@ -28,7 +28,6 @@
 // Error checking module inclusion
 #include "error_checking.h"
 
-// add error checking
 int read_binary_data(
     image_struct_type *image_struct, char *input_file_name, FILE *input_file){
 
@@ -60,6 +59,7 @@ int read_binary_data(
     }
     return FUNCTION_SUCCESS;
 }
+
 
 // add error checking
 int write_binary_data(image_struct_type *image_struct, FILE *output_file){
@@ -116,9 +116,10 @@ int compress_data(image_struct_type *image_struct, image_struct_type *image_stru
                 case 1:
                     this_element <<= 30;
                     this_element >>= 24;
-
+                 
                     next_element <<= 25;
                     next_element >>= 24;
+
 
                     this_element |= next_element;
         
@@ -126,6 +127,7 @@ int compress_data(image_struct_type *image_struct, image_struct_type *image_stru
                     element_2_away >>= 31;
 
                     this_element |= element_2_away;
+
                     image_struct_compressed->imageData[i][k] = this_element;
                     break;
 
@@ -160,7 +162,8 @@ int compress_data(image_struct_type *image_struct, image_struct_type *image_stru
 
                     element_2_away |= element_3_away;
                     image_struct_compressed->imageData[i][k] = element_2_away;
-                    break;            
+                    break;
+
             }
             count ++;
             k++;
@@ -176,11 +179,36 @@ int compress_data(image_struct_type *image_struct, image_struct_type *image_stru
     return FUNCTION_SUCCESS;
 }
 
+void display_array(image_struct_type *image_struct_compressed){
+    for(int i = 0; i < image_struct_compressed->height; i++) {
+        for(int j = 0; j < image_struct_compressed->width; j++){
+            printf("%d ", image_struct_compressed->imageData[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void print_binary(int num) {
+    int i;
+    for (i = 7; i >= 0; i--) {
+        printf("%d", (num >> i) & 1);
+    }
+    printf("\n");
+}
+
 void round_up(image_struct_type *image_struct, image_struct_type *image_struct_compressed){
     image_struct_compressed->width = (int)(image_struct->width / 1.6);
     if (image_struct->width > image_struct_compressed->width * 1.6){
         image_struct_compressed->width += 1;
     }
+}
+
+int round_up_return(image_struct_type *image_struct){
+    int tmp = (int)(image_struct->width / 1.6);
+    if (image_struct->width > tmp * 1.6){
+        tmp += 1;
+    }
+    return tmp;
 }
 
 int read_compressed_data(image_struct_type *image_struct, char *input_file_name, FILE *input_file){
@@ -199,19 +227,23 @@ int read_compressed_data(image_struct_type *image_struct, char *input_file_name,
             image_struct->check = fread(&binary_value, sizeof(unsigned char), 1, input_file);
 
             // check fread has read exactly one item
-            printf("image check %d\n", image_struct->check);
-            if (check_data_captured(image_struct, input_file, input_file_name) == BAD_DATA)
-                return BAD_DATA;
+            //printf("image check %d\n", image_struct->check);
+            // if (check_data_captured(image_struct, input_file, input_file_name) == BAD_DATA)
+            //     return BAD_DATA;
 
             // cast to int and store back in 2d array
             value = (unsigned int) binary_value;
             image_struct->imageData[i][j] = value;
 
-            // change to 255
+            
             // // check imageData is within bounds
-            // if (check_data_values(value, input_file, input_file_name, image_struct) == BAD_DATA)
-            //     return BAD_DATA;
+            if (check_data_values_compressed(value, input_file, input_file_name, image_struct) == BAD_DATA)
+                return BAD_DATA;
         }
     }
     return FUNCTION_SUCCESS;
+}
+
+int decompress(image_struct_type *image_struct){
+
 }

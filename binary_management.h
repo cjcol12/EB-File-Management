@@ -5,4 +5,8 @@ int read_binary_data(image_struct_type *image_struct, char *input_file_name, FIL
 
 int write_binary_data(image_struct_type *image_struct, FILE *output_file);
 
+int decompress(image_struct_type *image_struct);
+
+void print_binary(int num);
+
 #endif
