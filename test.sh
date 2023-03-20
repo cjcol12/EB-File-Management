@@ -111,7 +111,10 @@ run_test ()
 
 # you can remove or comment out any executables you don't want to test
 # full list of executables: ebf2ebu ebuEcho ebuComp ebu2ebf
-EXES=(ebcEcho) #ebu2ebc ebfEcho ebuComp ebuEcho ebfComp ebu2ebf ebf2ebu)
+ebf=(ebfEcho ebf2ebu ebfComp)
+ebu=(ebu2ebf ebuComp ebuEcho)
+EBC=(ebc2ebu ebu2ebc ebcEcho ebcComp)
+EXES=(ebc2ebu ebu2ebc ebcEcho ebcComp) # (ebcComp ebcEcho ebu2ebc ebc2ebu ebfEcho ebuComp ebuEcho ebfComp ebu2ebf ebf2ebu)
 
 # run all of the tests below for all executables given in 'EXES'
 # inside this loop, the executable being run can be referred to by 'testExecutable'
@@ -123,6 +126,10 @@ do
     then
         file_ext=".ebf"
         path="tests/data/ebf_data/"
+    elif [[ ${testExecutable::3} == "ebc" ]]
+    then
+        file_ext=".ebc"
+        path="tests/data/ebc_data/"
     else
         file_ext=".ebu"
         path="tests/data/ebu_data/"
