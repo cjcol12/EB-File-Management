@@ -4,11 +4,11 @@
 clear
 
 # make
-make clean
-make all
+# make clean
+# make all
 
-# run ebfEcho with valid arguments
-./ebfEcho sample_images/dodo.ebf sample_images/out.ebf
+# # run ebfEcho with valid arguments
+# ./ebfEcho sample_images/dodo.ebf sample_images/out.ebf
 
 # ask the user if they want to run test script
 printf "Run tests? (y/n): " 
