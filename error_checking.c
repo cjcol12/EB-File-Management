@@ -110,7 +110,7 @@ int check_data_values_compressed(int data, FILE *input_file, char *input_file_na
         printf("ERROR: Bad Data (%s)\n", input_file_name);
         destructor(image_struct, input_file);
         return BAD_DATA;
-        }
+    }
 
     else return FUNCTION_SUCCESS;
 }

@@ -244,6 +244,94 @@ int read_compressed_data(image_struct_type *image_struct, char *input_file_name,
     return FUNCTION_SUCCESS;
 }
 
-int decompress(image_struct_type *image_struct){
+int decompress(image_struct_type *image_struct, image_struct_type *image_struct_compressed){
+    int count = 0;
+    int k = 0;
+    int compressed_byte_counter;
+    for(int i = 0; i < image_struct->height; i++) {
+        count = 0;
+        k = 0;
+        compressed_byte_counter = 0;
+        for(int j = 0; j < image_struct->width; j++) {
+            
+            unsigned char this_element = image_struct_compressed->imageData[i][k];
+            unsigned char prev_element = (k > 0) ? image_struct_compressed->imageData[i][k-1] : 0;
+            unsigned char element_2_away = (k > 1) ? image_struct_compressed->imageData[i][k-2] : 0;
+            unsigned char element_3_away = (k > 2) ? image_struct_compressed->imageData[i][k-3] : 0;
 
+            switch(count){
+                case(0):
+                    this_element >>= 3;
+                    image_struct->imageData[i][j] = this_element;
+                    break;
+
+                case(1):
+                    prev_element <<= 5;
+                    prev_element >>= 3;
+
+                    this_element >>= 6;
+                    this_element |= prev_element;
+                    image_struct->imageData[i][j] = this_element;
+                    break;
+                
+                case(2):
+                    prev_element <<= 2;
+                    prev_element >>= 3;
+                    image_struct->imageData[i][j] = prev_element;
+                    break;
+
+                case(3):
+                    element_2_away <<= 7;
+                    element_2_away >>= 3;
+
+                    prev_element >>= 4;
+                    
+                    prev_element |= element_2_away;
+                    image_struct->imageData[i][j] = prev_element;
+                    break;
+                
+                case(4):
+                    element_2_away <<= 4;
+                    element_2_away >>= 3;
+
+                    prev_element >>= 7;
+                    element_2_away |= prev_element;
+                    image_struct->imageData[i][j] = element_2_away;
+                    break;
+
+                case(5):
+                    element_2_away <<= 1;
+                    element_2_away >>= 3;
+                    image_struct->imageData[i][j] = element_2_away;
+                    break;
+
+                case(6):
+                    element_3_away <<= 6;
+                    element_3_away >>= 3;
+
+                    element_2_away >>= 5;
+                    
+                    element_3_away |= element_2_away;
+                    image_struct->imageData[i][j] = element_3_away;
+                    break;
+
+                case(7):
+                    element_3_away <<= 3;
+                    element_3_away >>= 3;
+                    image_struct->imageData[i][j] = element_3_away;
+                    break;
+
+            }
+            count ++;
+            k++;
+
+            if (count == 8){
+                count = 0;
+                k = 5;
+                compressed_byte_counter ++;
+                k = compressed_byte_counter * 5;
+            }
+        }
+    }
+    return FUNCTION_SUCCESS;
 }
