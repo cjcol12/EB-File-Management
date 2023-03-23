@@ -70,6 +70,7 @@ int main(int argc, char **argv){
     // find the size of width of compressed file ~ 0.625 original
     image_struct.width = round_up_return(&image_struct);
 
+
     // reads data into 2d array and checks data is valid
     // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
     if (read_compressed_data(&image_struct, argv[1], input_file) == BAD_DATA){

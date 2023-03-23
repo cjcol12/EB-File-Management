@@ -91,18 +91,18 @@ int main(int argc, char **argv){
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
-
-
     // Divides data by compression ratio (1.6) and rounds up to ensure enough 
     // bytes are allocated
     round_up(&image_struct, &image_struct_compressed);
 
-        // checks memory has been allocated properly for 2d array
+    // checks memory has been allocated properly for 2d array
     if(check_malloc(&image_struct_compressed, input_file) == BAD_MALLOC)
         return BAD_MALLOC;
 
+    // compresses data into ebc format
     compress_data(&image_struct, &image_struct_compressed);
     
+    // writes binary data to output fil
     write_binary_data(&image_struct_compressed, output_file);
 
     // frees malloc'd memory and closes the output file

@@ -216,7 +216,7 @@ int read_compressed_data(image_struct_type *image_struct, char *input_file_name,
     unsigned char test;
     fread(&test, sizeof(unsigned char), 1, input_file); // not sure why needed
     // fread starts on the wrong line - manually incremenet it 
-    
+
     // iterate through 2d array
     for(int i = 0; i < image_struct->height; i++){
         for(int j = 0; j < image_struct->width; j++){
@@ -225,20 +225,16 @@ int read_compressed_data(image_struct_type *image_struct, char *input_file_name,
 
             // read in binary values
             image_struct->check = fread(&binary_value, sizeof(unsigned char), 1, input_file);
+            if (check_data_captured(image_struct, input_file, input_file_name) == BAD_DATA)
+                return BAD_DATA;
 
-            // check fread has read exactly one item
-            //printf("image check %d\n", image_struct->check);
-            // if (check_data_captured(image_struct, input_file, input_file_name) == BAD_DATA)
-            //     return BAD_DATA;
+            if (image_struct->check != 1){
+                printf("error\n\n\n");
+            }
 
             // cast to int and store back in 2d array
             value = (unsigned int) binary_value;
             image_struct->imageData[i][j] = value;
-
-            
-            // // check imageData is within bounds
-            if (check_data_values_compressed(value, input_file, input_file_name, image_struct) == BAD_DATA)
-                return BAD_DATA;
         }
     }
     return FUNCTION_SUCCESS;

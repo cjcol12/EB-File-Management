@@ -75,11 +75,13 @@ int main(int argc, char **argv){
     if(check_malloc(&image_struct, input_file) == BAD_MALLOC)
         return BAD_MALLOC;
 
+    // reads data into 2d array and checks data is valid
+    // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
+    if (read_compressed_data(&image_struct, argv[1], input_file) == BAD_DATA)
+        return BAD_DATA;
 
-
-    // read_ebc()
-
-
+    // image_struct_type image_struct_compressed;
+    // image_struct_compressed = image_struct;
 
     // open the output file in write mode
     FILE *output_file = fopen(argv[2], "wb");
@@ -98,6 +100,17 @@ int main(int argc, char **argv){
     // Return: returns 0 on success returns 8 on failure
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
+
+    // decompress(&image_struct, &image_struct_compressed);
+    // compress_data(&image_struct, &image_struct_compressed);
+
+    // for (int i = 0; i < image_struct_compressed.height; i++){
+    //     for (int j = 0; j < 157; j++){
+    //         printf("%d ", image_struct_compressed.imageData[i][j]);
+    //     }
+    //     printf("\n\n\n");    
+    // }
+
 
     // Writes the binary image_data of the output file
     // Parameters: image_struct, output_file - the file to write to 
