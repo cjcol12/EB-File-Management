@@ -62,3 +62,9 @@ hand in instructions - readme.md?
 converted/ echoed files not identical - problem or whitespace
 newline at EOF in output
 file format different in sample images and test (whitespace)
+
+
+bad output file
+folder full of ebc files - generate data, 
+too high to low dont exist in ebc - except ebu2ebc - too much too little do exist tho
+add in bad permissions
