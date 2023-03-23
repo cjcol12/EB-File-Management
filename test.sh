@@ -46,6 +46,8 @@ touch tests/data/bad.out
 chmod -w tests/data/bad.out
 chmod -r tests/data/ebf_data/bad_perms.ebf
 chmod -r tests/data/ebu_data/bad_perms.ebu
+chmod -r tests/data/ebc_data/bad_perms.ebc
+chmod -r ebc_data/bad_perms.ebc
 
 # keep track of score and total count of tests
 total=0
@@ -129,7 +131,8 @@ do
     elif [[ ${testExecutable::3} == "ebc" ]]
     then
         file_ext=".ebc"
-        path="tests/data/ebc_data/"
+        #path="tests/data/ebc_data/"
+        path="ebc_data/"
     else
         file_ext=".ebu"
         path="tests/data/ebu_data/"
