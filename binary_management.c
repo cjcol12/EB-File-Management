@@ -93,20 +93,19 @@ int compress_data(image_struct_type *image_struct, image_struct_type *image_stru
         count = 0;
         k = 0;
         compressed_byte_counter = 0;
-        for(int j = 0; j < image_struct_compressed->width; j++){
+        for(int j = 0; j < image_struct->width; j++){
 
-            unsigned int this_element = image_struct->imageData[i][j];
-            unsigned int next_element = (j < image_struct->width - 1) ? image_struct->imageData[i][j+1] : 0;
-            unsigned int element_2_away = (j < image_struct->width - 2) ? image_struct->imageData[i][j+2] : 0;
-            unsigned int element_3_away = (j < image_struct->width - 3) ? image_struct->imageData[i][j+3] : 0;
+            unsigned char this_element = image_struct->imageData[i][j];
+            unsigned char next_element = (j < image_struct->width - 1) ? image_struct->imageData[i][j+1] : 0;
+            unsigned char element_2_away = (j < image_struct->width - 2) ? image_struct->imageData[i][j+2] : 0;
+            unsigned char element_3_away = (j < image_struct->width - 3) ? image_struct->imageData[i][j+3] : 0;
 
             switch(count){
                 case 0:
-                    this_element <<= 27;
-                    this_element >>= 24;
+                    this_element <<= 3;
 
-                    next_element <<= 27;
-                    next_element >>= 29;
+                    next_element <<= 3;
+                    next_element >>= 5;
 
                     this_element |= next_element;
                     image_struct_compressed->imageData[i][k] = this_element;
@@ -114,17 +113,15 @@ int compress_data(image_struct_type *image_struct, image_struct_type *image_stru
                     break;
 
                 case 1:
-                    this_element <<= 30;
-                    this_element >>= 24;
-                 
-                    next_element <<= 25;
-                    next_element >>= 24;
+                    this_element <<= 6;
 
+                    next_element <<= 3;
+                    next_element >>= 2;
 
                     this_element |= next_element;
         
-                    element_2_away <<= 27;
-                    element_2_away >>= 31;
+                    element_2_away <<= 3;
+                    element_2_away >>= 7;
 
                     this_element |= element_2_away;
 
@@ -132,33 +129,34 @@ int compress_data(image_struct_type *image_struct, image_struct_type *image_stru
                     break;
 
                 case 2:
-                    next_element <<= 28;
-                    next_element >>= 24;
+                    next_element <<= 4;
 
-                    element_2_away <<= 27;
-                    element_2_away >>= 28;
+                    element_2_away <<= 3;
+                    element_2_away >>= 4;
 
                     next_element |= element_2_away;
                     image_struct_compressed->imageData[i][k] = next_element;
                     break;
 
                 case 3:
-                    next_element <<= 31;
-                    next_element >>= 24;
+                    next_element <<= 7;
 
-                    element_2_away <<= 26;
-                    element_2_away >>= 24;
+                    element_2_away <<= 3;
+                    element_2_away >>= 1;
 
                     next_element |= element_2_away;
                 
-                    element_3_away >>= 3;
+                    element_3_away <<= 3;
+                    element_3_away >>= 6;
                     next_element |= element_3_away;
                     image_struct_compressed->imageData[i][k] = next_element;
                     break;
 
                 case 4:
-                    element_2_away <<= 29;
-                    element_2_away >>= 24;
+                    element_2_away <<= 5;
+
+                    element_3_away <<= 3;
+                    element_3_away >>= 3;
 
                     element_2_away |= element_3_away;
                     image_struct_compressed->imageData[i][k] = element_2_away;
@@ -227,10 +225,6 @@ int read_compressed_data(image_struct_type *image_struct, char *input_file_name,
             image_struct->check = fread(&binary_value, sizeof(unsigned char), 1, input_file);
             if (check_data_captured(image_struct, input_file, input_file_name) == BAD_DATA)
                 return BAD_DATA;
-
-            if (image_struct->check != 1){
-                printf("error\n\n\n");
-            }
 
             // cast to int and store back in 2d array
             value = (unsigned int) binary_value;
