@@ -210,7 +210,6 @@ int round_up_return(image_struct_type *image_struct){
 }
 
 int read_compressed_data(image_struct_type *image_struct, char *input_file_name, FILE *input_file){
-
     unsigned char test;
     fread(&test, sizeof(unsigned char), 1, input_file); // not sure why needed
     // fread starts on the wrong line - manually incremenet it 
@@ -223,8 +222,8 @@ int read_compressed_data(image_struct_type *image_struct, char *input_file_name,
 
             // read in binary values
             image_struct->check = fread(&binary_value, sizeof(unsigned char), 1, input_file);
-            if (check_data_captured(image_struct, input_file, input_file_name) == BAD_DATA)
-                return BAD_DATA;
+            // if (check_data_captured(image_struct, input_file, input_file_name) == BAD_DATA)
+            //     return BAD_DATA;
 
             // cast to int and store back in 2d array
             value = (unsigned int) binary_value;
