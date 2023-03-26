@@ -77,7 +77,6 @@ int main(int argc, char **argv){
         return BAD_DATA;
     }
 
-    image_struct.width = temp_width;
     
     // open the output file in write mode
     FILE *output_file = fopen(argv[2], "w");
@@ -88,13 +87,20 @@ int main(int argc, char **argv){
         return BAD_WRITE_PERMISSIONS;
     }
 
+    image_struct.width = temp_width;
+
     // Writes the header of the output file
     if (write_header(&image_struct, output_file) == BAD_OUTPUT){
         return BAD_OUTPUT;
     }
 
 
+    // find the size of width of compressed file ~ 0.625 original
+    image_struct.width = round_up_return(&image_struct);
+
     write_binary_data(&image_struct, output_file);
+    image_struct.width = temp_width;
+
 
 
     // frees malloc'd memory and closes the output file
