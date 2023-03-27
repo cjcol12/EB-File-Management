@@ -1,7 +1,8 @@
 #ifndef image_struct_h
 #define image_struct_h
 
-typedef struct{
+typedef struct
+{
     // create a char array to hold magic number
     unsigned char magic_number[2];
     unsigned short *magic_number_value;
@@ -11,7 +12,7 @@ typedef struct{
     int height;
     int check;
 
-    // image data 
+    // image data
     unsigned int **imageData;
     unsigned int *data_block;
 

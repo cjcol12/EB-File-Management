@@ -43,11 +43,6 @@ int write_image_data(image_struct_type *image_struct, FILE *output_file){
     // iterating through 2d array and writing
     for(int i = 0; i < image_struct->height; i++){
         for(int j = 0; j < image_struct->width; j++){
-            // // if fprintf fails, return 0 for error checking
-            // if (image_struct->imageData[i][j] < 10 && j == 0){
-            //     image_struct->check = 
-            //     fprintf(output_file, " %u ", image_struct->imageData[i][j]);
-            // }
 
             if (image_struct->width == j + 1){
                 image_struct->check = fprintf(output_file, "%u", image_struct->imageData[i][j]);

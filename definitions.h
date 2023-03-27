@@ -8,7 +8,6 @@
 #define FUNCTION_SUCCESS 0
 #define FUNCTION_SUCCESS_DIFFERENT 100
 
-
 // error definitions
 #define BAD_ARGUMENT_COUNT 1
 #define BAD_FILE 2
@@ -18,7 +17,6 @@
 #define BAD_DATA 6
 #define BAD_OUTPUT 7
 #define BAD_WRITE_PERMISSIONS 8
-
 
 // constant definitions
 #define MAGIC_NUMBER_EB 0x6265

@@ -21,6 +21,8 @@ int check_image_data_malloc(image_struct_type *image_struct, FILE *input_file);
 
 int check_data_block_malloc(image_struct_type *image_struct, FILE *input_file);
 
+int check_bad_output(image_struct_type *image_struct, FILE *output_file, char *input_file_name);
+
 int check_data_written(image_struct_type *image_struct, FILE  *output_file);
 
 int check_binary_written(image_struct_type *image_struct, FILE *output_file);

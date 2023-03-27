@@ -127,8 +127,7 @@ int check_data_captured(image_struct_type *image_struct, FILE *input_file, char 
 
 // write_image.c module
 
-int check_bad_output(
-    image_struct_type *image_struct, FILE *output_file, char *input_file_name){
+int check_bad_output(image_struct_type *image_struct, FILE *output_file, char *input_file_name){
     // checks output file has been opened correctly 
     if (output_file == NULL){
         printf("ERROR: Bad Output(%s)", input_file_name);
