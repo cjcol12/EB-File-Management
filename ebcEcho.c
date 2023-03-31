@@ -23,10 +23,8 @@
 // Write image module inclusion
 #include "write_image.c"
 
-// Error checking module inclusion
-#include "error_checking.h"
+#include "binary_management.c"
 
-// Main routine
 int main(int argc, char **argv)
 {
     // image struct variable initialization
@@ -36,7 +34,7 @@ int main(int argc, char **argv)
     // Returns 0 if program is run with no arguments
     if (argc == 1)
     {
-        printf("Usage: ebfEcho file1 file2");
+        printf("Usage: ebcEcho file1 file2");
         return USAGE_REQUEST;
     }
 
@@ -72,8 +70,14 @@ int main(int argc, char **argv)
         return BAD_MALLOC;
     }
 
-    // reads in image data from input file
-    if (read_data(&image_struct, argv[1], input_file) == BAD_DATA)
+    int temp_width = image_struct.width;
+
+    // find the size of width of compressed file ~ 0.625 original
+    image_struct.width = round_up_return(&image_struct);
+
+    // reads data into 2d array and checks data is valid
+    // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
+    if (read_compressed_data(&image_struct, argv[1], input_file) == BAD_DATA)
     {
         return BAD_DATA;
     }
@@ -88,15 +92,19 @@ int main(int argc, char **argv)
         return BAD_WRITE_PERMISSIONS;
     }
 
+    image_struct.width = temp_width;
+
     // Writes the header of the output file
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
     {
         return BAD_OUTPUT;
     }
 
-    // writes image data to output file
-    if (write_image_data(&image_struct, output_file) == BAD_OUTPUT)
-        return BAD_OUTPUT;
+    // find the size of width of compressed file ~ 0.625 original
+    image_struct.width = round_up_return(&image_struct);
+
+    write_binary_data(&image_struct, output_file);
+    image_struct.width = temp_width;
 
     // frees malloc'd memory and closes the output file
     destructor(&image_struct, output_file);

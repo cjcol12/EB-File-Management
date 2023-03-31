@@ -20,44 +20,51 @@ complete tests for ebfEcho and Comp
     - find executable name - .c
 change header so it reads in magic number and output what it reads - not just eb
 pass final two tests on output file
-
-
-TODO
-
+understand why hexdumping slice0a and out are different - but correct according
+to hamishs notes
 change output formatting in ebfEcho
 comment compare_images.c
-come up with my own further tests for ebfEcho and Comp
 move onto other tasks
-
-
+sort malloc bug
+check file closes when expected
+check imageData free'd properly when expected
+find memory leaks using valgrind and gdb
+refactor error checking into different functions
+add all prototypes to headers (or create headers)
+think about next task
 understand why hexdumping slice0a and out are different - but correct according
 to hamishs notes
 
 
 
+
+
+
+
 TODO
+come up with my own further tests for ebfEcho and Comp
 complete function for closing file and freeing mem
     - test it works as expected
 
-sort malloc bug
-check file closes when expected
-check imageData free'd properly when expected
-find memory leaks using valgrind and gdb
 clean up variable names to look like foo_bar - mainly in struct
 find \n in output when converting file
 add error checking to new functions
-refactor error checking into different functions
 test all functionality 
 extend test script
-think about next task
-add all prototypes to headers (or create headers)
+clean up comments + add more
 
 
 
 
 QUESTIONS
-unix usage - per file or different module, how to lose ./
-return value on unix usage success - 10?
-unix usage in main?
-do we need to submit any version of original task or just 2d array
-lines limited to 80 characters
+lines limited to 80 characters?
+hand in instructions - readme.md?
+converted/ echoed files not identical - problem or whitespace
+newline at EOF in output
+file format different in sample images and test (whitespace)
+
+
+bad output file
+folder full of ebc files - generate data, 
+too high to low dont exist in ebc - except ebu2ebc - too much too little do exist tho
+add in bad permissions

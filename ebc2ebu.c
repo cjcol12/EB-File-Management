@@ -1,6 +1,6 @@
-/*  Function: Read in a .ebf file and echos (copy) its contents to another file
+/*  Function: Read in a .ebc file and convert it to an ebu file
 
-    Arguments: Expects 3 arguments: ./ebfEcho input_file, output_file
+    Arguments: Expects 3 arguments: ./ebc2ebu input_file.ebc, output_file.ebu
 
     Returns: 0 on success, different values depending on error - found in
     definitions.h
@@ -20,13 +20,12 @@
 // Read image module inclusion
 #include "read_image.c"
 
-// Write image module inclusion
+// Read image module inclusion
 #include "write_image.c"
 
-// Error checking module inclusion
-#include "error_checking.h"
+// Binary function inclusion
+#include "binary_management.c"
 
-// Main routine
 int main(int argc, char **argv)
 {
     // image struct variable initialization
@@ -36,7 +35,7 @@ int main(int argc, char **argv)
     // Returns 0 if program is run with no arguments
     if (argc == 1)
     {
-        printf("Usage: ebfEcho file1 file2");
+        printf("Usage: ebc2ebu file1 file2");
         return USAGE_REQUEST;
     }
 
@@ -49,59 +48,49 @@ int main(int argc, char **argv)
 
     // check to see if file opened successfully
     if (check_file_opened(argv[1], input_file) == BAD_FILE)
-    {
         return BAD_FILE;
-    }
 
     // checks if the magic number is what we expect
     if (check_magic_number(&image_struct, argv[1], input_file) ==
         BAD_MAGIC_NUMBER)
-    {
         return BAD_MAGIC_NUMBER;
-    }
 
-    // checks dimensions are within specified range(MIN_DIMENSION-MAX_DIMENSION)
+    // checks dimensions are within specified range(MIN_DIMENSION-MAX_DIMENSION
     if (check_dimensions(&image_struct, argv[1], input_file) == BAD_DIMENSION)
-    {
         return BAD_DIMENSION;
-    }
 
     // checks memory has been allocated properly for 2d array
     if (check_malloc(&image_struct, input_file) == BAD_MALLOC)
-    {
         return BAD_MALLOC;
-    }
 
-    // reads in image data from input file
-    if (read_data(&image_struct, argv[1], input_file) == BAD_DATA)
-    {
+    // reads data into 2d array and checks data is valid
+    // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
+    if (read_compressed_data(&image_struct, argv[1], input_file) == BAD_DATA)
         return BAD_DATA;
-    }
+
+    // image_struct_type image_struct_compressed;
+    // image_struct_compressed = image_struct;
 
     // open the output file in write mode
-    FILE *output_file = fopen(argv[2], "w");
+    FILE *output_file = fopen(argv[2], "wb");
+    image_struct.magic_number[1] = 'u';
 
     // checks we can write to output_file
     if (check_bad_output(&image_struct, output_file, argv[2]) ==
         BAD_WRITE_PERMISSIONS)
-    {
         return BAD_WRITE_PERMISSIONS;
-    }
 
     // Writes the header of the output file
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
-    {
-        return BAD_OUTPUT;
-    }
-
-    // writes image data to output file
-    if (write_image_data(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
-    // frees malloc'd memory and closes the output file
-    destructor(&image_struct, output_file);
+    // decompress(&image_struct, &image_struct_compressed);
+    // compress_data(&image_struct, &image_struct_compressed);
 
-    // Print final success message and return 0 on success
-    printf("ECHOED\n");
+    // Writes the binary image_data of the output file
+    if (write_binary_data(&image_struct, output_file) == BAD_OUTPUT)
+        return BAD_OUTPUT;
+
+    printf("CONVERTED\n");
     return SUCCESS;
 }
