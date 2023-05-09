@@ -99,7 +99,7 @@ int main(int argc, char **argv)
     // compresses data into ebc format
     compress_data(&image_struct, &image_struct_compressed);
 
-    // writes binary data to output fil
+    // writes binary data to output file
     write_binary_data(&image_struct_compressed, output_file);
 
     // frees malloc'd memory and closes the output file
