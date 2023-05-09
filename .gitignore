@@ -1,6 +1,7 @@
 /sample_images
 /tests
 /test area
+/ebc_data
 image_generator.c
 file.bin
 file.txt
