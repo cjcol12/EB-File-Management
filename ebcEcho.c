@@ -1,4 +1,4 @@
-/*  Function: Read in a .ebf file and echos (copy) its contents to another file
+/*  Function: Read in a .ebc file and echos (copy) its contents to another file
 
     Arguments: Expects 3 arguments: ./ebfEcho input_file, output_file
 
