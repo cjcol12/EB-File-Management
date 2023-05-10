@@ -43,7 +43,7 @@ int main(int argc, char **argv)
         return BAD_ARGUMENT_COUNT;
 
     // open the input file in read mode
-    FILE *input_file = fopen(argv[1], "r");
+    FILE *input_file = fopen(argv[1], "rb");
 
     // check to see if file opened successfully
     if (check_file_opened(argv[1], input_file) == BAD_FILE)
@@ -64,11 +64,17 @@ int main(int argc, char **argv)
         return BAD_DIMENSION;
     }
 
+    // removes redundant block at EOF
+    // image_struct.height -= 1;
     // checks memory has been allocated properly for 2d array
     if (check_malloc(&image_struct, input_file) == BAD_MALLOC)
     {
         return BAD_MALLOC;
     }
+
+    // reverts to correct size for header writing
+    // image_struct.height += 1;
+
 
     int temp_width = image_struct.width;
 
@@ -81,6 +87,14 @@ int main(int argc, char **argv)
     {
         return BAD_DATA;
     }
+    for (int i = 0; i < image_struct.height; i++){
+        // printf("%d\t", i + 1);
+        for (int j = 0; j < image_struct.width; j++){
+            printf("%d ", image_struct.imageData[i][j]);
+        }
+        printf("\n\n");
+    }
+
 
     // open the output file in write mode
     FILE *output_file = fopen(argv[2], "w");
@@ -99,6 +113,8 @@ int main(int argc, char **argv)
     {
         return BAD_OUTPUT;
     }
+
+    // image_struct.height -= 1;
 
     // find the size of width of compressed file ~ 0.625 original
     image_struct.width = round_up_return(&image_struct);

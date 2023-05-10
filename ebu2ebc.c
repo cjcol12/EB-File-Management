@@ -73,6 +73,8 @@ int main(int argc, char **argv)
     if (read_binary_data(&image_struct, argv[1], input_file) == BAD_DATA)
         return BAD_DATA;
 
+
+
     // open the output file in write mode
     FILE *output_file = fopen(argv[2], "w");
 
@@ -95,6 +97,7 @@ int main(int argc, char **argv)
     // checks memory has been allocated properly for 2d array
     if (check_malloc(&image_struct_compressed, input_file) == BAD_MALLOC)
         return BAD_MALLOC;
+
 
     // compresses data into ebc format
     compress_data(&image_struct, &image_struct_compressed);

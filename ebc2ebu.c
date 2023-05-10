@@ -30,6 +30,8 @@ int main(int argc, char **argv)
 {
     // image struct variable initialization
     image_struct_type image_struct;
+    image_struct_type image_struct_uncompressed;
+
 
     // Unix usage information
     // Returns 0 if program is run with no arguments
@@ -59,6 +61,18 @@ int main(int argc, char **argv)
     if (check_dimensions(&image_struct, argv[1], input_file) == BAD_DIMENSION)
         return BAD_DIMENSION;
 
+
+    // set uncompressed dimensions to magic number for decompressing
+    image_struct_uncompressed = image_struct;
+
+
+    if (check_malloc(&image_struct_uncompressed, input_file) == BAD_MALLOC)
+        return BAD_MALLOC;
+    
+
+    // find the size of width of compressed file ~ 0.625 original
+    image_struct.width = round_up_return(&image_struct);
+
     // checks memory has been allocated properly for 2d array
     if (check_malloc(&image_struct, input_file) == BAD_MALLOC)
         return BAD_MALLOC;
@@ -68,8 +82,14 @@ int main(int argc, char **argv)
     if (read_compressed_data(&image_struct, argv[1], input_file) == BAD_DATA)
         return BAD_DATA;
 
-    // image_struct_type image_struct_compressed;
-    // image_struct_compressed = image_struct;
+    // for (int i = 0; i < image_struct.height; i++){
+    //     printf("%d\t", i + 1);
+    //     for (int j = 0; j < image_struct.width; j++){
+    //         printf("%d ", image_struct.imageData[i][j]);
+    //     }
+    //     printf("\n\n");
+    // }
+
 
     // open the output file in write mode
     FILE *output_file = fopen(argv[2], "wb");
@@ -84,11 +104,11 @@ int main(int argc, char **argv)
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
-    // decompress(&image_struct, &image_struct_compressed);
+    decompress(&image_struct_uncompressed, &image_struct);
     // compress_data(&image_struct, &image_struct_compressed);
 
     // Writes the binary image_data of the output file
-    if (write_binary_data(&image_struct, output_file) == BAD_OUTPUT)
+    if (write_binary_data(&image_struct_uncompressed, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
     printf("CONVERTED\n");
