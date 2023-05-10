@@ -209,13 +209,20 @@ int read_compressed_data(image_struct_type *image_struct, char *input_file_name,
     // iterate through 2d array
     for (int i = 0; i < image_struct->height; i++)
     {
-        for (int j = 0; j < image_struct->width; j++)
+
+        for (int j = 0; j < image_struct->width - 1; j++)
         {
+ 
             unsigned int value;
 
             // read in binary values
             image_struct->check = fread(&binary_value, sizeof(unsigned char), 1, input_file);
+            // printf("image check %d\n", image_struct->check);
 
+
+            if (image_struct->check == 0){
+                return FUNCTION_SUCCESS;
+            }
             // cast to int and store back in 2d array
             value = (unsigned int)binary_value;
             image_struct->imageData[i][j] = value;
@@ -225,11 +232,20 @@ int read_compressed_data(image_struct_type *image_struct, char *input_file_name,
     return FUNCTION_SUCCESS;
 }
 
-int decompress(image_struct_type *image_struct, image_struct_type *image_struct_compressed)
+int decompress(image_struct_type *image_struct_uncompressed, image_struct_type *image_struct)
 {
     int count = 0;
     int k = 0;
     int compressed_byte_counter;
+
+    for (int i = 0; i < image_struct->height; i++){
+        printf("%d\t", i + 1);
+        for (int j = 0; j < image_struct->width; j++){
+            printf("%d ", image_struct->imageData[i][j]);
+        }
+        printf("\n\n");
+    }
+
     for (int i = 0; i < image_struct->height; i++)
     {
         count = 0;
@@ -238,16 +254,16 @@ int decompress(image_struct_type *image_struct, image_struct_type *image_struct_
         for (int j = 0; j < image_struct->width; j++)
         {
 
-            unsigned char this_element = image_struct_compressed->imageData[i][k];
-            unsigned char prev_element = (k > 0) ? image_struct_compressed->imageData[i][k - 1] : 0;
-            unsigned char element_2_away = (k > 1) ? image_struct_compressed->imageData[i][k - 2] : 0;
-            unsigned char element_3_away = (k > 2) ? image_struct_compressed->imageData[i][k - 3] : 0;
+            unsigned char this_element = image_struct->imageData[i][k];
+            unsigned char prev_element = (k > 0) ? image_struct->imageData[i][k - 1] : 0;
+            unsigned char element_2_away = (k > 1) ? image_struct->imageData[i][k - 2] : 0;
+            unsigned char element_3_away = (k > 2) ? image_struct->imageData[i][k - 3] : 0;
 
             switch (count)
             {
             case (0):
                 this_element >>= 3;
-                image_struct->imageData[i][j] = this_element;
+                image_struct_uncompressed->imageData[i][j] = this_element;
                 break;
 
             case (1):
@@ -256,13 +272,13 @@ int decompress(image_struct_type *image_struct, image_struct_type *image_struct_
 
                 this_element >>= 6;
                 this_element |= prev_element;
-                image_struct->imageData[i][j] = this_element;
+                image_struct_uncompressed->imageData[i][j] = this_element;
                 break;
 
             case (2):
                 prev_element <<= 2;
                 prev_element >>= 3;
-                image_struct->imageData[i][j] = prev_element;
+                image_struct_uncompressed->imageData[i][j] = prev_element;
                 break;
 
             case (3):
@@ -272,7 +288,7 @@ int decompress(image_struct_type *image_struct, image_struct_type *image_struct_
                 prev_element >>= 4;
 
                 prev_element |= element_2_away;
-                image_struct->imageData[i][j] = prev_element;
+                image_struct_uncompressed->imageData[i][j] = prev_element;
                 break;
 
             case (4):
@@ -281,13 +297,13 @@ int decompress(image_struct_type *image_struct, image_struct_type *image_struct_
 
                 prev_element >>= 7;
                 element_2_away |= prev_element;
-                image_struct->imageData[i][j] = element_2_away;
+                image_struct_uncompressed->imageData[i][j] = element_2_away;
                 break;
 
             case (5):
                 element_2_away <<= 1;
                 element_2_away >>= 3;
-                image_struct->imageData[i][j] = element_2_away;
+                image_struct_uncompressed->imageData[i][j] = element_2_away;
                 break;
 
             case (6):
@@ -297,13 +313,13 @@ int decompress(image_struct_type *image_struct, image_struct_type *image_struct_
                 element_2_away >>= 5;
 
                 element_3_away |= element_2_away;
-                image_struct->imageData[i][j] = element_3_away;
+                image_struct_uncompressed->imageData[i][j] = element_3_away;
                 break;
 
             case (7):
                 element_3_away <<= 3;
                 element_3_away >>= 3;
-                image_struct->imageData[i][j] = element_3_away;
+                image_struct_uncompressed->imageData[i][j] = element_3_away;
                 break;
             }
             count++;
@@ -312,7 +328,6 @@ int decompress(image_struct_type *image_struct, image_struct_type *image_struct_
             if (count == 8)
             {
                 count = 0;
-                k = 5;
                 compressed_byte_counter++;
                 k = compressed_byte_counter * 5;
             }
