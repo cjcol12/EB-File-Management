@@ -34,6 +34,8 @@ add all prototypes to headers (or create headers)
 think about next task
 understand why hexdumping slice0a and out are different - but correct according
 to hamishs notes
+complete function for closing file and freeing mem
+    - test it works as expected
 
 
 
@@ -43,11 +45,7 @@ to hamishs notes
 
 TODO
 come up with my own further tests for ebfEcho and Comp
-complete function for closing file and freeing mem
-    - test it works as expected
 
-clean up variable names to look like foo_bar - mainly in struct
-find \n in output when converting file
 add error checking to new functions
 test all functionality 
 extend test script
@@ -56,15 +54,9 @@ clean up comments + add more
 
 
 
+
+
 QUESTIONS
-lines limited to 80 characters?
-hand in instructions - readme.md?
-converted/ echoed files not identical - problem or whitespace
-newline at EOF in output
-file format different in sample images and test (whitespace)
-
-
-bad output file
-folder full of ebc files - generate data, 
-too high to low dont exist in ebc - except ebu2ebc - too much too little do exist tho
-add in bad permissions
+2d box, when rounding you either have to round up or down
+what should comments look like
+formatting - lost alot of marks not sure why
