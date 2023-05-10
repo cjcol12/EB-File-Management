@@ -238,13 +238,13 @@ int decompress(image_struct_type *image_struct_uncompressed, image_struct_type *
     int k = 0;
     int compressed_byte_counter;
 
-    for (int i = 0; i < image_struct->height; i++){
-        printf("%d\t", i + 1);
-        for (int j = 0; j < image_struct->width; j++){
-            printf("%d ", image_struct->imageData[i][j]);
-        }
-        printf("\n\n");
-    }
+    // for (int i = 0; i < image_struct->height; i++){
+    //     printf("%d\t", i + 1);
+    //     for (int j = 0; j < image_struct->width; j++){
+    //         printf("%d ", image_struct->imageData[i][j]);
+    //     }
+    //     printf("\n\n");
+    // }
 
     for (int i = 0; i < image_struct->height; i++)
     {

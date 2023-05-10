@@ -87,13 +87,13 @@ int main(int argc, char **argv)
     {
         return BAD_DATA;
     }
-    for (int i = 0; i < image_struct.height; i++){
-        // printf("%d\t", i + 1);
-        for (int j = 0; j < image_struct.width; j++){
-            printf("%d ", image_struct.imageData[i][j]);
-        }
-        printf("\n\n");
-    }
+    // for (int i = 0; i < image_struct.height; i++){
+    //     // printf("%d\t", i + 1);
+    //     for (int j = 0; j < image_struct.width; j++){
+    //         printf("%d ", image_struct.imageData[i][j]);
+    //     }
+    //     printf("\n\n");
+    // }
 
 
     // open the output file in write mode
