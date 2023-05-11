@@ -86,18 +86,29 @@ int write_binary_data(image_struct_type *image_struct, FILE *output_file)
     return FUNCTION_SUCCESS;
 }
 
-int compress_data_to_file(image_struct_type *image_struct, FILE *output_file, image_struct_type *image_struct_compressed)
+void comp(){
+
+}
+int compress_data_to_file(image_struct_type *image_struct, FILE *output_file)
 {
+    // printf("compressed data\n");
     int count;
     int k;
+    unsigned char buffer[5];
 
-    for (int i = 0; i < image_struct_compressed->height; i++)
+    for(int i = 0; i < image_struct->height; i++)
     {
         count = 0;
         k = 0;
-        for (int j = 0; j < image_struct->width; j++)
+        for(int j = 0; j < image_struct->width; j++)
         {
             unsigned char this_element = image_struct->imageData[i][j];
+
+                if (j > 5 ){
+                // printf("this %d \n", this_element);
+                // printf("i is %d j is %d this is %d\n", i, j, this_element);
+
+            }
             unsigned char next_element = (j < image_struct->width - 1) ? image_struct->imageData[i][j + 1] : 0;
             unsigned char element_2_away = (j < image_struct->width - 2) ? image_struct->imageData[i][j + 2] : 0;
             unsigned char element_3_away = (j < image_struct->width - 3) ? image_struct->imageData[i][j + 3] : 0;
@@ -105,13 +116,15 @@ int compress_data_to_file(image_struct_type *image_struct, FILE *output_file, im
             switch (count)
             {
             case 0:
+           
                 this_element <<= 3;
 
                 next_element <<= 3;
                 next_element >>= 5;
 
                 this_element |= next_element;
-                image_struct_compressed->imageData[i][k] = this_element;
+
+                buffer[k] = this_element;
 
                 break;
 
@@ -128,7 +141,7 @@ int compress_data_to_file(image_struct_type *image_struct, FILE *output_file, im
 
                 this_element |= element_2_away;
 
-                image_struct_compressed->imageData[i][k] = this_element;
+                buffer[k] = this_element;
                 break;
 
             case 2:
@@ -138,7 +151,7 @@ int compress_data_to_file(image_struct_type *image_struct, FILE *output_file, im
                 element_2_away >>= 4;
 
                 next_element |= element_2_away;
-                image_struct_compressed->imageData[i][k] = next_element;
+                buffer[k] = next_element;
                 break;
 
             case 3:
@@ -152,7 +165,7 @@ int compress_data_to_file(image_struct_type *image_struct, FILE *output_file, im
                 element_3_away <<= 3;
                 element_3_away >>= 6;
                 next_element |= element_3_away;
-                image_struct_compressed->imageData[i][k] = next_element;
+                buffer[k] = next_element;
                 break;
 
             case 4:
@@ -162,7 +175,7 @@ int compress_data_to_file(image_struct_type *image_struct, FILE *output_file, im
                 element_3_away >>= 3;
 
                 element_2_away |= element_3_away;
-                image_struct_compressed->imageData[i][k] = element_2_away;
+                buffer[k] = element_2_away;
                 break;
             }
             count++;
@@ -171,14 +184,18 @@ int compress_data_to_file(image_struct_type *image_struct, FILE *output_file, im
 
             if (count == 5)
             {
+            
+                // for (int z = 0; z < 5; z++){
+                //     printf("%d ", buffer[z]);
+                // }
+                
                 // Write the compressed data to the output file
-                if (fwrite(image_struct_compressed->imageData[i], 1, k, output_file) != k)
+                if (fwrite(buffer, 1, k, output_file) != k)
                 {
                     printf("Error writing to the output file.\n");
-                    fclose(output_file);
                     return FUNCTION_SUCCESS;
                 }
-
+                k = 0;
                 count = 0;
                 j += 3; // Advance the index to account for the next 3 elements that were already processed
             }
@@ -186,7 +203,6 @@ int compress_data_to_file(image_struct_type *image_struct, FILE *output_file, im
     }
 
     // Close the output file
-    fclose(output_file);
     return FUNCTION_SUCCESS;
 }
 

@@ -30,7 +30,6 @@ int main(int argc, char **argv)
     // image struct variable initialization
     image_struct_type image_struct;
 
-
     // Unix usage information
     // Returns 0 if program is run with no arguments
     if (argc == 1)
@@ -65,6 +64,7 @@ int main(int argc, char **argv)
         return BAD_DIMENSION;
     }
 
+
     // removes redundant block at EOF
     // image_struct.height -= 1;
     // checks memory has been allocated properly for 2d array
@@ -94,14 +94,8 @@ int main(int argc, char **argv)
     
     decompress_and_store(&image_struct, input_file);
 
+    
 
-    // for (int i = 0; i < image_struct.height; i++){
-    //     // printf("%d\t", i + 1);
-    //     for (int j = 0; j < image_struct.width; j++){
-    //         printf("%d ", image_struct.imageData[i][j]);
-    //     }
-    //     printf("\n\n");
-    // }
 
 
     // open the output file in write mode
@@ -125,12 +119,20 @@ int main(int argc, char **argv)
     // image_struct.height -= 1;
 
     // find the size of width of compressed file ~ 0.625 original
-    image_struct.width = round_up_return(&image_struct);
+    // image_struct.width = round_up_return(&image_struct);
 
     // write_binary_data(&image_struct, output_file);
     //image_struct.width = temp_width;
 
-    compress_data_to_file(&image_struct, output_file, &image_struct_compressed);
+    // printf("uncompressed data\n");
+    // for (int i = 0; i < image_struct.height; i++){
+    //     // printf("%d\t", i + 1);
+    //     for (int j = 0; j < image_struct.width; j++){
+    //         printf("%d  ", image_struct.imageData[i][j]);
+    //     }
+    //     printf("\n\n");
+    // }
+    compress_data_to_file(&image_struct, output_file);
     // frees malloc'd memory and closes the output file
     destructor(&image_struct, output_file);
 
