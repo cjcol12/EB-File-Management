@@ -9,6 +9,7 @@ typedef struct
 
     // create and initialise variables used within code
     int width;
+    int compressed_width;
     int height;
     int check;
 
