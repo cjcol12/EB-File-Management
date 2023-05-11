@@ -268,6 +268,94 @@ int read_compressed_data(image_struct_type *image_struct, char *input_file_name,
     return FUNCTION_SUCCESS;
 }
 
+
+void decomp(unsigned char buffer[], image_struct_type *image_struct, int count, int i, int k){
+        for (int z = 0; z < 5; z++){
+            printf("%d ", buffer[z]);
+        }
+        printf("\n");
+
+for (int l = 0; l < 8; l++){
+
+        unsigned char this_element = buffer[count];
+        unsigned char prev_element = (count > 0) ? buffer[count - 1] : 0;
+        unsigned char element_2_away = (count > 1) ? buffer[count - 2] : 0;
+        unsigned char element_3_away = (count > 2) ? buffer[count - 3] : 0;
+
+        switch (count)
+        {
+            case (0):
+                printf("i is %d, l is %d\n", i, l);
+                this_element >>= 3;
+                image_struct->imageData[i][k] = this_element;
+                break;
+
+            case (1):
+                prev_element <<= 5;
+                prev_element >>= 3;
+
+                this_element >>= 6;
+                this_element |= prev_element;
+                image_struct->imageData[i][k] = this_element;
+                break;
+
+            case (2):
+                prev_element <<= 2;
+                prev_element >>= 3;
+                image_struct->imageData[i][k] = prev_element;
+                break;
+
+            case (3):
+                element_2_away <<= 7;
+                element_2_away >>= 3;
+
+                prev_element >>= 4;
+
+                prev_element |= element_2_away;
+                image_struct->imageData[i][k] = prev_element;
+                break;
+
+            case (4):
+                element_2_away <<= 4;
+                element_2_away >>= 3;
+
+                prev_element >>= 7;
+                element_2_away |= prev_element;
+                image_struct->imageData[i][k] = element_2_away;
+                break;
+
+            case (5):
+                element_2_away <<= 1;
+                element_2_away >>= 3;
+                image_struct->imageData[i][k] = element_2_away;
+                break;
+
+            case (6):
+                element_3_away <<= 6;
+                element_3_away >>= 3;
+
+                element_2_away >>= 5;
+
+                element_3_away |= element_2_away;
+                image_struct->imageData[i][k] = element_3_away;
+                break;
+
+            case (7):
+                element_3_away <<= 3;
+                element_3_away >>= 3;
+                image_struct->imageData[i][k] = element_3_away;
+                break;
+            }
+            count++;
+            k++;
+
+        if (count == 8)
+        {
+            count = 0;
+        }
+    }
+
+}
 int decompress_and_store(image_struct_type *image_struct, FILE *input_file)
 {
 
@@ -277,105 +365,21 @@ int decompress_and_store(image_struct_type *image_struct, FILE *input_file)
 
     int count = 0;
     int k = 0;
-    int compressed_byte_counter;
 
     // Read the image data
     unsigned char buffer[5];
 
     for (int i = 0; i < image_struct->height; i++)
     {
-        count = 0;
         k = 0;
-        compressed_byte_counter = 0;
-        for (int j = 0; j < 5; j += 5)
+        count = 0;
+        for (int j = 0; j < 10; j += 5) // width / block size
         {
-
-
             image_struct->check = fread(buffer, 1, 5, input_file);
-            for (int l = 0; l < image_struct->width; l++){
-
-                unsigned char this_element = buffer[k];
-                unsigned char prev_element = (k > 0) ? buffer[k - 1] : 0;
-                unsigned char element_2_away = (k > 1) ? buffer[k - 2] : 0;
-                unsigned char element_3_away = (k > 2) ? buffer[k - 3] : 0;
-
-                switch (count)
-                {
-                    case (0):
-                        printf("i is %d, j is %d, l is %d\n", i, j, l);
-                        this_element >>= 3;
-                        image_struct->imageData[i][l] = this_element;
-                        break;
-
-                    case (1):
-                        prev_element <<= 5;
-                        prev_element >>= 3;
-
-                        this_element >>= 6;
-                        this_element |= prev_element;
-                        image_struct->imageData[i][l] = this_element;
-                        break;
-
-                    case (2):
-                        prev_element <<= 2;
-                        prev_element >>= 3;
-                        image_struct->imageData[i][l] = prev_element;
-                        break;
-
-                    case (3):
-                        element_2_away <<= 7;
-                        element_2_away >>= 3;
-
-                        prev_element >>= 4;
-
-                        prev_element |= element_2_away;
-                        image_struct->imageData[i][l] = prev_element;
-                        break;
-
-                    case (4):
-                        element_2_away <<= 4;
-                        element_2_away >>= 3;
-
-                        prev_element >>= 7;
-                        element_2_away |= prev_element;
-                        image_struct->imageData[i][l] = element_2_away;
-                        break;
-
-                    case (5):
-                        element_2_away <<= 1;
-                        element_2_away >>= 3;
-                        image_struct->imageData[i][l] = element_2_away;
-                        break;
-
-                    case (6):
-                        element_3_away <<= 6;
-                        element_3_away >>= 3;
-
-                        element_2_away >>= 5;
-
-                        element_3_away |= element_2_away;
-                        image_struct->imageData[i][l] = element_3_away;
-                        break;
-
-                    case (7):
-                        element_3_away <<= 3;
-                        element_3_away >>= 3;
-                        image_struct->imageData[i][l] = element_3_away;
-                        break;
-                    }
-                    count++;
-                    k++;
-
-                if (count == 8)
-                {
-                    count = 0;
-                    compressed_byte_counter++;
-                }
-            }
+            decomp(buffer, image_struct, count, i, k);
+            k += 8;
         }
     }
-
-    // Close the input file
     fclose(input_file);
     return FUNCTION_SUCCESS;
 }
