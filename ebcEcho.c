@@ -30,6 +30,7 @@ int main(int argc, char **argv)
     // image struct variable initialization
     image_struct_type image_struct;
 
+
     // Unix usage information
     // Returns 0 if program is run with no arguments
     if (argc == 1)
@@ -72,28 +73,35 @@ int main(int argc, char **argv)
         return BAD_MALLOC;
     }
 
+
     // reverts to correct size for header writing
     // image_struct.height += 1;
 
 
-    int temp_width = image_struct.width;
+    // int temp_width = image_struct.width;
 
     // find the size of width of compressed file ~ 0.625 original
-    image_struct.width = round_up_return(&image_struct);
+    // image_struct.width = round_up_return(&image_struct);
 
     // reads data into 2d array and checks data is valid
     // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
-    if (read_compressed_data(&image_struct, argv[1], input_file) == BAD_DATA)
-    {
-        return BAD_DATA;
-    }
-    // for (int i = 0; i < image_struct.height; i++){
-    //     // printf("%d\t", i + 1);
-    //     for (int j = 0; j < image_struct.width; j++){
-    //         printf("%d ", image_struct.imageData[i][j]);
-    //     }
-    //     printf("\n\n");
+    // if (read_compressed_data(&image_struct, argv[1], input_file) == BAD_DATA)
+    // {
+    //     return BAD_DATA;
     // }
+
+    image_struct.compressed_width = round_up_return(&image_struct);
+    
+    decompress_and_store(&image_struct, input_file);
+
+
+    for (int i = 0; i < 2; i++){
+        // printf("%d\t", i + 1);
+        for (int j = 0; j < image_struct.width; j++){
+            printf("%d ", image_struct.imageData[i][j]);
+        }
+        printf("\n\n");
+    }
 
 
     // open the output file in write mode
@@ -106,7 +114,7 @@ int main(int argc, char **argv)
         return BAD_WRITE_PERMISSIONS;
     }
 
-    image_struct.width = temp_width;
+    // image_struct.width = temp_width;
 
     // Writes the header of the output file
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
@@ -120,7 +128,7 @@ int main(int argc, char **argv)
     image_struct.width = round_up_return(&image_struct);
 
     write_binary_data(&image_struct, output_file);
-    image_struct.width = temp_width;
+    //image_struct.width = temp_width;
 
     // frees malloc'd memory and closes the output file
     destructor(&image_struct, output_file);
