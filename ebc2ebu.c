@@ -63,15 +63,15 @@ int main(int argc, char **argv)
 
 
     // set uncompressed dimensions to magic number for decompressing
-    image_struct_uncompressed = image_struct;
+    // image_struct_uncompressed = image_struct;
 
 
-    if (check_malloc(&image_struct_uncompressed, input_file) == BAD_MALLOC)
-        return BAD_MALLOC;
+    // if (check_malloc(&image_struct_uncompressed, input_file) == BAD_MALLOC)
+    //     return BAD_MALLOC;
     
 
     // find the size of width of compressed file ~ 0.625 original
-    image_struct.width = round_up_return(&image_struct);
+    //image_struct.compressed_width = round_up_return(&image_struct);
 
     // checks memory has been allocated properly for 2d array
     if (check_malloc(&image_struct, input_file) == BAD_MALLOC)
@@ -79,16 +79,11 @@ int main(int argc, char **argv)
 
     // reads data into 2d array and checks data is valid
     // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
-    if (read_compressed_data(&image_struct, argv[1], input_file) == BAD_DATA)
-        return BAD_DATA;
+    // if (read_compressed_data(&image_struct, argv[1], input_file) == BAD_DATA)
+    //     return BAD_DATA;
 
-    // for (int i = 0; i < image_struct.height; i++){
-    //     printf("%d\t", i + 1);
-    //     for (int j = 0; j < image_struct.width; j++){
-    //         printf("%d ", image_struct.imageData[i][j]);
-    //     }
-    //     printf("\n\n");
-    // }
+    image_struct.compressed_width = round_up_return(&image_struct);
+    decompress_and_store(&image_struct, input_file);
 
 
     // open the output file in write mode
@@ -104,11 +99,20 @@ int main(int argc, char **argv)
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
-    decompress(&image_struct_uncompressed, &image_struct);
+    // decompress(&image_struct_uncompressed, &image_struct);
     // compress_data(&image_struct, &image_struct_compressed);
 
+
+    // for (int i = 0; i < image_struct.height; i++){
+    //     // printf("%d\t", i + 1);
+    //     for (int j = 0; j < image_struct.width; j++){
+    //         printf("%d ", image_struct.imageData[i][j]);
+    //     }
+    //     printf("\n\n");
+    // }
+    
     // Writes the binary image_data of the output file
-    if (write_binary_data(&image_struct_uncompressed, output_file) == BAD_OUTPUT)
+    if (write_binary_data(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
     printf("CONVERTED\n");

@@ -71,6 +71,7 @@ int write_binary_data(image_struct_type *image_struct, FILE *output_file)
 
             // casting imageData to char to be written to output file using fwrite
             unsigned int value = image_struct->imageData[i][j];
+            // printf("%d ", image_struct->imageData[i][j]);
             unsigned char binary_value = (unsigned char)(value);
 
             // write binary values
@@ -80,7 +81,112 @@ int write_binary_data(image_struct_type *image_struct, FILE *output_file)
             if (check_binary_written(image_struct, output_file) == BAD_OUTPUT)
                 return BAD_OUTPUT;
         }
+        // printf("\n");
     }
+    return FUNCTION_SUCCESS;
+}
+
+int compress_data_to_file(image_struct_type *image_struct, FILE *output_file, image_struct_type *image_struct_compressed)
+{
+    int count;
+    int k;
+
+    for (int i = 0; i < image_struct_compressed->height; i++)
+    {
+        count = 0;
+        k = 0;
+        for (int j = 0; j < image_struct->width; j++)
+        {
+            unsigned char this_element = image_struct->imageData[i][j];
+            unsigned char next_element = (j < image_struct->width - 1) ? image_struct->imageData[i][j + 1] : 0;
+            unsigned char element_2_away = (j < image_struct->width - 2) ? image_struct->imageData[i][j + 2] : 0;
+            unsigned char element_3_away = (j < image_struct->width - 3) ? image_struct->imageData[i][j + 3] : 0;
+
+            switch (count)
+            {
+            case 0:
+                this_element <<= 3;
+
+                next_element <<= 3;
+                next_element >>= 5;
+
+                this_element |= next_element;
+                image_struct_compressed->imageData[i][k] = this_element;
+
+                break;
+
+            case 1:
+                this_element <<= 6;
+
+                next_element <<= 3;
+                next_element >>= 2;
+
+                this_element |= next_element;
+
+                element_2_away <<= 3;
+                element_2_away >>= 7;
+
+                this_element |= element_2_away;
+
+                image_struct_compressed->imageData[i][k] = this_element;
+                break;
+
+            case 2:
+                next_element <<= 4;
+
+                element_2_away <<= 3;
+                element_2_away >>= 4;
+
+                next_element |= element_2_away;
+                image_struct_compressed->imageData[i][k] = next_element;
+                break;
+
+            case 3:
+                next_element <<= 7;
+
+                element_2_away <<= 3;
+                element_2_away >>= 1;
+
+                next_element |= element_2_away;
+
+                element_3_away <<= 3;
+                element_3_away >>= 6;
+                next_element |= element_3_away;
+                image_struct_compressed->imageData[i][k] = next_element;
+                break;
+
+            case 4:
+                element_2_away <<= 5;
+
+                element_3_away <<= 3;
+                element_3_away >>= 3;
+
+                element_2_away |= element_3_away;
+                image_struct_compressed->imageData[i][k] = element_2_away;
+                break;
+            }
+            count++;
+            k++;
+
+
+            if (count == 5)
+            {
+                // Write the compressed data to the output file
+                if (fwrite(image_struct_compressed->imageData[i], 1, k, output_file) != k)
+                {
+                    printf("Error writing to the output file.\n");
+                    fclose(output_file);
+                    return FUNCTION_SUCCESS;
+                }
+
+                count = 0;
+                j += 3; // Advance the index to account for the next 3 elements that were already processed
+            }
+        }
+    }
+
+    // Close the output file
+    fclose(output_file);
     return FUNCTION_SUCCESS;
 }
 
@@ -199,40 +305,6 @@ int round_up_return(image_struct_type *image_struct)
     return tmp;
 }
 
-// int read_compressed_data(image_struct_type *image_struct, char *input_file_name, FILE *input_file)
-// {
-//     unsigned char test;
-//     fread(&test, sizeof(unsigned char), 1, input_file); // not sure why needed
-//     // fread starts on the wrong line - manually incremenet it
-
-//     unsigned char binary_value;
-//     // iterate through 2d array
-//     for (int i = 0; i < image_struct->height; i++)
-//     {
-
-//         for (int j = 0; j < image_struct->width; j++)
-//         {
- 
-//             unsigned int value;
-
-//             // read in binary values
-//             image_struct->check = fread(&binary_value, sizeof(unsigned char), 1, input_file);
-
-//             if (image_struct->check == 0){
-//                 return FUNCTION_SUCCESS;
-//             }
-//             // cast to int and store back in 2d array
-//             value = (unsigned int)binary_value;
-//             image_struct->imageData[i][j] = value;
-
-//             //printf("%d ", image_struct->imageData[i][j]);
-//         }
-//         //printf("\n\n");
-//     }
-//     fclose(input_file);
-//     return FUNCTION_SUCCESS;
-// }
-
 int read_compressed_data(image_struct_type *image_struct, char *input_file_name, FILE *input_file)
 {
     
@@ -270,12 +342,7 @@ int read_compressed_data(image_struct_type *image_struct, char *input_file_name,
 
 
 void decomp(unsigned char buffer[], image_struct_type *image_struct, int count, int i, int k){
-        for (int z = 0; z < 5; z++){
-            printf("%d ", buffer[z]);
-        }
-        printf("\n");
-
-for (int l = 0; l < 8; l++){
+    for (int l = 0; l < 8; l++){
 
         unsigned char this_element = buffer[count];
         unsigned char prev_element = (count > 0) ? buffer[count - 1] : 0;
@@ -285,7 +352,6 @@ for (int l = 0; l < 8; l++){
         switch (count)
         {
             case (0):
-                printf("i is %d, l is %d\n", i, l);
                 this_element >>= 3;
                 image_struct->imageData[i][k] = this_element;
                 break;
@@ -354,8 +420,9 @@ for (int l = 0; l < 8; l++){
             count = 0;
         }
     }
-
 }
+
+
 int decompress_and_store(image_struct_type *image_struct, FILE *input_file)
 {
 
@@ -373,13 +440,14 @@ int decompress_and_store(image_struct_type *image_struct, FILE *input_file)
     {
         k = 0;
         count = 0;
-        for (int j = 0; j < 10; j += 5) // width / block size
+        for (int j = 0; j < image_struct->compressed_width; j += 5) // width / block size
         {
             image_struct->check = fread(buffer, 1, 5, input_file);
             decomp(buffer, image_struct, count, i, k);
             k += 8;
         }
     }
+
     fclose(input_file);
     return FUNCTION_SUCCESS;
 }
