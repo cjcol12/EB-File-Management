@@ -199,8 +199,43 @@ int round_up_return(image_struct_type *image_struct)
     return tmp;
 }
 
+// int read_compressed_data(image_struct_type *image_struct, char *input_file_name, FILE *input_file)
+// {
+//     unsigned char test;
+//     fread(&test, sizeof(unsigned char), 1, input_file); // not sure why needed
+//     // fread starts on the wrong line - manually incremenet it
+
+//     unsigned char binary_value;
+//     // iterate through 2d array
+//     for (int i = 0; i < image_struct->height; i++)
+//     {
+
+//         for (int j = 0; j < image_struct->width; j++)
+//         {
+ 
+//             unsigned int value;
+
+//             // read in binary values
+//             image_struct->check = fread(&binary_value, sizeof(unsigned char), 1, input_file);
+
+//             if (image_struct->check == 0){
+//                 return FUNCTION_SUCCESS;
+//             }
+//             // cast to int and store back in 2d array
+//             value = (unsigned int)binary_value;
+//             image_struct->imageData[i][j] = value;
+
+//             //printf("%d ", image_struct->imageData[i][j]);
+//         }
+//         //printf("\n\n");
+//     }
+//     fclose(input_file);
+//     return FUNCTION_SUCCESS;
+// }
+
 int read_compressed_data(image_struct_type *image_struct, char *input_file_name, FILE *input_file)
 {
+    
     unsigned char test;
     fread(&test, sizeof(unsigned char), 1, input_file); // not sure why needed
     // fread starts on the wrong line - manually incremenet it
@@ -210,15 +245,15 @@ int read_compressed_data(image_struct_type *image_struct, char *input_file_name,
     for (int i = 0; i < image_struct->height; i++)
     {
 
-        for (int j = 0; j < image_struct->width - 1; j++)
+        for (int j = 0; j < image_struct->width; j++)
         {
  
             unsigned int value;
 
             // read in binary values
             image_struct->check = fread(&binary_value, sizeof(unsigned char), 1, input_file);
-            // printf("image check %d\n", image_struct->check);
 
+            
 
             if (image_struct->check == 0){
                 return FUNCTION_SUCCESS;
@@ -227,7 +262,120 @@ int read_compressed_data(image_struct_type *image_struct, char *input_file_name,
             value = (unsigned int)binary_value;
             image_struct->imageData[i][j] = value;
         }
+
     }
+    fclose(input_file);
+    return FUNCTION_SUCCESS;
+}
+
+int decompress_and_store(image_struct_type *image_struct, FILE *input_file)
+{
+
+    unsigned char test;
+    fread(&test, sizeof(unsigned char), 1, input_file); // not sure why needed
+    // fread starts on the wrong line - manually incremenet it
+
+    int count = 0;
+    int k = 0;
+    int compressed_byte_counter;
+
+    // Read the image data
+    unsigned char buffer[5];
+
+    for (int i = 0; i < image_struct->height; i++)
+    {
+        count = 0;
+        k = 0;
+        compressed_byte_counter = 0;
+        for (int j = 0; j < 5; j += 5)
+        {
+
+
+            image_struct->check = fread(buffer, 1, 5, input_file);
+            for (int l = 0; l < image_struct->width; l++){
+
+                unsigned char this_element = buffer[k];
+                unsigned char prev_element = (k > 0) ? buffer[k - 1] : 0;
+                unsigned char element_2_away = (k > 1) ? buffer[k - 2] : 0;
+                unsigned char element_3_away = (k > 2) ? buffer[k - 3] : 0;
+
+                switch (count)
+                {
+                    case (0):
+                        printf("i is %d, j is %d, l is %d\n", i, j, l);
+                        this_element >>= 3;
+                        image_struct->imageData[i][l] = this_element;
+                        break;
+
+                    case (1):
+                        prev_element <<= 5;
+                        prev_element >>= 3;
+
+                        this_element >>= 6;
+                        this_element |= prev_element;
+                        image_struct->imageData[i][l] = this_element;
+                        break;
+
+                    case (2):
+                        prev_element <<= 2;
+                        prev_element >>= 3;
+                        image_struct->imageData[i][l] = prev_element;
+                        break;
+
+                    case (3):
+                        element_2_away <<= 7;
+                        element_2_away >>= 3;
+
+                        prev_element >>= 4;
+
+                        prev_element |= element_2_away;
+                        image_struct->imageData[i][l] = prev_element;
+                        break;
+
+                    case (4):
+                        element_2_away <<= 4;
+                        element_2_away >>= 3;
+
+                        prev_element >>= 7;
+                        element_2_away |= prev_element;
+                        image_struct->imageData[i][l] = element_2_away;
+                        break;
+
+                    case (5):
+                        element_2_away <<= 1;
+                        element_2_away >>= 3;
+                        image_struct->imageData[i][l] = element_2_away;
+                        break;
+
+                    case (6):
+                        element_3_away <<= 6;
+                        element_3_away >>= 3;
+
+                        element_2_away >>= 5;
+
+                        element_3_away |= element_2_away;
+                        image_struct->imageData[i][l] = element_3_away;
+                        break;
+
+                    case (7):
+                        element_3_away <<= 3;
+                        element_3_away >>= 3;
+                        image_struct->imageData[i][l] = element_3_away;
+                        break;
+                    }
+                    count++;
+                    k++;
+
+                if (count == 8)
+                {
+                    count = 0;
+                    compressed_byte_counter++;
+                }
+            }
+        }
+    }
+
+    // Close the input file
     fclose(input_file);
     return FUNCTION_SUCCESS;
 }
