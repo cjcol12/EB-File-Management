@@ -86,125 +86,221 @@ int write_binary_data(image_struct_type *image_struct, FILE *output_file)
     return FUNCTION_SUCCESS;
 }
 
-void comp(){
+void comp(unsigned char buffer[], unsigned char comp_buffer[]) {
+    // Initialize variables to hold elements in the buffer
+    unsigned char this_element, next_element, element_2_away, element_3_away;
 
-}
-int compress_data_to_file(image_struct_type *image_struct, FILE *output_file)
-{
-    // printf("compressed data\n");
-    int count;
-    int k;
-    unsigned char buffer[5];
+    // Loop through each byte in the buffer
+    for(int count = 0; count < 5; count++) {
+        // Assign the values for this_element and next_element
+        this_element = buffer[count];
+        next_element = buffer[count + 1];
+        element_2_away = buffer[count + 2];
+        element_3_away = buffer[count + 3];
 
-    for(int i = 0; i < image_struct->height; i++)
-    {
-        count = 0;
-        k = 0;
-        for(int j = 0; j < image_struct->width; j++)
-        {
-            unsigned char this_element = image_struct->imageData[i][j];
-
-                if (j > 5 ){
-                // printf("this %d \n", this_element);
-                // printf("i is %d j is %d this is %d\n", i, j, this_element);
-
-            }
-            unsigned char next_element = (j < image_struct->width - 1) ? image_struct->imageData[i][j + 1] : 0;
-            unsigned char element_2_away = (j < image_struct->width - 2) ? image_struct->imageData[i][j + 2] : 0;
-            unsigned char element_3_away = (j < image_struct->width - 3) ? image_struct->imageData[i][j + 3] : 0;
-
-            switch (count)
-            {
+        // Compression logic using switch-case
+        switch (count) {
             case 0:
-           
                 this_element <<= 3;
-
                 next_element <<= 3;
                 next_element >>= 5;
-
                 this_element |= next_element;
-
-                buffer[k] = this_element;
-
+                comp_buffer[count] = this_element;
                 break;
 
             case 1:
                 this_element <<= 6;
-
                 next_element <<= 3;
                 next_element >>= 2;
-
                 this_element |= next_element;
-
                 element_2_away <<= 3;
                 element_2_away >>= 7;
-
                 this_element |= element_2_away;
-
-                buffer[k] = this_element;
+                comp_buffer[count] = this_element;
                 break;
 
             case 2:
                 next_element <<= 4;
-
                 element_2_away <<= 3;
                 element_2_away >>= 4;
-
                 next_element |= element_2_away;
-                buffer[k] = next_element;
+                comp_buffer[count] = next_element;
                 break;
 
             case 3:
                 next_element <<= 7;
-
                 element_2_away <<= 3;
                 element_2_away >>= 1;
-
                 next_element |= element_2_away;
-
                 element_3_away <<= 3;
                 element_3_away >>= 6;
                 next_element |= element_3_away;
-                buffer[k] = next_element;
+                comp_buffer[count] = next_element;
                 break;
 
             case 4:
                 element_2_away <<= 5;
-
                 element_3_away <<= 3;
                 element_3_away >>= 3;
-
                 element_2_away |= element_3_away;
-                buffer[k] = element_2_away;
+                comp_buffer[count] = element_2_away;
                 break;
-            }
-            count++;
-            k++;
-
-
-            if (count == 5)
-            {
-            
-                // for (int z = 0; z < 5; z++){
-                //     printf("%d ", buffer[z]);
-                // }
-                
-                // Write the compressed data to the output file
-                if (fwrite(buffer, 1, k, output_file) != k)
-                {
-                    printf("Error writing to the output file.\n");
-                    return FUNCTION_SUCCESS;
-                }
-                k = 0;
-                count = 0;
-                j += 3; // Advance the index to account for the next 3 elements that were already processed
-            }
         }
     }
-
-    // Close the output file
-    return FUNCTION_SUCCESS;
 }
+
+void compress_data_to_file(image_struct_type *image_struct, FILE *output_file){
+
+    unsigned char comp_buffer[5];
+    unsigned char buffer[8];
+    // int k = 0;
+    
+    for(int i = 0; i < image_struct->height; i++){
+        for(int j = 0; j < image_struct->width; j += 8){
+
+
+            
+            // Fill the buffer with 8 bytes of uncompressed data or 0's
+            for (int b = 0; b < 8; b++)
+            {
+                if (j + b < image_struct->width){
+                    buffer[b] = image_struct->imageData[i][j + b];
+                }
+                else{
+                    buffer[b] = 0;
+                }
+            }
+
+            
+            comp(buffer, comp_buffer);
+
+
+
+
+
+        }
+    }
+        printf("\n");
+        for (int z = 0; z < 5; z++){
+            printf("%d ", comp_buffer[z]);
+        }
+
+
+}
+ 
+
+// int compress_data_to_files(image_struct_type *image_struct, FILE *output_file)
+// {
+//     // printf("compressed data\n");
+//     int count;
+//     int k;
+//     unsigned char comp_buffer[5];
+//     unsigned char buffer[8];
+
+
+//     for(int i = 0; i < image_struct->height; i++)
+//     {
+//         count = 0;
+//         k = 0;
+//         for(int j = 0; j < image_struct->width; j++)
+//         {
+//             unsigned char this_element = image_struct->imageData[i][j];
+//             unsigned char next_element = (j < image_struct->width - 1) ? image_struct->imageData[i][j + 1] : 0;
+//             unsigned char element_2_away = (j < image_struct->width - 2) ? image_struct->imageData[i][j + 2] : 0;
+//             unsigned char element_3_away = (j < image_struct->width - 3) ? image_struct->imageData[i][j + 3] : 0;
+
+//             switch (count)
+//             {
+//             case 0:
+           
+//                 this_element <<= 3;
+
+//                 next_element <<= 3;
+//                 next_element >>= 5;
+
+//                 this_element |= next_element;
+
+//                 comp_buffer[k] = this_element;
+
+//                 break;
+
+//             case 1:
+//                 this_element <<= 6;
+
+//                 next_element <<= 3;
+//                 next_element >>= 2;
+
+//                 this_element |= next_element;
+
+//                 element_2_away <<= 3;
+//                 element_2_away >>= 7;
+
+//                 this_element |= element_2_away;
+
+//                 comp_buffer[k] = this_element;
+//                 break;
+
+//             case 2:
+//                 next_element <<= 4;
+
+//                 element_2_away <<= 3;
+//                 element_2_away >>= 4;
+
+//                 next_element |= element_2_away;
+//                 comp_buffer[k] = next_element;
+//                 break;
+
+//             case 3:
+//                 next_element <<= 7;
+
+//                 element_2_away <<= 3;
+//                 element_2_away >>= 1;
+
+//                 next_element |= element_2_away;
+
+//                 element_3_away <<= 3;
+//                 element_3_away >>= 6;
+//                 next_element |= element_3_away;
+//                 comp_buffer[k] = next_element;
+//                 break;
+
+//             case 4:
+//                 element_2_away <<= 5;
+
+//                 element_3_away <<= 3;
+//                 element_3_away >>= 3;
+
+//                 element_2_away |= element_3_away;
+//                 comp_buffer[k] = element_2_away;
+//                 break;
+//             }
+//             count++;
+//             k++;
+
+
+//             if (count == 5)
+//             {
+            
+//                 // for (int z = 0; z < 5; z++){
+//                 //     printf("%d ", buffer[z]);
+//                 // }
+                
+//                 // Write the compressed data to the output file
+//                 if (fwrite(buffer, 1, k, output_file) != k)
+//                 {
+//                     printf("Error writing to the output file.\n");
+//                     return FUNCTION_SUCCESS;
+//                 }
+//                 k = 0;
+//                 count = 0;
+//                 j += 3; // Advance the index to account for the next 3 elements that were already processed
+//             }
+//         }
+//     }
+
+//     // Close the output file
+//     return FUNCTION_SUCCESS;
+// }
 
 int compress_data(image_struct_type *image_struct, image_struct_type *image_struct_compressed)
 {
