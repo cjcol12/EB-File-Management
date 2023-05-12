@@ -86,7 +86,12 @@ int write_binary_data(image_struct_type *image_struct, FILE *output_file)
     return FUNCTION_SUCCESS;
 }
 
-void comp(unsigned char buffer[], unsigned char comp_buffer[]) {
+void comp(unsigned char buffer[], unsigned char comp_buffer[], FILE *output_file) {
+    // printf("\n\n\nbuffer is ");
+    // for (int b = 0; b < 8; b++){
+    //     printf("%d ", buffer[b]);
+    // }
+ 
     // Initialize variables to hold elements in the buffer
     unsigned char this_element, next_element, element_2_away, element_3_away;
 
@@ -147,6 +152,12 @@ void comp(unsigned char buffer[], unsigned char comp_buffer[]) {
                 break;
         }
     }
+
+    if (fwrite(comp_buffer, 1, 5, output_file) != 5) {
+        printf("Error writing to the output file.\n");
+        return;
+    }
+
 }
 
 void compress_data_to_file(image_struct_type *image_struct, FILE *output_file){
@@ -158,8 +169,6 @@ void compress_data_to_file(image_struct_type *image_struct, FILE *output_file){
     for(int i = 0; i < image_struct->height; i++){
         for(int j = 0; j < image_struct->width; j += 8){
 
-
-            
             // Fill the buffer with 8 bytes of uncompressed data or 0's
             for (int b = 0; b < 8; b++)
             {
@@ -172,7 +181,7 @@ void compress_data_to_file(image_struct_type *image_struct, FILE *output_file){
             }
 
             
-            comp(buffer, comp_buffer);
+            comp(buffer, comp_buffer, output_file);
 
 
 
@@ -180,12 +189,6 @@ void compress_data_to_file(image_struct_type *image_struct, FILE *output_file){
 
         }
     }
-        printf("\n");
-        for (int z = 0; z < 5; z++){
-            printf("%d ", comp_buffer[z]);
-        }
-
-
 }
  
 
