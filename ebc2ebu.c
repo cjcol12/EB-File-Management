@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 {
     // image struct variable initialization
     image_struct_type image_struct;
-    image_struct_type image_struct_uncompressed;
+    // image_struct_type image_struct_uncompressed;
 
 
     // Unix usage information

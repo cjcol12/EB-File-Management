@@ -98,12 +98,23 @@ int main(int argc, char **argv)
     if (check_malloc(&image_struct_compressed, input_file) == BAD_MALLOC)
         return BAD_MALLOC;
 
+    printf("uncompressed data\n");
+    // for (int i = 0; i < image_struct.height; i++){
+    //     // printf("%d\t", i + 1);
+    //     for (int j = 0; j < image_struct.width; j++){
+    //         printf("%d ", image_struct.imageData[i][j]);
+    //     }
+    //     printf("\n\n");
+    // }
+
+    compress_data_to_file(&image_struct, output_file);
+
 
     // compresses data into ebc format
-    compress_data(&image_struct, &image_struct_compressed);
+    // compress_data(&image_struct, &image_struct_compressed);
 
     // writes binary data to output fil
-    write_binary_data(&image_struct_compressed, output_file);
+    // write_binary_data(&image_struct_compressed, output_file);
 
     // frees malloc'd memory and closes the output file
     destructor(&image_struct, output_file);
