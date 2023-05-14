@@ -160,37 +160,60 @@ void comp(unsigned char buffer[], unsigned char comp_buffer[], FILE *output_file
 
 }
 
-void compress_data_to_file(image_struct_type *image_struct, FILE *output_file){
-
+void compress_data_to_file(image_struct_type *image_struct, FILE *output_file)
+{
     unsigned char comp_buffer[5];
     unsigned char buffer[8];
-    // int k = 0;
+
+    int total_bytes = image_struct->height * image_struct->width;
     
-    for(int i = 0; i < image_struct->height; i++){
-        for(int j = 0; j < image_struct->width; j += 8){
-
-            // Fill the buffer with 8 bytes of uncompressed data or 0's
-            for (int b = 0; b < 8; b++)
+    for(int byte_index = 0; byte_index < total_bytes; byte_index += 8)
+    {
+        // Fill the buffer with 8 bytes of uncompressed data or 0's
+        for (int b = 0; b < 8; b++)
+        {
+            if (byte_index + b < total_bytes)
             {
-                if (j + b < image_struct->width){
-                    buffer[b] = image_struct->imageData[i][j + b];
-                }
-                else{
-                    buffer[b] = 0;
-                }
+                int row = (byte_index + b) / image_struct->width;
+                int col = (byte_index + b) % image_struct->width;
+                buffer[b] = image_struct->imageData[row][col];
             }
-
-            
-            comp(buffer, comp_buffer, output_file);
-
-
-
-
-
+            else
+            {
+                buffer[b] = 0;
+            }
         }
+
+        // Compress the buffer and write to output file
+        comp(buffer, comp_buffer, output_file);
     }
 }
  
+// void compress_data_to_file(image_struct_type *image_struct, FILE *output_file){
+
+//     unsigned char comp_buffer[5];
+//     unsigned char buffer[8];
+//     // int k = 0;
+    
+//     for(int i = 0; i < image_struct->height; i++){
+//         for(int j = 0; j < image_struct->width; j += 8){
+
+//             // Fill the buffer with 8 bytes of uncompressed data or 0's
+//             for (int b = 0; b < 8; b++)
+//             {
+//                 if (j + b < image_struct->width){
+//                     buffer[b] = image_struct->imageData[i][j + b];
+//                 }
+//                 else{
+//                     buffer[b] = 0;
+//                 }
+//             }
+
+            
+//             comp(buffer, comp_buffer, output_file);
+//         }
+//     }
+// }
 
 // int compress_data_to_files(image_struct_type *image_struct, FILE *output_file)
 // {

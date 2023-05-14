@@ -98,7 +98,6 @@ int main(int argc, char **argv)
     if (check_malloc(&image_struct_compressed, input_file) == BAD_MALLOC)
         return BAD_MALLOC;
 
-    printf("uncompressed data\n");
     // for (int i = 0; i < image_struct.height; i++){
     //     // printf("%d\t", i + 1);
     //     for (int j = 0; j < image_struct.width; j++){
