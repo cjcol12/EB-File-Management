@@ -30,7 +30,6 @@ int main(int argc, char **argv)
 {
     // image struct variable initialization
     image_struct_type image_struct;
-    // image_struct_type image_struct_uncompressed;
 
 
     // Unix usage information
@@ -46,7 +45,7 @@ int main(int argc, char **argv)
         return BAD_ARGUMENT_COUNT;
 
     // open the input file in read mode
-    FILE *input_file = fopen(argv[1], "r");
+    FILE *input_file = fopen(argv[1], "rb");
 
     // check to see if file opened successfully
     if (check_file_opened(argv[1], input_file) == BAD_FILE)
@@ -61,18 +60,6 @@ int main(int argc, char **argv)
     if (check_dimensions(&image_struct, argv[1], input_file) == BAD_DIMENSION)
         return BAD_DIMENSION;
 
-
-    // set uncompressed dimensions to magic number for decompressing
-    // image_struct_uncompressed = image_struct;
-
-
-    // if (check_malloc(&image_struct_uncompressed, input_file) == BAD_MALLOC)
-    //     return BAD_MALLOC;
-    
-
-    // find the size of width of compressed file ~ 0.625 original
-    //image_struct.compressed_width = round_up_return(&image_struct);
-
     // checks memory has been allocated properly for 2d array
     if (check_malloc(&image_struct, input_file) == BAD_MALLOC)
         return BAD_MALLOC;
@@ -82,8 +69,11 @@ int main(int argc, char **argv)
     // if (read_compressed_data(&image_struct, argv[1], input_file) == BAD_DATA)
     //     return BAD_DATA;
 
+
+
     image_struct.compressed_width = round_up_return(&image_struct);
     decompress_and_store(&image_struct, input_file);
+    // read_binary_data2(input_file, 56250, &image_struct);
 
 
     // open the output file in write mode
@@ -99,11 +89,9 @@ int main(int argc, char **argv)
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
-    // decompress(&image_struct_uncompressed, &image_struct);
-    // compress_data(&image_struct, &image_struct_compressed);
 
 
-    // for (int i = 0; i < image_struct.height; i++){
+    // for (int i = 0; i < 25; i++){
     //     // printf("%d\t", i + 1);
     //     for (int j = 0; j < image_struct.width; j++){
     //         printf("%d ", image_struct.imageData[i][j]);
@@ -114,6 +102,7 @@ int main(int argc, char **argv)
     // Writes the binary image_data of the output file
     if (write_binary_data(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
+    
 
     printf("CONVERTED\n");
     return SUCCESS;
