@@ -621,8 +621,7 @@ void decomp(unsigned char buffer[], unsigned char uncomp_buffer[], image_struct_
 //     return FUNCTION_SUCCESS;
 // }
 
-int decompress_and_store(image_struct_type *image_struct, FILE *input_file)
-{
+int decompress_and_store(image_struct_type *image_struct, FILE *input_file){
     int flag = 0;
     int k = 0;
     unsigned char test;
@@ -692,7 +691,7 @@ int decompress_and_store(image_struct_type *image_struct, FILE *input_file)
     fclose(input_file);
     return FUNCTION_SUCCESS;
 }
-
+}
 // int decompress_and_store(image_struct_type *image_struct, FILE *input_file)
 // {
 //     unsigned char test;
