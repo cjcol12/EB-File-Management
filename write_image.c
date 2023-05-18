@@ -5,7 +5,6 @@
     Author: CJ Coleman
 */
 
-
 // Standard I/O header file inclusion
 #include <stdio.h>
 
@@ -27,41 +26,69 @@
 // Error checking module inclusion
 #include "error_checking.h"
 
-int write_header(image_struct_type *image_struct, FILE *output_file){
+/**
+ * Function: write_header
+ * ----------------------
+ * Writes the header data of the image to the output file.
+ *
+ * image_struct: Pointer to the image_struct_type that holds image data and information.
+ * output_file: Pointer to the output file.
+ *
+ * returns: 0 on success, BAD_OUTPUT on error.
+ */
+int write_header(image_struct_type *image_struct, FILE *output_file)
+{
     // write the header data in one block
-    image_struct->check = fprintf(output_file, "%c%c\n%d %d\n", 
-    image_struct->magic_number[0], image_struct->magic_number[1], image_struct->height, image_struct->width);
+    image_struct->check = fprintf(output_file, "%c%c\n%d %d\n",
+                                  image_struct->magic_number[0], image_struct->magic_number[1], image_struct->height, image_struct->width);
 
-    // check data is written correctly 
+    // check if data is written correctly
     if (check_data_written(image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
-
-    else return FUNCTION_SUCCESS;
+    else
+        return FUNCTION_SUCCESS;
 }
 
-int write_image_data(image_struct_type *image_struct, FILE *output_file){
+/**
+ * Function: write_image_data
+ * --------------------------
+ * Writes the image data to the output file.
+ *
+ * image_struct: Pointer to the image_struct_type that holds image data and information.
+ * output_file: Pointer to the output file.
+ *
+ * returns: 0 on success, BAD_OUTPUT on error.
+ */
+int write_image_data(image_struct_type *image_struct, FILE *output_file)
+{
     // iterating through 2d array and writing
-    for(int i = 0; i < image_struct->height; i++){
-        for(int j = 0; j < image_struct->width; j++){
-
-            if (image_struct->width == j + 1){
+    for (int i = 0; i < image_struct->height; i++)
+    {
+        for (int j = 0; j < image_struct->width; j++)
+        {
+            if (image_struct->width == j + 1)
+            {
                 image_struct->check = fprintf(output_file, "%u", image_struct->imageData[i][j]);
             }
-            else{       
+            else
+            {
                 image_struct->check = fprintf(output_file, "%u ", image_struct->imageData[i][j]);
             }
-            // checks fprintf has run succesfully
+
+            // checks if fprintf has run successfully
             if (check_data_written(image_struct, output_file) == BAD_OUTPUT)
                 return BAD_OUTPUT;
         }
 
-        if (i + 2 <= image_struct->height){
+        if (i + 2 <= image_struct->height)
+        {
             image_struct->check = fprintf(output_file, "\n");
         }
 
-        // checks fprintf has run succesfully
+        // checks if fprintf has run successfully
         if (check_data_written(image_struct, output_file) == BAD_OUTPUT)
             return BAD_OUTPUT;
     }
+
     return FUNCTION_SUCCESS;
 }
