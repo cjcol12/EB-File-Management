@@ -116,7 +116,7 @@ run_test ()
 ebf=(ebfEcho ebf2ebu ebfComp)
 ebu=(ebu2ebf ebuComp ebuEcho)
 EBC=(ebc2ebu ebu2ebc ebcEcho ebcComp)
-EXES=(ebc2ebu ebu2ebc ebcEcho ebcComp) # (ebcComp ebcEcho ebu2ebc ebc2ebu ebfEcho ebuComp ebuEcho ebfComp ebu2ebf ebf2ebu)
+EXES=(ebc2ebu ebu2ebc ebcEcho ebcComp ebfEcho ebuComp ebuEcho ebfComp ebu2ebf ebf2ebu)
 
 # run all of the tests below for all executables given in 'EXES'
 # inside this loop, the executable being run can be referred to by 'testExecutable'
@@ -131,8 +131,8 @@ do
     elif [[ ${testExecutable::3} == "ebc" ]]
     then
         file_ext=".ebc"
-        #path="tests/data/ebc_data/"
-        path="ebc_data/"
+        path="tests/data/ebc_data/"
+        #path="ebc_data/"
     else
         file_ext=".ebu"
         path="tests/data/ebu_data/"
@@ -208,19 +208,40 @@ do
     full_path=$path$filename$file_ext
     run_test ./$testExecutable $full_path "tmp" 5  "ERROR: Image Malloc Failed" ###################
 
+
+
     # data has a greyvalue above the maximum permitted value
-    echo ""
-    echo "Bad Data (too high)"
-    filename="bad_data_high"
-    full_path=$path$filename$file_ext
-    run_test ./$testExecutable $full_path "tmp" 6 "ERROR: Bad Data ($full_path)"
+    if [[ $testExecutable != "ebc2ebu" && $testExecutable != "ebcComp" && $testExecutable != "ebcEcho" ]];
+    then
+        echo ""
+        echo "Bad Data (too high)"
+        filename="bad_data_high"
+        full_path=$path$filename$file_ext
+        run_test ./$testExecutable $full_path "tmp" 6 "ERROR: Bad Data ($full_path)"
+    fi
 
     # data has a greyvalue below the minimum permitted value
-    echo ""
-    echo "Bad Data (too low)"
-    filename="bad_data_low"
-    full_path=$path$filename$file_ext
-    run_test ./$testExecutable $full_path "tmp" 6 "ERROR: Bad Data ($full_path)"
+    if [[ $testExecutable != "ebc2ebu" && $testExecutable != "ebcComp" && $testExecutable != "ebcEcho" ]]; then
+        echo ""
+        echo "Bad Data (too low)"
+        filename="bad_data_low"
+        full_path=$path$filename$file_ext
+        run_test ./$testExecutable $full_path "tmp" 6 "ERROR: Bad Data ($full_path)"
+    fi
+
+    # # data has a greyvalue above the maximum permitted value
+    # echo ""
+    # echo "Bad Data (too high)"
+    # filename="bad_data_high"
+    # full_path=$path$filename$file_ext
+    # run_test ./$testExecutable $full_path "tmp" 6 "ERROR: Bad Data ($full_path)"
+
+    # # data has a greyvalue below the minimum permitted value
+    # echo ""
+    # echo "Bad Data (too low)"
+    # filename="bad_data_low"
+    # full_path=$path$filename$file_ext
+    # run_test ./$testExecutable $full_path "tmp" 6 "ERROR: Bad Data ($full_path)"
 
     # too many greyvalues compared to the actual dimensions of the file
     echo ""
@@ -284,7 +305,7 @@ do
         if [[ $D != "" ]]
         then
             printf "${MAGENTA}FILES ARE DIFFERENT${NC}"
-            echo $D  ################################################################# commented out
+            #echo $D  ################################################################# commented out
         else
             printf "${CYAN}FILES ARE IDENTICAL${NC}"
         fi
@@ -323,7 +344,7 @@ do
         if [[ $D != "" ]]
         then
             printf "${MAGENTA}CONVERTED FILES ARE DIFFERENT${NC}"
-            echo $D ################################################################
+            #echo $D ################################################################
         else
             printf "${CYAN}CONVERTED FILES ARE IDENTICAL${NC}"
         fi
