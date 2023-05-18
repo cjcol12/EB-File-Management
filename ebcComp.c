@@ -112,9 +112,19 @@ int main(int argc, char **argv)
     if (comp_image_data(&image_struct, &image_struct_compare) == FUNCTION_SUCCESS_DIFFERENT)
         return SUCCESS_DIFFERENT;
 
-    // frees malloc'd memory and closes the output file
-    destructor_no_file(&image_struct);
-    destructor_no_file(&image_struct_compare);
+    // free(image_struct.data_block);  // freeing data_block
+    // image_struct.data_block = NULL;
+    // free(image_struct.imageData);  // freeing imageData array of pointers
+    // image_struct.imageData = NULL;
+    // free(image_struct.array);  // freeing array
+    // image_struct.array = NULL;
+
+    // free(image_struct.array);
+    // fclose(input_file);
+    // fclose(comparison_File);
+
+    // destructor(&image_struct, input_file);
+    
 
     // If we have not exited on different data, they must be identical
     printf("IDENTICAL\n");

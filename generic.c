@@ -60,3 +60,19 @@ void destructor_no_file(image_struct_type *image_struct)
         free(image_struct->imageData);
     }
 }
+
+/**
+ * @brief Frees memory without closing a file.
+ * @param image_struct Pointer to the image_struct_type struct.
+ * @return void
+ */
+void destructor_all(image_struct_type *image_struct)
+{
+    free(image_struct->data_block);  // freeing data_block
+    image_struct->data_block = NULL;
+    free(image_struct->imageData);  // freeing imageData array of pointers
+    image_struct->imageData = NULL;
+    free(image_struct->array);  // freeing array
+    image_struct->array = NULL;
+    // ... (you can continue with other cleanups related to image_struct if any)
+}
