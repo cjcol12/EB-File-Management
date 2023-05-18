@@ -64,42 +64,27 @@ int main(int argc, char **argv)
         return BAD_DIMENSION;
     }
 
-
-    // removes redundant block at EOF
-    // image_struct.height -= 1;
     // checks memory has been allocated properly for 2d array
     if (check_malloc(&image_struct, input_file) == BAD_MALLOC)
     {
         return BAD_MALLOC;
     }
 
-
-    // reverts to correct size for header writing
-    // image_struct.height += 1;
-
-
-    // int temp_width = image_struct.width;
-
-    // find the size of width of compressed file ~ 0.625 original
-    // image_struct.width = round_up_return(&image_struct);
-
-    // reads data into 2d array and checks data is valid
-    // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
-    // if (read_compressed_data(&image_struct, argv[1], input_file) == BAD_DATA)
-    // {
-    //     return BAD_DATA;
-    // }
-
     image_struct.compressed_width = round_up_return(&image_struct);
+    image_struct.numBytes = image_struct.height * image_struct.width;
+    image_struct.compressed_numBytes = image_struct.height * image_struct.compressed_width;
     
-    decompress_and_store(&image_struct, input_file);
+    check_1d_malloc(&image_struct, input_file);
 
-    
+    if (decompress_and_store(&image_struct, input_file, argv[1]) == BAD_DATA){
+        return BAD_DATA;
+    }
 
+    one_dim_two_dim(&image_struct);
 
 
     // open the output file in write mode
-    FILE *output_file = fopen(argv[2], "w");
+    FILE *output_file = fopen(argv[2], "wb");
 
     // checks we can write to output_file
     if (check_bad_output(&image_struct, output_file, argv[2]) ==
@@ -108,30 +93,12 @@ int main(int argc, char **argv)
         return BAD_WRITE_PERMISSIONS;
     }
 
-    // image_struct.width = temp_width;
-
     // Writes the header of the output file
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
     {
         return BAD_OUTPUT;
     }
 
-    // image_struct.height -= 1;
-
-    // find the size of width of compressed file ~ 0.625 original
-    // image_struct.width = round_up_return(&image_struct);
-
-    // write_binary_data(&image_struct, output_file);
-    //image_struct.width = temp_width;
-
-    // printf("uncompressed data\n");
-    // for (int i = 0; i < image_struct.height; i++){
-    //     // printf("%d\t", i + 1);
-    //     for (int j = 0; j < image_struct.width; j++){
-    //         printf("%d  ", image_struct.imageData[i][j]);
-    //     }
-    //     printf("\n\n");
-    // }
     compress_data_to_file(&image_struct, output_file);
     // frees malloc'd memory and closes the output file
     destructor(&image_struct, output_file);

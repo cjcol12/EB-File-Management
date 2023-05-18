@@ -64,10 +64,22 @@ int main(int argc, char **argv)
     if (check_malloc(&image_struct, input_file) == BAD_MALLOC)
         return BAD_MALLOC;
 
+    image_struct.compressed_width = round_up_return(&image_struct);
+    image_struct.numBytes = image_struct.height * image_struct.width;
+    image_struct.compressed_numBytes = image_struct.height * image_struct.compressed_width;
+    
+    check_1d_malloc(&image_struct, input_file);
+
+    if (decompress_and_store(&image_struct, input_file, argv[1]) == BAD_DATA){
+        return BAD_DATA;
+    }
+
+    one_dim_two_dim(&image_struct);
+
     // reads data into 2d array and checks data is valid
     // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
-    if (read_compressed_data(&image_struct, argv[1], input_file) == BAD_DATA)
-        return BAD_DATA;
+    // if (read_compressed_data(&image_struct, argv[1], input_file) == BAD_DATA)
+    //     return BAD_DATA;
 
     // Image struct variable initialization (comparison)
     image_struct_type image_struct_compare;
@@ -93,10 +105,22 @@ int main(int argc, char **argv)
     if (check_malloc(&image_struct_compare, comparison_File) == BAD_MALLOC)
         return BAD_MALLOC;
 
+    image_struct_compare.compressed_width = round_up_return(&image_struct_compare);
+    image_struct_compare.numBytes = image_struct_compare.height * image_struct_compare.width;
+    image_struct_compare.compressed_numBytes = image_struct_compare.height * image_struct_compare.compressed_width;
+    
+    check_1d_malloc(&image_struct_compare, input_file);
+
+    if (decompress_and_store(&image_struct_compare, input_file, argv[1]) == BAD_DATA){
+        return BAD_DATA;
+    }
+
+    one_dim_two_dim(&image_struct_compare);
+    
     // reads data into 2d array and checks data is valid
     // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
-    if (read_compressed_data(&image_struct_compare, argv[2], comparison_File) == BAD_DATA)
-        return BAD_DATA;
+    // if (read_compressed_data(&image_struct_compare, argv[2], comparison_File) == BAD_DATA)
+    //     return BAD_DATA;
 
     // display_array(&image_struct);
     // File comparison functions
