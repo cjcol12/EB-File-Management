@@ -43,6 +43,8 @@ int comp_magic_number(image_struct_type *image_struct, image_struct_type *image_
         printf("DIFFERENT\n");
         destructor_no_file(image_struct);
         destructor_no_file(image_struct_compare);
+
+        // Return 0
         return FUNCTION_SUCCESS_DIFFERENT;
     }
     else
@@ -74,6 +76,8 @@ int comp_dimensions(image_struct_type *image_struct, image_struct_type *image_st
         printf("DIFFERENT\n");
         destructor_no_file(image_struct);
         destructor_no_file(image_struct_compare);
+
+        // Return a constant indicating success, but with different dimensions
         return FUNCTION_SUCCESS_DIFFERENT;
     }
     else
@@ -113,5 +117,6 @@ int comp_image_data(image_struct_type *image_struct, image_struct_type *image_st
             }
         }
     }
+    // If all pixels are the same, return a success constant
     return FUNCTION_SUCCESS;
 }

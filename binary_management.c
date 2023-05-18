@@ -474,7 +474,6 @@ int decompress_and_store(image_struct_type *image_struct, FILE *input_file, char
     return FUNCTION_SUCCESS;
 }
 
-
 /**
  * @brief Converts a one-dimensional array to a two-dimensional array.
  *

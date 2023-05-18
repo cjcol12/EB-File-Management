@@ -116,7 +116,11 @@ run_test ()
 ebf=(ebfEcho ebf2ebu ebfComp)
 ebu=(ebu2ebf ebuComp ebuEcho)
 EBC=(ebc2ebu ebu2ebc ebcEcho ebcComp)
+<<<<<<< HEAD
 EXES=(ebc2ebu ebu2ebc ebcEcho ebcComp ebfEcho ebuComp ebuEcho ebfComp ebu2ebf ebf2ebu)
+=======
+EXES=(ebcComp ebcEcho ebu2ebc ebc2ebu ebfEcho ebuComp ebuEcho ebfComp ebu2ebf ebf2ebu)
+>>>>>>> 8a0ea9fc393d9916e87cd17f9b0fe6dd73f90bc9
 
 # run all of the tests below for all executables given in 'EXES'
 # inside this loop, the executable being run can be referred to by 'testExecutable'
