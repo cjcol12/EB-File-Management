@@ -1,30 +1,20 @@
-/*  Function: Read in a .ebf file and convert it to an ebu file
+/* 
+    @file ebf2ebu.c
+    @brief Program to read a .ebf file and convert it to an ebu file.
 
-    Arguments: Expects 3 arguments: ./ebf2ebu input_file.ebf, output_file.ebu
+    This program reads a .ebf file, performs conversion, and writes the contents to an ebu file.
 
-    Returns: 0 on success, different values depending on error - found in
-    definitions.h
+    Usage: ./ebf2ebu input_file.ebf output_file.ebu
 
     Author: CJ Coleman
 */
 
-// Standard I/O header file inclusion
-#include <stdio.h>
-
-// Standard library header file inclusion
-#include <stdlib.h>
-
-// Definition header file inclusion
-#include "definitions.h"
-
-// Read image module inclusion
-#include "read_image.c"
-
-// Read image module inclusion
-#include "write_image.c"
-
-// Binary function inclusion
-#include "binary_management.c"
+#include <stdio.h>      // Standard I/O header file inclusion
+#include <stdlib.h>     // Standard library header file inclusion
+#include "definitions.h"   // Definition header file inclusion
+#include "read_image.c"     // Read image module inclusion
+#include "write_image.c"    // Write image module inclusion
+#include "binary_management.c"  // Binary function inclusion
 
 int main(int argc, char **argv)
 {
@@ -51,11 +41,10 @@ int main(int argc, char **argv)
         return BAD_FILE;
 
     // checks if the magic number is what we expect
-    if (check_magic_number(&image_struct, argv[1], input_file) ==
-        BAD_MAGIC_NUMBER)
+    if (check_magic_number(&image_struct, argv[1], input_file) == BAD_MAGIC_NUMBER)
         return BAD_MAGIC_NUMBER;
 
-    // checks dimensions are within specified range(MIN_DIMENSION-MAX_DIMENSION)
+    // checks dimensions are within specified range (MIN_DIMENSION-MAX_DIMENSION)
     if (check_dimensions(&image_struct, argv[1], input_file) == BAD_DIMENSION)
         return BAD_DIMENSION;
 
@@ -73,8 +62,7 @@ int main(int argc, char **argv)
     image_struct.magic_number[1] = 'u';
 
     // checks we can write to output_file
-    if (check_bad_output(&image_struct, output_file, argv[2]) ==
-        BAD_WRITE_PERMISSIONS)
+    if (check_bad_output(&image_struct, output_file, argv[2]) == BAD_WRITE_PERMISSIONS)
         return BAD_WRITE_PERMISSIONS;
 
     // Writes the header of the output file
@@ -85,7 +73,10 @@ int main(int argc, char **argv)
     if (write_binary_data(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
+    // frees malloc'd memory and closes the output file
     destructor(&image_struct, output_file);
+
+    // Print final success message and return 0 on success
     printf("CONVERTED\n");
     return SUCCESS;
 }

@@ -1,30 +1,20 @@
-/*  Function: Read in a .ebu file and converts it to and .ebf file
+/* 
+    @file ebu2ebf.c
+    @brief Program to read a .ebu file and convert it to a .ebf file.
 
-    Arguments: Expects 3 arguments: ./ebu2ebc input_file, output_file
+    This program reads a .ebu file and writes its contents to a .ebf file.
 
-    Returns: 0 on success, different values depending on error - found in
-    definitions.h
+    Usage: ./ebu2ebf input_file.ebu output_file.ebf
 
     Author: CJ Coleman
 */
 
-// Standard I/O header file inclusion
-#include <stdio.h>
-
-// Standard library header file inclusion
-#include <stdlib.h>
-
-// Definition header file inclusion
-#include "definitions.h"
-
-// Read image module inclusion
-#include "read_image.c"
-
-// Read image module inclusion
-#include "write_image.c"
-
-// Binary function inclusion
-#include "binary_management.c"
+#include <stdio.h>      // Standard I/O header file inclusion
+#include <stdlib.h>     // Standard library header file inclusion
+#include "definitions.h"   // Definition header file inclusion
+#include "read_image.c"     // Read image module inclusion
+#include "write_image.c"    // Write image module inclusion
+#include "binary_management.c"   // Binary function inclusion
 
 int main(int argc, char **argv)
 {
@@ -51,11 +41,10 @@ int main(int argc, char **argv)
         return BAD_FILE;
 
     // checks if the magic number is what we expect
-    if (check_magic_number(&image_struct, argv[1], input_file) ==
-        BAD_MAGIC_NUMBER)
+    if (check_magic_number(&image_struct, argv[1], input_file) == BAD_MAGIC_NUMBER)
         return BAD_MAGIC_NUMBER;
 
-    // checks dimensions are within specified range(MIN_DIMENSION-MAX_DIMENSION)
+    // checks dimensions are within specified range (MIN_DIMENSION-MAX_DIMENSION)
     if (check_dimensions(&image_struct, argv[1], input_file) == BAD_DIMENSION)
         return BAD_DIMENSION;
 
@@ -63,7 +52,7 @@ int main(int argc, char **argv)
     if (check_malloc(&image_struct, input_file) == BAD_MALLOC)
         return BAD_MALLOC;
 
-    // reads data into 2d array and checks data is valid
+    // reads binary data into 2d array and checks data is valid
     // e.g within MIN_GRAY - MAX_GRAY and correct amounts of data read
     if (read_binary_data(&image_struct, argv[1], input_file) == BAD_DATA)
         return BAD_DATA;
@@ -71,12 +60,11 @@ int main(int argc, char **argv)
     // open the output file in write mode
     FILE *output_file = fopen(argv[2], "w");
 
-    // convert magic number to eb
+    // convert magic number to 'b'
     image_struct.magic_number[1] = 'b';
 
     // checks we can write to output_file
-    if (check_bad_output(&image_struct, output_file, argv[2]) ==
-        BAD_WRITE_PERMISSIONS)
+    if (check_bad_output(&image_struct, output_file, argv[2]) == BAD_WRITE_PERMISSIONS)
         return BAD_WRITE_PERMISSIONS;
 
     // Writes the header of the output file
@@ -85,9 +73,8 @@ int main(int argc, char **argv)
 
     // Writes main image data to output file
     if (write_image_data(&image_struct, output_file) == BAD_OUTPUT)
-    {
         return BAD_OUTPUT;
-    }
+
     // frees malloc'd memory and closes the output file
     destructor(&image_struct, output_file);
 

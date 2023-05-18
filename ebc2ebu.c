@@ -1,30 +1,20 @@
-/*  Function: Read in a .ebc file and convert it to an ebu file
+/* 
+    @file ebc2ebu.c
+    @brief Program to read a .ebc file and convert it to an .ebu file.
 
-    Arguments: Expects 3 arguments: ./ebc2ebu input_file.ebc, output_file.ebu
+    This program reads a .ebc file, performs conversion, and writes the result to an .ebu file.
 
-    Returns: 0 on success, different values depending on error - found in
-    definitions.h
+    Usage: ./ebc2ebu input_file.ebc output_file.ebu
 
     Author: CJ Coleman
 */
 
-// Standard I/O header file inclusion
-#include <stdio.h>
-
-// Standard library header file inclusion
-#include <stdlib.h>
-
-// Definition header file inclusion
-#include "definitions.h"
-
-// Read image module inclusion
-#include "read_image.c"
-
-// Read image module inclusion
-#include "write_image.c"
-
-// Binary function inclusion
-#include "binary_management.c"
+#include <stdio.h>      // Standard I/O header file inclusion
+#include <stdlib.h>     // Standard library header file inclusion
+#include "definitions.h"   // Definition header file inclusion
+#include "read_image.c"     // Read image module inclusion
+#include "write_image.c"    // Write image module inclusion
+#include "binary_management.c"  // Binary function inclusion
 
 int main(int argc, char **argv)
 {
@@ -51,11 +41,10 @@ int main(int argc, char **argv)
         return BAD_FILE;
 
     // checks if the magic number is what we expect
-    if (check_magic_number(&image_struct, argv[1], input_file) ==
-        BAD_MAGIC_NUMBER)
+    if (check_magic_number(&image_struct, argv[1], input_file) == BAD_MAGIC_NUMBER)
         return BAD_MAGIC_NUMBER;
 
-    // checks dimensions are within specified range(MIN_DIMENSION-MAX_DIMENSION
+    // checks dimensions are within specified range (MIN_DIMENSION-MAX_DIMENSION)
     if (check_dimensions(&image_struct, argv[1], input_file) == BAD_DIMENSION)
         return BAD_DIMENSION;
 
@@ -72,23 +61,21 @@ int main(int argc, char **argv)
     if (decompress_and_store(&image_struct, input_file, argv[1]) == BAD_DATA){
         return BAD_DATA;
     }
-    
+
     one_dim_two_dim(&image_struct);
 
     // open the output file in write mode
     FILE *output_file = fopen(argv[2], "wb");
     image_struct.magic_number[1] = 'u';
 
-    // checks we can write to output_file
-    if (check_bad_output(&image_struct, output_file, argv[2]) ==
-        BAD_WRITE_PERMISSIONS)
+    // checks if we can write to output_file
+    if (check_bad_output(&image_struct, output_file, argv[2]) == BAD_WRITE_PERMISSIONS)
         return BAD_WRITE_PERMISSIONS;
 
     // Writes the header of the output file
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
 
-    
     // Writes the binary image_data of the output file
     if (write_binary_data(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;

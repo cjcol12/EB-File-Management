@@ -2,6 +2,7 @@
 
 clear
 make clean
-make ebcEcho
+make ebc2ebu
 
-./ebcEcho sample_images/output.ebc sample_images/out.ebc
+./ebc2ebu sample_images/gradient.ebc sample_images/out.ebu
+

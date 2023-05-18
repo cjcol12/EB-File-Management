@@ -1,29 +1,20 @@
-/*  Function: Read in a .ebf file and echos (copy) its contents to another file
+/* 
+    @file ebfEcho.c
+    @brief Program to read a .ebf file and echo (copy) its contents to another file.
 
-    Arguments: Expects 3 arguments: ./ebfEcho input_file, output_file
+    This program reads a .ebf file and echoes (copies) its contents to another file.
 
-    Returns: 0 on success, different values depending on error - found in
-    definitions.h
+    Usage: ./ebfEcho input_file output_file
 
     Author: CJ Coleman
 */
 
-// Standard I/O header file inclusion
-#include <stdio.h>
-
-// Standard library header file inclusion
-#include <stdlib.h>
-
-// Definition header file inclusion
-#include "definitions.h"
-
-// Read image module inclusion
-#include "read_image.c"
-
-// Write image module inclusion
-#include "write_image.c"
-
-#include "binary_management.c"
+#include <stdio.h>      // Standard I/O header file inclusion
+#include <stdlib.h>     // Standard library header file inclusion
+#include "definitions.h"   // Definition header file inclusion
+#include "read_image.c"     // Read image module inclusion
+#include "write_image.c"    // Write image module inclusion
+#include "binary_management.c"  // Binary function inclusion
 
 int main(int argc, char **argv)
 {
@@ -47,28 +38,19 @@ int main(int argc, char **argv)
 
     // check to see if file opened successfully
     if (check_file_opened(argv[1], input_file) == BAD_FILE)
-    {
         return BAD_FILE;
-    }
 
     // checks if the magic number is what we expect
-    if (check_magic_number(&image_struct, argv[1], input_file) ==
-        BAD_MAGIC_NUMBER)
-    {
+    if (check_magic_number(&image_struct, argv[1], input_file) == BAD_MAGIC_NUMBER)
         return BAD_MAGIC_NUMBER;
-    }
 
-    // checks dimensions are within specified range(MIN_DIMENSION-MAX_DIMENSION)
+    // checks dimensions are within specified range (MIN_DIMENSION-MAX_DIMENSION)
     if (check_dimensions(&image_struct, argv[1], input_file) == BAD_DIMENSION)
-    {
         return BAD_DIMENSION;
-    }
 
     // checks memory has been allocated properly for 2d array
     if (check_malloc(&image_struct, input_file) == BAD_MALLOC)
-    {
         return BAD_MALLOC;
-    }
 
     image_struct.compressed_width = round_up_return(&image_struct);
     image_struct.numBytes = image_struct.height * image_struct.width;
@@ -82,24 +64,19 @@ int main(int argc, char **argv)
 
     one_dim_two_dim(&image_struct);
 
-
     // open the output file in write mode
     FILE *output_file = fopen(argv[2], "wb");
 
     // checks we can write to output_file
-    if (check_bad_output(&image_struct, output_file, argv[2]) ==
-        BAD_WRITE_PERMISSIONS)
-    {
+    if (check_bad_output(&image_struct, output_file, argv[2]) == BAD_WRITE_PERMISSIONS)
         return BAD_WRITE_PERMISSIONS;
-    }
 
     // Writes the header of the output file
     if (write_header(&image_struct, output_file) == BAD_OUTPUT)
-    {
         return BAD_OUTPUT;
-    }
 
     compress_data_to_file(&image_struct, output_file);
+
     // frees malloc'd memory and closes the output file
     destructor(&image_struct, output_file);
 

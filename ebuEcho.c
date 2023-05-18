@@ -1,31 +1,28 @@
-/*  Function: Read in a .ebu file and echo (copy) its contents to another file
+/**
+ * @file ebuEcho.c
+ * @brief Read in a .ebu file and echo (copy) its contents to another file.
+ *
+ * This program reads in a .ebu file, validates its format, and copies its contents to another file.
+ *
+ * Arguments: Expects 3 arguments: ./ebuEcho input_file, output_file
+ * Returns: 0 on success, different values depending on error - found in definitions.h
+ * Author: CJ Coleman
+ */
 
-    Arguments: Expects 3 arguments: ./ebuEcho input_file, output_file
-
-    Returns: 0 on success, different values depending on error - found in
-    definitions.h
-
-    Author: CJ Coleman
-*/
-
-// Standard I/O header file inclusion
 #include <stdio.h>
-
-// Standard library header file inclusion
 #include <stdlib.h>
-
-// Definition header file inclusion
 #include "definitions.h"
-
-// Read image module inclusion
 #include "read_image.c"
-
-// Read image module inclusion
 #include "write_image.c"
-
-// Binary function inclusion
 #include "binary_management.c"
 
+/**
+ * @brief Main function of the ebuEcho program.
+ *
+ * @param argc Number of command-line arguments.
+ * @param argv Array of command-line arguments.
+ * @return 0 on success, different values depending on error.
+ */
 int main(int argc, char **argv)
 {
     // image struct variable initialization
@@ -71,7 +68,7 @@ int main(int argc, char **argv)
     // open the output file in write mode
     FILE *output_file = fopen(argv[2], "wb");
 
-    // checks we can write to output_fil
+    // checks we can write to output_file
     if (check_bad_output(&image_struct, output_file, argv[2]) ==
         BAD_WRITE_PERMISSIONS)
         return BAD_WRITE_PERMISSIONS;
