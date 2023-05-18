@@ -79,6 +79,7 @@ int main(int argc, char **argv)
 
     // frees malloc'd memory and closes the output file
     destructor(&image_struct, output_file);
+    free(image_struct.array);
 
     // Print final success message and return 0 on success
     printf("ECHOED\n");

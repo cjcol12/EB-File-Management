@@ -79,6 +79,10 @@ int main(int argc, char **argv)
     // Writes the binary image_data of the output file
     if (write_binary_data(&image_struct, output_file) == BAD_OUTPUT)
         return BAD_OUTPUT;
+
+    // free memory and close file
+    destructor(&image_struct, output_file);
+    free(image_struct.array);
     
     printf("CONVERTED\n");
     return SUCCESS;
