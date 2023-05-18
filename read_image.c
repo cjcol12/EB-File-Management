@@ -92,6 +92,15 @@ int check_malloc(image_struct_type *image_struct, FILE *input_file)
     return FUNCTION_SUCCESS;
 }
 
+int check_1d_malloc(image_struct_type *image_struct, FILE *input_file ){
+    image_struct->array = (unsigned int *)malloc(sizeof(unsigned int) * image_struct->numBytes);
+    // testing return value of malloc
+    if (check_data_block_malloc(image_struct, input_file) == BAD_MALLOC)
+        return BAD_MALLOC;
+    // return 0 on function success
+    return FUNCTION_SUCCESS;
+}
+
 int read_data(image_struct_type *image_struct, char *input_file_name, FILE *input_file)
 {
 
