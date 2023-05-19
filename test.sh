@@ -113,6 +113,7 @@ run_test ()
 
 # you can remove or comment out any executables you don't want to test
 # full list of executables: ebf2ebu ebuEcho ebuComp ebu2ebf
+<<<<<<< HEAD
 ebf=(ebfEcho ebf2ebu ebfComp)
 ebu=(ebu2ebf ebuComp ebuEcho)
 EBC=(ebc2ebu ebu2ebc ebcEcho ebcComp)
@@ -121,6 +122,9 @@ EXES=(ebc2ebu ebu2ebc ebcEcho ebcComp ebfEcho ebuComp ebuEcho ebfComp ebu2ebf eb
 =======
 EXES=(ebcComp ebcEcho ebu2ebc ebc2ebu ebfEcho ebuComp ebuEcho ebfComp ebu2ebf ebf2ebu)
 >>>>>>> 8a0ea9fc393d9916e87cd17f9b0fe6dd73f90bc9
+=======
+EXES=(ebuComp ebuEcho ebfEcho ebfComp ebu2ebf ebf2ebu)
+>>>>>>> 0d7f47695274b2a53e0b80fc1762bf5f30e2ac10
 
 # run all of the tests below for all executables given in 'EXES'
 # inside this loop, the executable being run can be referred to by 'testExecutable'
@@ -391,6 +395,9 @@ echo "--------------------------------------------------------------------------
 rm tmp null
 # and run make clean to remove object files
 make clean
+<<<<<<< HEAD
 
 
 powershell
+=======
+>>>>>>> 0d7f47695274b2a53e0b80fc1762bf5f30e2ac10

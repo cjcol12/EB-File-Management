@@ -18,7 +18,7 @@
 #include "definitions.h"
 
 // Generic function file inclusion
-#include "generic.h"
+// #include "generic.c"
 
 // Generic function file inclusion
 #include "binary_management.h"
@@ -238,6 +238,7 @@ int compress_data_to_file(image_struct_type *image_struct, FILE *output_file)
         comp(buffer, comp_buffer, output_file);
     }
     return FUNCTION_SUCCESS;
+<<<<<<< HEAD
 }
 
 
@@ -498,3 +499,6 @@ void one_dim_two_dim(image_struct_type *image_struct)
         }
     }
 }
+=======
+}
+>>>>>>> 0d7f47695274b2a53e0b80fc1762bf5f30e2ac10

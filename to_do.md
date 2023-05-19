@@ -57,6 +57,10 @@ clean up comments + add more
 
 
 QUESTIONS
+<<<<<<< HEAD
 2d box, when rounding you either have to round up or down
 what should comments look like
 formatting - lost alot of marks not sure why
+=======
+lines limited to 80 characters?
+>>>>>>> 0d7f47695274b2a53e0b80fc1762bf5f30e2ac10

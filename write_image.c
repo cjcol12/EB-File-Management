@@ -21,7 +21,7 @@
 #include "write_image.h"
 
 // Generic function file inclusion
-#include "generic.h"
+// #include "generic.c"
 
 // Error checking module inclusion
 #include "error_checking.h"
@@ -39,8 +39,14 @@
 int write_header(image_struct_type *image_struct, FILE *output_file)
 {
     // write the header data in one block
+<<<<<<< HEAD
     image_struct->check = fprintf(output_file, "%c%c\n%d %d\n",
                                   image_struct->magic_number[0], image_struct->magic_number[1], image_struct->height, image_struct->width);
+=======
+    // change to write with magicNumberValue
+    image_struct->check = fprintf(output_file, "%s\n%d %d\n", 
+    image_struct->magic_number, image_struct->height, image_struct->width);
+>>>>>>> 0d7f47695274b2a53e0b80fc1762bf5f30e2ac10
 
     // check if data is written correctly
     if (check_data_written(image_struct, output_file) == BAD_OUTPUT)
