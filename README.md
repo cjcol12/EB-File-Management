@@ -118,18 +118,4 @@ You can then run the test suite using:
 
 # Hints and Tips
 
-## What is binary data?
-
-A common issue which students encounter in these tasks is working with binary data.
-
-When we talk about binary vs ASCII data in programming, we are essentially talking about how data is encoded. ASCII data is encoded in a human-readable format, and each character takes up 8 bits (technically, 7 bits and 1 for parity). Binary data is encoded in a smaller but non-human-readable format - while the number '255' would take 3 bytes of ASCII, it is 1 byte of binary. However, when a human tries to open a binary-encoded file, you will not be able to read it:
-```
-eu
-2 2
-
-```
-This is slice0a.ebf, converted into an ebu - it's smaller, but no longer readable! However, the exact same numbers are there - just in a more compressed format.
-
-You will find that there are binary read and write functions built into C - you do not need to do **any** conversion.
-
 # Common Issues
